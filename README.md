@@ -30,6 +30,7 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
   - Example: Date header. It should be ignored from response assertions, but that requires _parsing_ the headers to know that.
   - Example: Host header. It should be dynamic, based on the host used for testing.
   - Example: HTTP version. It should be optional in response expectations, asserted if and only if present.
+- Large bodies: Needs to be able to pull in other files via fixture, etc.
 
 ## Alternatives
 

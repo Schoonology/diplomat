@@ -9,7 +9,7 @@ import (
 	"github.com/testdouble/http-assertion-tool/runners"
 )
 
-func TestRunnerRun(t *testing.T) {
+func TestEngineStart(t *testing.T) {
 	loader := &mocks.FileLoader{}
 	parser := &mocks.SpecParser{}
 	runner := &mocks.SpecRunner{}
@@ -24,14 +24,14 @@ func TestRunnerRun(t *testing.T) {
 	runner.On("Run", spec).Return(result, nil)
 	printer.On("Print", result).Return(nil)
 
-	subject := Runner{
+	subject := Engine{
 		loader:  loader,
 		parser:  parser,
 		runner:  runner,
 		printer: printer,
 	}
 
-	err := subject.Run("test-file")
+	err := subject.Start("test-file")
 	if err != nil {
 		t.Fatalf("Failed with: %v", err)
 	}

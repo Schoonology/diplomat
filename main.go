@@ -2,10 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"io/ioutil"
-	"net"
-	"strings"
+
+	"github.com/testdouble/http-assertion-tool/loaders"
+	"github.com/testdouble/http-assertion-tool/parsers"
+	"github.com/testdouble/http-assertion-tool/printers"
+	"github.com/testdouble/http-assertion-tool/runners"
 )
 
 type Args struct {
@@ -22,77 +23,40 @@ func loadArgs() (args Args) {
 	return
 }
 
+type Engine struct {
+	loader  loaders.FileLoader
+	parser  parsers.SpecParser
+	runner  runners.SpecRunner
+	printer printers.ResultsPrinter
+}
+
+func (r *Engine) Start(filename string) error {
+	file, err := r.loader.Load(filename)
+	if err != nil {
+		return err
+	}
+
+	spec, err := r.parser.Parse(file)
+	if err != nil {
+		return err
+	}
+
+	result, err := r.runner.Run(spec)
+	if err != nil {
+		return err
+	}
+
+	err = r.printer.Print(result)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func main() {
 	args := loadArgs()
+	engine := Engine{}
 
-	bytes, err := ioutil.ReadFile(args.Filename)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-
-	lines := strings.Split(string(bytes), "\n")
-	request := new(strings.Builder)
-	response := new(strings.Builder)
-	for _, line := range lines {
-		if len(line) == 0 {
-			continue
-		} else if line[0] == '>' {
-			if len(line) > 1 {
-				request.WriteString(line[2:])
-			} else {
-				request.WriteString(line[1:])
-			}
-			request.WriteString("\r\n")
-		} else if line[0] == '<' {
-			if len(line) > 1 {
-				response.WriteString(line[2:])
-			} else {
-				response.WriteString(line[1:])
-			}
-			response.WriteString("\r\n")
-		}
-	}
-
-	addr, err := net.ResolveTCPAddr("tcp", args.Address)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-
-	conn, err := net.DialTCP("tcp", nil, addr)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-
-	defer conn.Close()
-
-	written, err := conn.Write([]byte(request.String()))
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-
-	conn.CloseWrite()
-
-	fmt.Printf("Request:\n%s", request)
-	fmt.Printf("Written: %v\n", written)
-
-	actualResponse, err := ioutil.ReadAll(conn)
-	if err != nil {
-		fmt.Printf("Error: %v", err)
-		return
-	}
-
-	conn.Close()
-
-	fmt.Printf("Response:\n%s", response)
-	fmt.Printf("Actual:\n%s", actualResponse)
-
-	if string(actualResponse) == response.String() {
-		fmt.Printf("Success.")
-	} else {
-		fmt.Printf("Does not match.")
-	}
+	engine.Start(args.Filename)
 }

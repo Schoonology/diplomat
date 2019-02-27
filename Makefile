@@ -25,4 +25,4 @@ e2e:
 	./main test.txt httpbin.org:80
 
 test:
-	go test
+	go test $(PKGS)

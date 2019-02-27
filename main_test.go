@@ -10,17 +10,17 @@ import (
 )
 
 func TestEngineStart(t *testing.T) {
-	loader := &mocks.FileLoader{}
+	loader := &mocks.Loader{}
 	parser := &mocks.SpecParser{}
 	runner := &mocks.SpecRunner{}
 	printer := &mocks.ResultsPrinter{}
 
-	file := new(loaders.File)
+	body := new(loaders.Body)
 	spec := new(parsers.Spec)
 	result := new(runners.Result)
 
-	loader.On("Load", "test-file").Return(file, nil)
-	parser.On("Parse", file).Return(spec, nil)
+	loader.On("Load", "test-file").Return(body, nil)
+	parser.On("Parse", body).Return(spec, nil)
 	runner.On("Run", spec).Return(result, nil)
 	printer.On("Print", result).Return(nil)
 

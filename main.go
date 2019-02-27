@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/testdouble/http-assertion-tool/loaders"
 	"github.com/testdouble/http-assertion-tool/parsers"
@@ -24,7 +25,7 @@ func loadArgs() (args Args) {
 }
 
 type Engine struct {
-	loader  loaders.FileLoader
+	loader  loaders.Loader
 	parser  parsers.SpecParser
 	runner  runners.SpecRunner
 	printer printers.ResultsPrinter
@@ -56,7 +57,17 @@ func (r *Engine) Start(filename string) error {
 
 func main() {
 	args := loadArgs()
-	engine := Engine{}
+	engine := Engine{
+		loader: &loaders.FileLoader{},
+		parser: &parsers.PlainTextParser{},
+		runner: &runners.Serial{
+			Address: args.Address,
+		},
+		printer: &printers.Test{},
+	}
 
-	engine.Start(args.Filename)
+	err := engine.Start(args.Filename)
+	if err != nil {
+		fmt.Printf("Failed with: %v", err)
+	}
 }

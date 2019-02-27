@@ -1,7 +1,9 @@
 package loaders
 
-type FileLoader interface {
-	Load(string) (*File, error)
+type Loader interface {
+	Load(string) (*Body, error)
 }
 
-type File struct{}
+type Body struct {
+	Lines []string
+}

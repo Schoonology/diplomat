@@ -12,11 +12,11 @@ type SpecParser struct {
 }
 
 // Parse provides a mock function with given fields: _a0
-func (_m *SpecParser) Parse(_a0 *loaders.File) (*parsers.Spec, error) {
+func (_m *SpecParser) Parse(_a0 *loaders.Body) (*parsers.Spec, error) {
 	ret := _m.Called(_a0)
 
 	var r0 *parsers.Spec
-	if rf, ok := ret.Get(0).(func(*loaders.File) *parsers.Spec); ok {
+	if rf, ok := ret.Get(0).(func(*loaders.Body) *parsers.Spec); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
@@ -25,7 +25,7 @@ func (_m *SpecParser) Parse(_a0 *loaders.File) (*parsers.Spec, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*loaders.File) error); ok {
+	if rf, ok := ret.Get(1).(func(*loaders.Body) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)

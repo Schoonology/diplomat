@@ -1,10 +1,17 @@
-.PHONY := format watch clean e2e test
+.PHONY := format watch clean e2e test generate
+PKGS=$(shell go list -deps | grep http-assertion-tool)
 
 main: main.go
 	go build -o main
 
 format:
-	go fmt main.go
+	go fmt $(PKGS)
+
+bin/mockery:
+	GOBIN=`pwd`/bin go get github.com/vektra/mockery/.../
+
+generate: bin/mockery
+	bin/mockery -all
 
 watch:
 	rg --files | entr -rc sh -c "make format && make main && make test && make e2e"

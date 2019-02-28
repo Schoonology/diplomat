@@ -9,8 +9,8 @@ import (
 type Debug struct{}
 
 func (t *Debug) Print(result *runners.Result) error {
-	for _, diff := range result.Results {
-		fmt.Print(diff)
+	for _, result := range result.Results {
+		fmt.Printf("%v\n%v\n", result.Name, result.Diff)
 	}
 
 	return nil

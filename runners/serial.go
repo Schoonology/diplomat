@@ -25,7 +25,10 @@ func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
 			return nil, err
 		}
 
-		result.Results = append(result.Results, diff)
+		result.Results = append(result.Results, TestResult{
+			Name: test.Name,
+			Diff: diff,
+		})
 	}
 
 	return result, nil

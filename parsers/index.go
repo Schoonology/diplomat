@@ -14,6 +14,7 @@ type Spec struct {
 }
 
 type Test struct {
+	Name     string
 	Request  *http.Request
 	Response *http.Response
 }

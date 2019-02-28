@@ -26,6 +26,7 @@ func TestLoadText(t *testing.T) {
 	assert.Equal(1, len(spec.Tests))
 
 	test := spec.Tests[0]
+	assert.Equal("METHOD path -> 1337", test.Name)
 	assert.Equal("METHOD", test.Request.Method)
 	assert.Equal("path", test.Request.Path)
 	assert.Equal("Request", test.Request.Headers["Header"])

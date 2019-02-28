@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -18,6 +19,10 @@ const (
 
 type PlainTextParser struct{}
 
+func finalizeTest(test *Test) {
+	test.Name = fmt.Sprintf("%s %s -> %d", test.Request.Method, test.Request.Path, test.Response.StatusCode)
+}
+
 func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 	mode := AwaitingRequest
 	tests := make([]Test, 0)
@@ -31,6 +36,7 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 
 			if mode == AwaitingRequest || mode == InResponseHeaders || mode == AwaitingResponseBody {
 				if mode == InResponseHeaders || mode == AwaitingResponseBody {
+					finalizeTest(&currentTest)
 					tests = append(tests, currentTest)
 					currentTest = Test{}
 				}
@@ -59,6 +65,7 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 	}
 
 	if mode != AwaitingRequest {
+		finalizeTest(&currentTest)
 		tests = append(tests, currentTest)
 	}
 

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/testdouble/http-assertion-tool/differs"
 	"github.com/testdouble/http-assertion-tool/http"
 	"github.com/testdouble/http-assertion-tool/loaders"
 	"github.com/testdouble/http-assertion-tool/parsers"
@@ -65,7 +66,7 @@ func main() {
 			Client: &http.NativeClient{
 				Address: args.Address,
 			},
-			Differ: &http.DebugDiffer{},
+			Differ: &differs.Debug{},
 		},
 		Printer: &printers.Debug{},
 	}

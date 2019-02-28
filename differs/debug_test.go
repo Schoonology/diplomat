@@ -1,14 +1,15 @@
-package http_test
+package differs_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/testdouble/http-assertion-tool/differs"
 	"github.com/testdouble/http-assertion-tool/http"
 )
 
 func TestDiffSameNoHeaders(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	diff, err := subject.Diff(http.NewResponse(200, "STATUS TEXT"), http.NewResponse(200, "STATUS TEXT"))
 
 	assert.Nil(t, err)
@@ -16,7 +17,7 @@ func TestDiffSameNoHeaders(t *testing.T) {
 }
 
 func TestDiffSameFull(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	actual := http.NewResponse(200, "OK")
 	expected := http.NewResponse(200, "OK")
 
@@ -30,7 +31,7 @@ func TestDiffSameFull(t *testing.T) {
 }
 
 func TestDiffWrongStatus(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	diff, err := subject.Diff(http.NewResponse(204, "No Content"), http.NewResponse(200, "OK"))
 
 	assert.Nil(t, err)
@@ -44,7 +45,7 @@ func TestDiffWrongStatus(t *testing.T) {
 }
 
 func TestDiffWrongHeaderValue(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	actual := http.NewResponse(200, "OK")
 	expected := http.NewResponse(200, "OK")
 
@@ -61,7 +62,7 @@ func TestDiffWrongHeaderValue(t *testing.T) {
 }
 
 func TestDiffExtraHeader(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	actual := http.NewResponse(200, "OK")
 	expected := http.NewResponse(200, "OK")
 
@@ -77,7 +78,7 @@ func TestDiffExtraHeader(t *testing.T) {
 }
 
 func TestDiffMissingHeader(t *testing.T) {
-	subject := http.DebugDiffer{}
+	subject := differs.Debug{}
 	actual := http.NewResponse(200, "OK")
 	expected := http.NewResponse(200, "OK")
 

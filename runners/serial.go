@@ -1,12 +1,13 @@
 package runners
 
 import (
+	"github.com/testdouble/http-assertion-tool/differs"
 	"github.com/testdouble/http-assertion-tool/http"
 	"github.com/testdouble/http-assertion-tool/parsers"
 )
 
 type Serial struct {
-	Differ http.Differ
+	Differ differs.Differ
 	Client http.Client
 }
 

@@ -4,10 +4,6 @@ type Client interface {
 	Do(*Request) (*Response, error)
 }
 
-type Differ interface {
-	Diff(*Response, *Response) (string, error)
-}
-
 type Request struct {
 	Method  string
 	Path    string

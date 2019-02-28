@@ -66,7 +66,7 @@ func main() {
 			Client: &http.NativeClient{
 				Address: args.Address,
 			},
-			Differ: &differs.Debug{},
+			Differ: &differs.Smart{},
 		},
 		Printer: &printers.Debug{},
 	}

@@ -19,7 +19,7 @@ func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
 			return nil, err
 		}
 
-		diff, err := s.Differ.Diff(response, test.Response)
+		diff, err := s.Differ.Diff(test.Response, response)
 		if err != nil {
 			return nil, err
 		}

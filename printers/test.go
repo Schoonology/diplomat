@@ -6,9 +6,12 @@ import (
 	"github.com/testdouble/http-assertion-tool/runners"
 )
 
-type Test struct{}
+type Debug struct{}
 
-func (t *Test) Print(result *runners.Result) error {
-	fmt.Print(result)
+func (t *Debug) Print(result *runners.Result) error {
+	for _, diff := range result.Results {
+		fmt.Print(diff)
+	}
+
 	return nil
 }

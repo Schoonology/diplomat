@@ -67,7 +67,7 @@ func main() {
 			},
 			Differ: &http.DebugDiffer{},
 		},
-		Printer: &printers.Test{},
+		Printer: &printers.Debug{},
 	}
 
 	err := engine.Start(args.Filename)

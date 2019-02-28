@@ -84,3 +84,32 @@ func TestLoadDouble(t *testing.T) {
 	assert.Equal("AGAIN", test.Response.StatusText)
 	assert.Equal("Response 2", test.Response.Headers["Header"])
 }
+
+func TestLoadSwissCheeseText(t *testing.T) {
+	assert := assert.New(t)
+	subject := parsers.PlainTextParser{}
+	body := loaders.Body{
+		Lines: []string{
+			"> METHOD path",
+			"Something else",
+			"> Header: Request",
+			"More interruptions",
+			"< PROTO 1337 STATUS TEXT",
+			"All ignored",
+			"< Header: Response",
+		},
+	}
+
+	spec, err := subject.Parse(&body)
+	assert.Nil(err)
+	assert.NotNil(spec)
+	assert.Equal(1, len(spec.Tests))
+
+	test := spec.Tests[0]
+	assert.Equal("METHOD", test.Request.Method)
+	assert.Equal("path", test.Request.Path)
+	assert.Equal("Request", test.Request.Headers["Header"])
+	assert.Equal(1337, test.Response.StatusCode)
+	assert.Equal("STATUS TEXT", test.Response.StatusText)
+	assert.Equal("Response", test.Response.Headers["Header"])
+}

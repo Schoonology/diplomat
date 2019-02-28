@@ -13,11 +13,14 @@ import (
 )
 
 type Args struct {
+	Tap      bool
 	Address  string
 	Filename string
 }
 
 func loadArgs() (args Args) {
+	flag.BoolVar(&args.Tap, "tap", false, "Display results in TAP format")
+
 	flag.Parse()
 
 	args.Filename = flag.Arg(0)
@@ -59,6 +62,13 @@ func (r *Engine) Start(filename string) error {
 
 func main() {
 	args := loadArgs()
+
+	var printer printers.ResultsPrinter
+	printer = &printers.Debug{}
+	if args.Tap {
+		printer = &printers.Tap{}
+	}
+
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: &parsers.PlainTextParser{},
@@ -68,7 +78,7 @@ func main() {
 			},
 			Differ: &differs.Smart{},
 		},
-		Printer: &printers.Debug{},
+		Printer: printer,
 	}
 
 	err := engine.Start(args.Filename)

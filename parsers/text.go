@@ -1,10 +1,10 @@
 package parsers
 
 import (
-	"net/http"
 	"strconv"
 	"strings"
 
+	"github.com/testdouble/http-assertion-tool/http"
 	"github.com/testdouble/http-assertion-tool/loaders"
 )
 
@@ -41,7 +41,7 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 				mode = AwaitingRequestBody
 			} else if mode == InRequestHeaders {
 				key, value := HeaderFromLine(line)
-				currentTest.Request.Headers.Add(key, value)
+				currentTest.Request.Headers[key] = value
 			}
 		case line[0] == '<':
 			line = strings.TrimSpace(line[1:])
@@ -53,7 +53,7 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 				mode = AwaitingResponseBody
 			} else if mode == InResponseHeaders {
 				key, value := HeaderFromLine(line)
-				currentTest.Response.Headers.Add(key, value)
+				currentTest.Response.Headers[key] = value
 			}
 		}
 	}
@@ -69,14 +69,10 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 	return &spec, nil
 }
 
-func RequestFromLine(line string) Request {
+func RequestFromLine(line string) *http.Request {
 	pieces := strings.Split(line, " ")
 
-	return Request{
-		Method:  pieces[0],
-		Path:    pieces[1],
-		Headers: http.Header{},
-	}
+	return http.NewRequest(pieces[0], pieces[1])
 }
 
 func HeaderFromLine(line string) (string, string) {
@@ -85,13 +81,9 @@ func HeaderFromLine(line string) (string, string) {
 	return strings.TrimSpace(pieces[0]), strings.TrimSpace(pieces[1])
 }
 
-func ResponseFromLine(line string) Response {
+func ResponseFromLine(line string) *http.Response {
 	pieces := strings.Split(line, " ")
 	code, _ := strconv.Atoi(pieces[1])
 
-	return Response{
-		StatusCode: code,
-		StatusText: strings.Join(pieces[2:], " "),
-		Headers:    http.Header{},
-	}
+	return http.NewResponse(code, strings.Join(pieces[2:], " "))
 }

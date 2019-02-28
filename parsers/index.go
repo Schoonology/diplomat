@@ -1,6 +1,9 @@
 package parsers
 
-import "github.com/testdouble/http-assertion-tool/loaders"
+import (
+	"github.com/testdouble/http-assertion-tool/http"
+	"github.com/testdouble/http-assertion-tool/loaders"
+)
 
 type SpecParser interface {
 	Parse(*loaders.Body) (*Spec, error)
@@ -11,6 +14,6 @@ type Spec struct {
 }
 
 type Test struct {
-	Request  string
-	Response string
+	Request  *http.Request
+	Response *http.Response
 }

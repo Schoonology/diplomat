@@ -6,4 +6,6 @@ type SpecRunner interface {
 	Run(*parsers.Spec) (*Result, error)
 }
 
-type Result struct{}
+type Result struct {
+	Results []string
+}

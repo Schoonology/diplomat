@@ -13,3 +13,18 @@
 < Content-Length: 0
 < Via: 1.1 vegur
 <
+> GET /status/200 HTTP/1.1
+> Host: httpbin.org
+> User-Agent: curl/7.54.0
+> accept: text/plain
+>
+< HTTP/1.1 200 OK
+< Connection: keep-alive
+< Server: gunicorn/19.9.0
+< Date: Sat, 05 Jan 2019 06:45:50 GMT
+< Content-Type: text/html; charset=utf-8
+< Access-Control-Allow-Origin: *
+< Access-Control-Allow-Credentials: true
+< Content-Length: 0
+< Via: 1.1 vegur
+<

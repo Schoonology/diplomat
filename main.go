@@ -25,29 +25,29 @@ func loadArgs() (args Args) {
 }
 
 type Engine struct {
-	loader  loaders.Loader
-	parser  parsers.SpecParser
-	runner  runners.SpecRunner
-	printer printers.ResultsPrinter
+	Loader  loaders.Loader
+	Parser  parsers.SpecParser
+	Runner  runners.SpecRunner
+	Printer printers.ResultsPrinter
 }
 
 func (r *Engine) Start(filename string) error {
-	file, err := r.loader.Load(filename)
+	file, err := r.Loader.Load(filename)
 	if err != nil {
 		return err
 	}
 
-	spec, err := r.parser.Parse(file)
+	spec, err := r.Parser.Parse(file)
 	if err != nil {
 		return err
 	}
 
-	result, err := r.runner.Run(spec)
+	result, err := r.Runner.Run(spec)
 	if err != nil {
 		return err
 	}
 
-	err = r.printer.Print(result)
+	err = r.Printer.Print(result)
 	if err != nil {
 		return err
 	}
@@ -58,12 +58,12 @@ func (r *Engine) Start(filename string) error {
 func main() {
 	args := loadArgs()
 	engine := Engine{
-		loader: &loaders.FileLoader{},
-		parser: &parsers.PlainTextParser{},
-		runner: &runners.Serial{
+		Loader: &loaders.FileLoader{},
+		Parser: &parsers.PlainTextParser{},
+		Runner: &runners.Serial{
 			Address: args.Address,
 		},
-		printer: &printers.Test{},
+		Printer: &printers.Test{},
 	}
 
 	err := engine.Start(args.Filename)

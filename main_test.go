@@ -1,8 +1,9 @@
-package main
+package main_test
 
 import (
 	"testing"
 
+	main "github.com/testdouble/http-assertion-tool"
 	"github.com/testdouble/http-assertion-tool/loaders"
 	"github.com/testdouble/http-assertion-tool/mocks"
 	"github.com/testdouble/http-assertion-tool/parsers"
@@ -24,11 +25,11 @@ func TestEngineStart(t *testing.T) {
 	runner.On("Run", spec).Return(result, nil)
 	printer.On("Print", result).Return(nil)
 
-	subject := Engine{
-		loader:  loader,
-		parser:  parser,
-		runner:  runner,
-		printer: printer,
+	subject := main.Engine{
+		Loader:  loader,
+		Parser:  parser,
+		Runner:  runner,
+		Printer: printer,
 	}
 
 	err := subject.Start("test-file")

@@ -1,15 +1,16 @@
-package parsers
+package parsers_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/testdouble/http-assertion-tool/loaders"
+	"github.com/testdouble/http-assertion-tool/parsers"
 )
 
 func TestLoadText(t *testing.T) {
 	assert := assert.New(t)
-	subject := PlainTextParser{}
+	subject := parsers.PlainTextParser{}
 	body := loaders.Body{
 		Lines: []string{
 			"> METHOD path",
@@ -35,7 +36,7 @@ func TestLoadText(t *testing.T) {
 
 func TestLoadEmpty(t *testing.T) {
 	assert := assert.New(t)
-	subject := PlainTextParser{}
+	subject := parsers.PlainTextParser{}
 	body := loaders.Body{
 		Lines: []string{},
 	}

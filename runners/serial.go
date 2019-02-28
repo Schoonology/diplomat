@@ -6,9 +6,8 @@ import (
 )
 
 type Serial struct {
-	Address string
-	Differ  http.Differ
-	Client  http.Client
+	Differ http.Differ
+	Client http.Client
 }
 
 func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
@@ -28,5 +27,5 @@ func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
 		result.Results = append(result.Results, diff)
 	}
 
-	return new(Result), nil
+	return result, nil
 }

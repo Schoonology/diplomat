@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/testdouble/http-assertion-tool/http"
 	"github.com/testdouble/http-assertion-tool/loaders"
 	"github.com/testdouble/http-assertion-tool/parsers"
 	"github.com/testdouble/http-assertion-tool/printers"
@@ -61,7 +62,10 @@ func main() {
 		Loader: &loaders.FileLoader{},
 		Parser: &parsers.PlainTextParser{},
 		Runner: &runners.Serial{
-			Address: args.Address,
+			Client: &http.NativeClient{
+				Address: args.Address,
+			},
+			Differ: &http.DebugDiffer{},
 		},
 		Printer: &printers.Test{},
 	}

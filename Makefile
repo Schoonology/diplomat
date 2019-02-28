@@ -22,7 +22,7 @@ clean:
 	rm -f main
 
 e2e:
-	./main test.txt httpbin.org:80
+	./main test.txt http://httpbin.org
 
 test:
 	go test $(PKGS)

@@ -1,9 +1,14 @@
 package printers
 
-import "github.com/testdouble/http-assertion-tool/runners"
+import (
+	"fmt"
+
+	"github.com/testdouble/http-assertion-tool/runners"
+)
 
 type Test struct{}
 
-func (t *Test) Print(*runners.Result) error {
+func (t *Test) Print(result *runners.Result) error {
+	fmt.Print(result)
 	return nil
 }

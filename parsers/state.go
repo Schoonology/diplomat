@@ -64,18 +64,25 @@ func (s *parserState) addLine(line string) error {
 			s.currentTest.Request.Headers[key] = value
 		}
 	case line[0] == '<':
-		line = strings.TrimSpace(line[1:])
+		var trimmedLine = line[1:]
+		if s.mode != ModeInResponseBody {
+			trimmedLine = strings.TrimSpace(trimmedLine)
+		} else {
+			if len(trimmedLine) > 1 {
+				trimmedLine = line[2:]
+			}
+		}
 
 		if s.mode == ModeInRequestHeaders || s.mode == ModeAwaitingRequestBody {
-			s.currentTest.Response = ResponseFromLine(line)
+			s.currentTest.Response = ResponseFromLine(trimmedLine)
 			s.mode = ModeInResponseHeaders
-		} else if s.mode == ModeInResponseHeaders && len(line) == 0 {
+		} else if s.mode == ModeInResponseHeaders && len(trimmedLine) == 0 {
 			s.mode = ModeInResponseBody
 		} else if s.mode == ModeInResponseHeaders {
-			key, value := HeaderFromLine(line)
+			key, value := HeaderFromLine(trimmedLine)
 			s.currentTest.Response.Headers[key] = value
 		} else if s.mode == ModeInResponseBody {
-			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
+			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(trimmedLine+"\n")...)
 		}
 	}
 

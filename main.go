@@ -71,7 +71,7 @@ func main() {
 
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
-		Parser: &parsers.PlainTextParser{},
+		Parser: parsers.GetParserFromFileName(args.Filename),
 		Runner: &runners.Serial{
 			Client: http.NewClient(args.Address),
 			Differ: &differs.Debug{},

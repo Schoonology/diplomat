@@ -23,6 +23,7 @@ clean:
 
 e2e:
 	./main test.txt http://httpbin.org
+	./main test.markdown http://httpbin.org
 
 test:
 	go test $(PKGS)

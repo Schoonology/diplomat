@@ -6,12 +6,23 @@ import (
 	"strings"
 )
 
-type NativeClient struct {
+type client struct {
 	Address string
 	client  http.Client
 }
 
-func (c *NativeClient) Do(request *Request) (*Response, error) {
+func NewClient(address string) *client {
+	return &client{
+		Address: address,
+		client: http.Client{
+			Transport: &http.Transport{
+				DisableCompression: true,
+			},
+		},
+	}
+}
+
+func (c *client) Do(request *Request) (*Response, error) {
 	nativeAddress, err := url.Parse(c.Address)
 	if err != nil {
 		return nil, err

@@ -73,10 +73,8 @@ func main() {
 		Loader: &loaders.FileLoader{},
 		Parser: &parsers.PlainTextParser{},
 		Runner: &runners.Serial{
-			Client: &http.NativeClient{
-				Address: args.Address,
-			},
-			Differ: &differs.Smart{},
+			Client: http.NewClient(args.Address),
+			Differ: &differs.Debug{},
 		},
 		Printer: printer,
 	}

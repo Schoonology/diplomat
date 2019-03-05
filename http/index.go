@@ -14,6 +14,7 @@ type Response struct {
 	StatusCode int
 	StatusText string
 	Headers    map[string]string
+	Body       []byte
 }
 
 func NewRequest(method string, path string) *Request {

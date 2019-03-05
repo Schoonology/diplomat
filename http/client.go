@@ -1,6 +1,7 @@
 package http
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
@@ -47,9 +48,16 @@ func (c *client) Do(request *Request) (*Response, error) {
 		return nil, err
 	}
 
+	defer nativeResponse.Body.Close()
+
 	response := NewResponse(nativeResponse.StatusCode, strings.Join(strings.Split(nativeResponse.Status, " ")[1:], " "))
 	for key, value := range nativeResponse.Header {
 		response.Headers[key] = value[0]
+	}
+
+	response.Body, err = ioutil.ReadAll(nativeResponse.Body)
+	if err != nil {
+		return nil, err
 	}
 
 	return response, nil

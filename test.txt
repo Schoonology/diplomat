@@ -11,3 +11,11 @@ The plain text parser allows other lines, too. Shiny!
 < HTTP/1.1 200 OK
 < Content-Length: 0
 <
+
+Body test
+
+> GET /base64/RGlwbG9tYXQgaXMgYXdlc29tZSEK HTTP/1.1
+>
+< HTTP/1.1 200 OK
+<
+< Diplomat is awesome!

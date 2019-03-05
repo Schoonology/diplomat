@@ -12,7 +12,7 @@ const (
 	ModeInRequestHeaders
 	ModeAwaitingRequestBody
 	ModeInResponseHeaders
-	ModeAwaitingResponseBody
+	ModeInResponseBody
 )
 
 type testFinalizer func(test *Test)
@@ -50,8 +50,8 @@ func (s *parserState) addLine(line string) error {
 	case line[0] == '>':
 		line = strings.TrimSpace(line[1:])
 
-		if s.mode == ModeAwaitingRequest || s.mode == ModeInResponseHeaders || s.mode == ModeAwaitingResponseBody {
-			if s.mode == ModeInResponseHeaders || s.mode == ModeAwaitingResponseBody {
+		if s.mode == ModeAwaitingRequest || s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
+			if s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
 				s.pushCurrentTest()
 			}
 
@@ -70,10 +70,12 @@ func (s *parserState) addLine(line string) error {
 			s.currentTest.Response = ResponseFromLine(line)
 			s.mode = ModeInResponseHeaders
 		} else if s.mode == ModeInResponseHeaders && len(line) == 0 {
-			s.mode = ModeAwaitingResponseBody
+			s.mode = ModeInResponseBody
 		} else if s.mode == ModeInResponseHeaders {
 			key, value := HeaderFromLine(line)
 			s.currentTest.Response.Headers[key] = value
+		} else if s.mode == ModeInResponseBody {
+			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
 		}
 	}
 

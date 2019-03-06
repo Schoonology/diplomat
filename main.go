@@ -74,7 +74,7 @@ func main() {
 		Parser: parsers.GetParserFromFileName(args.Filename),
 		Runner: &runners.Serial{
 			Client: http.NewClient(args.Address),
-			Differ: &differs.Smart{},
+			Differ: &differs.Debug{},
 		},
 		Printer: printer,
 	}

@@ -1,0 +1,7 @@
+Body test
+
+> GET /base64/RGlwbG9tYXQgaXMgYXdlc29tZSEK HTTP/1.1
+>
+< HTTP/1.1 200 OK
+<
+Diplomat is awesome!

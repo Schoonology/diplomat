@@ -22,7 +22,9 @@ clean:
 	rm -f main
 
 e2e:
-	./main test.txt http://httpbin.org
+	./main test1.txt http://httpbin.org
+	./main test2.txt http://httpbin.org
+	./main test3.txt http://httpbin.org
 	./main test.markdown http://httpbin.org
 
 test:

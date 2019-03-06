@@ -45,10 +45,13 @@ func (s *parserState) pushCurrentTest() {
 }
 
 func (s *parserState) addLine(line string) error {
-	switch {
-	case len(line) == 0:
+	if s.mode == ModeInResponseBody {
+		s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
 		return nil
-	case line[0] == '>':
+	}
+
+	switch {
+	case len(line) > 0 && line[0] == '>':
 		line = strings.TrimSpace(line[1:])
 
 		if s.mode == ModeAwaitingRequest || s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
@@ -68,30 +71,30 @@ func (s *parserState) addLine(line string) error {
 
 			s.currentTest.Request.Headers[key] = value
 		}
-	case line[0] == '<':
-		var trimmedLine = line[1:]
-		if s.mode != ModeInResponseBody {
-			trimmedLine = strings.TrimSpace(trimmedLine)
-		} else {
-			if len(trimmedLine) > 1 {
-				trimmedLine = line[2:]
-			}
-		}
+	case len(line) > 0 && line[0] == '<':
+		line := strings.TrimSpace(line[1:])
 
 		if s.mode == ModeInRequestHeaders || s.mode == ModeAwaitingRequestBody {
-			s.currentTest.Response = ResponseFromLine(trimmedLine)
+			s.currentTest.Response = ResponseFromLine(line)
 			s.mode = ModeInResponseHeaders
-		} else if s.mode == ModeInResponseHeaders && len(trimmedLine) == 0 {
+		} else if s.mode == ModeInResponseHeaders && len(line) == 0 {
 			s.mode = ModeInResponseBody
 		} else if s.mode == ModeInResponseHeaders {
-			key, value, err := HeaderFromLine(trimmedLine)
+			key, value, err := HeaderFromLine(line)
 			if err != nil {
 				return err
 			}
 
 			s.currentTest.Response.Headers[key] = value
-		} else if s.mode == ModeInResponseBody {
-			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(trimmedLine+"\n")...)
+		}
+	default:
+		if s.mode == ModeAwaitingRequest {
+			return nil
+		} else if s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
+			s.mode = ModeInResponseBody
+			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
+		} else {
+			return errors.New("invalid formatting")
 		}
 	}
 

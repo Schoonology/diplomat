@@ -1,6 +1,7 @@
 package parsers
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 
@@ -60,7 +61,11 @@ func (s *parserState) addLine(line string) error {
 		} else if s.mode == ModeInRequestHeaders && len(line) == 0 {
 			s.mode = ModeAwaitingRequestBody
 		} else if s.mode == ModeInRequestHeaders {
-			key, value := HeaderFromLine(line)
+			key, value, err := HeaderFromLine(line)
+			if err != nil {
+				return err
+			}
+
 			s.currentTest.Request.Headers[key] = value
 		}
 	case line[0] == '<':
@@ -79,7 +84,11 @@ func (s *parserState) addLine(line string) error {
 		} else if s.mode == ModeInResponseHeaders && len(trimmedLine) == 0 {
 			s.mode = ModeInResponseBody
 		} else if s.mode == ModeInResponseHeaders {
-			key, value := HeaderFromLine(trimmedLine)
+			key, value, err := HeaderFromLine(trimmedLine)
+			if err != nil {
+				return err
+			}
+
 			s.currentTest.Response.Headers[key] = value
 		} else if s.mode == ModeInResponseBody {
 			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(trimmedLine+"\n")...)
@@ -105,10 +114,14 @@ func RequestFromLine(line string) *http.Request {
 }
 
 // TODO(schoon) - Handle badly-formatted lines.
-func HeaderFromLine(line string) (string, string) {
+func HeaderFromLine(line string) (string, string, error) {
 	pieces := strings.Split(line, ":")
 
-	return strings.TrimSpace(pieces[0]), strings.TrimSpace(pieces[1])
+	if len(pieces) < 2 {
+		return "", "", errors.New("badly formatted header")
+	}
+
+	return strings.TrimSpace(pieces[0]), strings.TrimSpace(pieces[1]), nil
 }
 
 // TODO(schoon) - Handle badly-formatted lines.

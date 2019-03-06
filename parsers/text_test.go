@@ -144,3 +144,23 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 	assert.Equal("Response", test.Response.Headers["Header"])
 	assert.Equal("This is the first line\n  This is the second line\n", string(test.Response.Body))
 }
+
+func TestMissingBracket(t *testing.T) {
+	assert := assert.New(t)
+	subject := parsers.PlainTextParser{}
+	body := loaders.Body{
+		Lines: []string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"< Some response body",
+		},
+	}
+
+	spec, err := subject.Parse(&body)
+	assert.NotNil(err)
+	assert.Nil(spec)
+
+	assert.Equal("badly formatted header", err.Error())
+}

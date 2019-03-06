@@ -30,5 +30,6 @@ func NewResponse(statusCode int, statusText string) *Response {
 		StatusCode: statusCode,
 		StatusText: statusText,
 		Headers:    make(map[string]string),
+		Body:       make([]byte, 0),
 	}
 }

@@ -84,3 +84,39 @@ func TestSmartMissingHeader(t *testing.T) {
 	assert.Equal(t, `Missing Header: Test-Header
 `, diff)
 }
+
+func TestSmartSimilarJson(t *testing.T) {
+	subject := differs.Smart{}
+	actual := http.NewResponse(200, "OK")
+	expected := http.NewResponse(200, "OK")
+
+	expected.Body = []byte(`{"key":"value"}`)
+	actual.Headers["Content-Type"] = "application/json"
+	actual.Body = []byte(`{
+	"key": "value"
+}`)
+
+	diff, err := subject.Diff(expected, actual)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "", diff)
+}
+
+func TestSmartWrongJson(t *testing.T) {
+	subject := differs.Smart{}
+	actual := http.NewResponse(200, "OK")
+	expected := http.NewResponse(200, "OK")
+
+	expected.Body = []byte(`{"key":"value"}`)
+	actual.Headers["Content-Type"] = "application/json"
+	actual.Body = []byte(`{"key": "wrong"}`)
+
+	diff, err := subject.Diff(expected, actual)
+
+	assert.Nil(t, err)
+	assert.Equal(t, `Invalid Body:
+root["key"]:
+	-: "value"
+	+: "wrong"
+`, diff)
+}

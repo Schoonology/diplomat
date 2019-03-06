@@ -29,5 +29,26 @@ func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, er
 		}
 	}
 
+	if len(expected.Body) > 0 {
+		contentType, present := expected.Headers["Content-Type"]
+		if !present {
+			contentType, present = actual.Headers["Content-Type"]
+		}
+
+		if !present {
+			output.WriteString("Missing Content-Type with Body assertion.")
+		} else {
+			bodyDiff, err := diffBody(expected.Body, actual.Body, contentType)
+			if err != nil {
+				return "", err
+			}
+
+			if len(bodyDiff) > 0 {
+				output.WriteString("Invalid Body:\n")
+				output.WriteString(bodyDiff)
+			}
+		}
+	}
+
 	return output.String(), nil
 }

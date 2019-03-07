@@ -82,6 +82,7 @@ func main() {
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(args.Filename),
 		Transforms: []transforms.Transform{
+			transforms.RenderTemplates,
 		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(args.Address),

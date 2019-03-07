@@ -28,3 +28,15 @@ func RunPipeline(src string) (string, error) {
 
 	return ret.String(), nil
 }
+
+func RunValidator(src string, value string) (bool, error) {
+	err := state.DoString(fmt.Sprintf("return %s(\"%s\")", src, value))
+	if err != nil {
+		return false, err
+	}
+
+	ret := state.Get(-1)
+	state.Pop(1)
+
+	return ret.(lua.LBool) == lua.LTrue, nil
+}

@@ -1,4 +1,5 @@
 //go:generate ../../bin/templify -p lua generate.lua
+//go:generate ../../bin/templify -p lua validate.lua
 package lua
 
 import lua "github.com/yuin/gopher-lua"
@@ -8,6 +9,7 @@ var templates []func() string
 func init() {
 	templates = []func() string{
 		generateTemplate,
+		validateTemplate,
 	}
 }
 

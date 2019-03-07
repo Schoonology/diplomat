@@ -10,6 +10,7 @@ import (
 	"github.com/testdouble/http-assertion-tool/parsers"
 	"github.com/testdouble/http-assertion-tool/printers"
 	"github.com/testdouble/http-assertion-tool/runners"
+	"github.com/testdouble/http-assertion-tool/transforms"
 )
 
 type Args struct {
@@ -30,10 +31,11 @@ func loadArgs() (args Args) {
 }
 
 type Engine struct {
-	Loader  loaders.Loader
-	Parser  parsers.SpecParser
-	Runner  runners.SpecRunner
-	Printer printers.ResultsPrinter
+	Loader     loaders.Loader
+	Parser     parsers.SpecParser
+	Transforms []transforms.Transform
+	Runner     runners.SpecRunner
+	Printer    printers.ResultsPrinter
 }
 
 func (r *Engine) Start(filename string) error {
@@ -45,6 +47,13 @@ func (r *Engine) Start(filename string) error {
 	spec, err := r.Parser.Parse(file)
 	if err != nil {
 		return err
+	}
+
+	for _, transform := range r.Transforms {
+		err = transform(spec)
+		if err != nil {
+			return err
+		}
 	}
 
 	result, err := r.Runner.Run(spec)
@@ -72,6 +81,8 @@ func main() {
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(args.Filename),
+		Transforms: []transforms.Transform{
+		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(args.Address),
 			Differ: &differs.Debug{},

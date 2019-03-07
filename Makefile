@@ -10,9 +10,12 @@ format:
 bin/mockery:
 	GOBIN=`pwd`/bin go get github.com/vektra/mockery/.../
 
-generate: bin/mockery
-	rm -rf mocks
+bin/templify:
+	GOBIN=`pwd`/bin go get github.com/wlbr/templify
+
+generate: bin/mockery bin/templify
 	bin/mockery -all
+	go generate ./...
 
 watch:
 	rg --files | entr -rc sh -c "make format && make main && make test && make e2e"

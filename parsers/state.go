@@ -2,6 +2,7 @@ package parsers
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -11,7 +12,7 @@ import (
 const (
 	ModeAwaitingRequest = iota
 	ModeInRequestHeaders
-	ModeAwaitingRequestBody
+	ModeInRequestBody
 	ModeInResponseHeaders
 	ModeInResponseBody
 )
@@ -62,7 +63,7 @@ func (s *parserState) addLine(line string) error {
 			s.currentTest.Request = RequestFromLine(line)
 			s.mode = ModeInRequestHeaders
 		} else if s.mode == ModeInRequestHeaders && len(line) == 0 {
-			s.mode = ModeAwaitingRequestBody
+			s.mode = ModeInRequestBody
 		} else if s.mode == ModeInRequestHeaders {
 			key, value, err := HeaderFromLine(line)
 			if err != nil {
@@ -74,7 +75,7 @@ func (s *parserState) addLine(line string) error {
 	case len(line) > 0 && line[0] == '<':
 		line := strings.TrimSpace(line[1:])
 
-		if s.mode == ModeInRequestHeaders || s.mode == ModeAwaitingRequestBody {
+		if s.mode == ModeInRequestHeaders || s.mode == ModeInRequestBody {
 			s.currentTest.Response = ResponseFromLine(line)
 			s.mode = ModeInResponseHeaders
 		} else if s.mode == ModeInResponseHeaders && len(line) == 0 {
@@ -90,6 +91,9 @@ func (s *parserState) addLine(line string) error {
 	default:
 		if s.mode == ModeAwaitingRequest {
 			return nil
+		} else if s.mode == ModeInRequestHeaders || s.mode == ModeInRequestBody {
+			s.mode = ModeInRequestBody
+			s.currentTest.Request.Body = append(s.currentTest.Request.Body, []byte(line+"\n")...)
 		} else if s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
 			s.mode = ModeInResponseBody
 			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
@@ -121,7 +125,7 @@ func HeaderFromLine(line string) (string, string, error) {
 	pieces := strings.Split(line, ":")
 
 	if len(pieces) < 2 {
-		return "", "", errors.New("badly formatted header")
+		return "", "", fmt.Errorf("badly formatted header: %v", line)
 	}
 
 	return strings.TrimSpace(pieces[0]), strings.TrimSpace(pieces[1]), nil

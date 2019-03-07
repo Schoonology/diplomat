@@ -28,6 +28,7 @@ e2e:
 	./main fixtures/test1.txt http://httpbin.org
 	./main fixtures/test2.txt http://httpbin.org
 	./main fixtures/test3.txt http://httpbin.org
+	./main fixtures/test-post.txt http://httpbin.org	
 	./main fixtures/test.markdown http://httpbin.org
 
 test:

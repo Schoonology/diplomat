@@ -8,6 +8,7 @@ type Request struct {
 	Method  string
 	Path    string
 	Headers map[string]string
+	Body    []byte
 }
 
 type Response struct {
@@ -22,6 +23,7 @@ func NewRequest(method string, path string) *Request {
 		Method:  method,
 		Path:    path,
 		Headers: make(map[string]string),
+		Body:    make([]byte, 0),
 	}
 }
 

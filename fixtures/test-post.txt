@@ -1,0 +1,8 @@
+This test makes a POST request with a body. Httpbin does not respond to Accept headers, so the response will not match.
+
+> POST /post HTTP/1.1
+> Accept: text/plain
+> Content-Type: text/plain
+The request body
+< HTTP/1.1 200 OK
+The response body

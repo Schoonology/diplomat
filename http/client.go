@@ -1,6 +1,7 @@
 package http
 
 import (
+	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -34,7 +35,7 @@ func (c *client) Do(request *Request) (*Response, error) {
 		return nil, err
 	}
 
-	nativeRequest, err := http.NewRequest(request.Method, nativeAddress.String(), nil)
+	nativeRequest, err := http.NewRequest(request.Method, nativeAddress.String(), bytes.NewReader(request.Body))
 	if err != nil {
 		return nil, err
 	}

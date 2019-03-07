@@ -196,29 +196,6 @@ func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 	assert.Equal("This is the first line\n<   This is the second line\n", string(test.Response.Body))
 }
 
-func TestNonPrefixedLineInSpec(t *testing.T) {
-	assert := assert.New(t)
-	subject := parsers.PlainTextParser{}
-	body := loaders.Body{
-		Lines: []string{
-			"> METHOD path",
-			"> Header: Request",
-			"",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"<",
-			"This is the first line",
-			"<   This is the second line",
-		},
-	}
-
-	spec, err := subject.Parse(&body)
-	assert.NotNil(err)
-	assert.Nil(spec)
-
-	assert.Equal("invalid formatting", err.Error())
-}
-
 func TestCommentsAboveSpec(t *testing.T) {
 	assert := assert.New(t)
 	subject := parsers.PlainTextParser{}
@@ -238,4 +215,35 @@ func TestCommentsAboveSpec(t *testing.T) {
 	spec, err := subject.Parse(&body)
 	assert.Nil(err)
 	assert.NotNil(spec)
+}
+
+func TestRequestBody(t *testing.T) {
+	assert := assert.New(t)
+	subject := parsers.PlainTextParser{}
+	body := loaders.Body{
+		Lines: []string{
+			"> METHOD path",
+			"> Header: Request",
+			"Some request body",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"Some response body",
+		},
+	}
+
+	spec, err := subject.Parse(&body)
+	assert.Nil(err)
+	assert.NotNil(spec)
+	assert.Equal(1, len(spec.Tests))
+
+	test := spec.Tests[0]
+	assert.Equal("METHOD", test.Request.Method)
+	assert.Equal("path", test.Request.Path)
+	assert.Equal("Request", test.Request.Headers["Header"])
+	assert.Equal("Some request body\n", string(test.Request.Body))
+	assert.Equal(1337, test.Response.StatusCode)
+	assert.Equal("STATUS TEXT", test.Response.StatusText)
+	assert.Equal("Response", test.Response.Headers["Header"])
+	assert.Equal("Some response body\n", string(test.Response.Body))
 }

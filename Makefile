@@ -22,10 +22,10 @@ clean:
 	rm -f main
 
 e2e:
-	./main test1.txt http://httpbin.org
-	./main test2.txt http://httpbin.org
-	./main test3.txt http://httpbin.org
-	./main test.markdown http://httpbin.org
+	./main fixtures/test1.txt http://httpbin.org
+	./main fixtures/test2.txt http://httpbin.org
+	./main fixtures/test3.txt http://httpbin.org
+	./main fixtures/test.markdown http://httpbin.org
 
 test:
 	go test $(PKGS)

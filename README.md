@@ -38,3 +38,18 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 - Frisby
 - Dredd
 - Roll-your-own
+
+## TODO
+
+- Request bodies
+- Rendering templates before parsing
+- Matchers while diffing
+- Default body diffs to application/octet-stream; diff byte by byte
+- Linting
+- BATS
+- Rename to Diplomat
+- Make HTTP/V optional? Assert it and make it a first party instead?
+- Debug flag
+- UX
+- Streaming
+- Trailers

@@ -17,12 +17,12 @@ func TestRenderHeaders(t *testing.T) {
 		Tests: []parsers.Test{parsers.Test{
 			Request: &http.Request{
 				Headers: map[string]string{
-					"Key": "{{ test }}",
+					"Key": "{{ __test }}",
 				},
 			},
 			Response: &http.Response{
 				Headers: map[string]string{
-					"Key": "{{ test }}",
+					"Key": "{{ __test }}",
 				},
 			},
 		}},
@@ -30,6 +30,6 @@ func TestRenderHeaders(t *testing.T) {
 
 	err := transforms.RenderTemplates(&spec)
 	assert.Nil(err)
-	assert.Equal("test result", spec.Tests[0].Request.Headers["Key"])
-	assert.Equal("test result", spec.Tests[0].Response.Headers["Key"])
+	assert.Equal("this is a test", spec.Tests[0].Request.Headers["Key"])
+	assert.Equal("this is a test", spec.Tests[0].Response.Headers["Key"])
 }

@@ -247,3 +247,51 @@ func TestRequestBody(t *testing.T) {
 	assert.Equal("Response", test.Response.Headers["Header"])
 	assert.Equal("Some response body\n", string(test.Response.Body))
 }
+
+func TestKitchenSink(t *testing.T) {
+	assert := assert.New(t)
+	subject := parsers.PlainTextParser{}
+	body := loaders.Body{
+		Lines: []string{
+			"> FIRST path",
+			"> Header: Request",
+			"First request body",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"First response body",
+			"> SECOND path",
+			"> Header: Request",
+			"Second request body",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"Second response body",
+		},
+	}
+
+	spec, err := subject.Parse(&body)
+	assert.Nil(err)
+	assert.NotNil(spec)
+	assert.Equal(2, len(spec.Tests))
+
+	test := spec.Tests[0]
+	assert.Equal("FIRST", test.Request.Method)
+	assert.Equal("path", test.Request.Path)
+	assert.Equal("Request", test.Request.Headers["Header"])
+	assert.Equal("First request body\n", string(test.Request.Body))
+	assert.Equal(1337, test.Response.StatusCode)
+	assert.Equal("STATUS TEXT", test.Response.StatusText)
+	assert.Equal("Response", test.Response.Headers["Header"])
+	assert.Equal("First response body\n", string(test.Response.Body))
+
+	test = spec.Tests[1]
+	assert.Equal("SECOND", test.Request.Method)
+	assert.Equal("path", test.Request.Path)
+	assert.Equal("Request", test.Request.Headers["Header"])
+	assert.Equal("Second request body\n", string(test.Request.Body))
+	assert.Equal(1337, test.Response.StatusCode)
+	assert.Equal("STATUS TEXT", test.Response.StatusText)
+	assert.Equal("Response", test.Response.Headers["Header"])
+	assert.Equal("Second response body\n", string(test.Response.Body))
+}

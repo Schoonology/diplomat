@@ -1,7 +1,6 @@
 package parsers
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -45,61 +44,85 @@ func (s *parserState) pushCurrentTest() {
 	s.currentTest = Test{}
 }
 
+func isRequestMetadataIndicator(char byte) bool {
+	return char == '>'
+}
+
+func isResponseMetadataIndicator(char byte) bool {
+	return char == '<'
+}
+
+func isRequestMode(mode int) bool {
+	return mode == ModeInRequestHeaders || mode == ModeInRequestBody
+}
+
+func isResponseMode(mode int) bool {
+	return mode == ModeInResponseHeaders || mode == ModeInResponseBody
+}
+
 func (s *parserState) addLine(line string) error {
-	if s.mode == ModeInResponseBody {
-		s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
-		return nil
+	// fmt.Printf("Adding line: %s\n", line)
+
+	char := byte(0)
+	trimmedLine := ""
+
+	if len(line) > 0 {
+		char = line[0]
+		trimmedLine = strings.TrimSpace(line[1:])
 	}
 
-	switch {
-	case len(line) > 0 && line[0] == '>':
-		line = strings.TrimSpace(line[1:])
+	if isRequestMetadataIndicator(char) {
+		if isResponseMode(s.mode) {
+			s.pushCurrentTest()
+		}
 
-		if s.mode == ModeAwaitingRequest || s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
-			if s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
-				s.pushCurrentTest()
-			}
-
-			s.currentTest.Request = RequestFromLine(line)
+		if isResponseMode(s.mode) || s.mode == ModeAwaitingRequest {
 			s.mode = ModeInRequestHeaders
-		} else if s.mode == ModeInRequestHeaders && len(line) == 0 {
+			s.currentTest.Request = RequestFromLine(trimmedLine)
+			return nil
+		} else if s.mode == ModeInRequestHeaders && len(trimmedLine) == 0 {
 			s.mode = ModeInRequestBody
+			return nil
 		} else if s.mode == ModeInRequestHeaders {
-			key, value, err := HeaderFromLine(line)
+			key, value, err := HeaderFromLine(trimmedLine)
 			if err != nil {
 				return err
 			}
 
 			s.currentTest.Request.Headers[key] = value
+			return nil
 		}
-	case len(line) > 0 && line[0] == '<':
-		line := strings.TrimSpace(line[1:])
+	}
 
-		if s.mode == ModeInRequestHeaders || s.mode == ModeInRequestBody {
-			s.currentTest.Response = ResponseFromLine(line)
+	if isResponseMetadataIndicator(char) {
+		if isRequestMode(s.mode) {
 			s.mode = ModeInResponseHeaders
-		} else if s.mode == ModeInResponseHeaders && len(line) == 0 {
+			s.currentTest.Response = ResponseFromLine(trimmedLine)
+			return nil
+		} else if s.mode == ModeInResponseHeaders && len(trimmedLine) == 0 {
 			s.mode = ModeInResponseBody
+			return nil
 		} else if s.mode == ModeInResponseHeaders {
-			key, value, err := HeaderFromLine(line)
+			key, value, err := HeaderFromLine(trimmedLine)
 			if err != nil {
 				return err
 			}
 
 			s.currentTest.Response.Headers[key] = value
-		}
-	default:
-		if s.mode == ModeAwaitingRequest {
 			return nil
-		} else if s.mode == ModeInRequestHeaders || s.mode == ModeInRequestBody {
-			s.mode = ModeInRequestBody
-			s.currentTest.Request.Body = append(s.currentTest.Request.Body, []byte(line+"\n")...)
-		} else if s.mode == ModeInResponseHeaders || s.mode == ModeInResponseBody {
-			s.mode = ModeInResponseBody
-			s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
-		} else {
-			return errors.New("invalid formatting")
 		}
+	}
+
+	if isRequestMode(s.mode) {
+		s.mode = ModeInRequestBody
+		s.currentTest.Request.Body = append(s.currentTest.Request.Body, []byte(line+"\n")...)
+		return nil
+	}
+
+	if isResponseMode(s.mode) {
+		s.mode = ModeInResponseBody
+		s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
+		return nil
 	}
 
 	return nil

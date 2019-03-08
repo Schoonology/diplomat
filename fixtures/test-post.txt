@@ -1,8 +1,23 @@
-This test makes a POST request with a body. Httpbin does not respond to Accept headers, so the response will not match.
+This test makes a POST request with a body.
 
 > POST /post HTTP/1.1
 > Accept: text/plain
-> Content-Type: text/plain
+> Content-Type: application/json
 The request body
 < HTTP/1.1 200 OK
-The response body
+{
+  "args": {}, 
+  "data": "The request body\n", 
+  "files": {}, 
+  "form": {}, 
+  "headers": {
+    "Accept": "text/plain", 
+    "Content-Length": "17", 
+    "Content-Type": "application/json", 
+    "Host": "httpbin.org", 
+    "User-Agent": "Go-http-client/1.1"
+  }, 
+  "json": null, 
+  "origin": "65.50.123.72, 65.50.123.72", 
+  "url": "https://httpbin.org/post"
+}

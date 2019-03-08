@@ -33,3 +33,23 @@ func TestRenderHeaders(t *testing.T) {
 	assert.Equal("this is a test", spec.Tests[0].Request.Headers["Key"])
 	assert.Equal("this is a test", spec.Tests[0].Response.Headers["Key"])
 }
+
+func TestRenderBodies(t *testing.T) {
+	assert := assert.New(t)
+
+	spec := parsers.Spec{
+		Tests: []parsers.Test{parsers.Test{
+			Request: &http.Request{
+				Body: []byte("{{ __test }}"),
+			},
+			Response: &http.Response{
+				Body: []byte("{{ __test }}"),
+			},
+		}},
+	}
+
+	err := transforms.RenderTemplates(&spec)
+	assert.Nil(err)
+	assert.Equal([]byte("this is a test"), spec.Tests[0].Request.Body)
+	assert.Equal([]byte("this is a test"), spec.Tests[0].Response.Body)
+}

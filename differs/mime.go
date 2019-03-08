@@ -14,10 +14,14 @@ func diffBody(expected []byte, actual []byte, contentType string) (string, error
 	case "application/json":
 		return diffJSON(expected, actual)
 	default:
-		return "", nil
+		return diffText(expected, actual)
 		// TODO(schoon) - Once we have a "strict" mode:
 		// return "", errors.New(fmt.Sprintf("Unsupported media type: %s", mediaType))
 	}
+}
+
+func diffText(expected []byte, actual []byte) (string, error) {
+	return cmp.Diff(expected, actual), nil
 }
 
 func diffJSON(expected []byte, actual []byte) (string, error) {

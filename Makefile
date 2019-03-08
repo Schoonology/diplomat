@@ -1,10 +1,13 @@
-.PHONY := format watch clean e2e test generate
+.PHONY := format lint watch clean e2e test generate
 
 main: main.go */*.go
 	go build -o main
 
 format:
 	@go fmt ./...
+
+bin/golint:
+	GOBIN=`pwd`/bin go get golang.org/x/lint/golint
 
 bin/mockery:
 	GOBIN=`pwd`/bin go get github.com/vektra/mockery/.../
@@ -15,6 +18,9 @@ bin/templify:
 generate: bin/mockery bin/templify
 	bin/mockery -all
 	go generate ./...
+
+lint: bin/golint
+	bin/golint ./...
 
 watch:
 	rg --files | entr -rc sh -c "make format && make main && make test && make e2e"
@@ -27,7 +33,7 @@ e2e:
 	./main fixtures/test1.txt http://httpbin.org
 	./main fixtures/test2.txt http://httpbin.org
 	./main fixtures/test3.txt http://httpbin.org
-	./main fixtures/test-post.txt http://httpbin.org	
+	./main fixtures/test-post.txt http://httpbin.org
 	./main fixtures/test.markdown http://httpbin.org
 
 test:

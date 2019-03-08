@@ -19,4 +19,9 @@ github.com/wlbr/templify v0.0.0-20190114163720-b3a287947efd h1:PJZYagyiVSDbACVlh
 github.com/wlbr/templify v0.0.0-20190114163720-b3a287947efd/go.mod h1:peULBi32hS7lLgRcjsxqMwOV0lN7AasP0PtVYapZwuA=
 github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583 h1:SZPG5w7Qxq7bMcMVl6e3Ht2X7f+AAGQdzjkbyOnNNZ8=
 github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583/go.mod h1:gqRgreBUhTSL0GeU64rtZ3Uq3wtjOa/TB2YfrtkCbVQ=
+golang.org/x/lint v0.0.0-20190301231843-5614ed5bae6f h1:hX65Cu3JDlGH3uEdK7I99Ii+9kjD6mvnnpfLdEAH0x4=
+golang.org/x/lint v0.0.0-20190301231843-5614ed5bae6f/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=
+golang.org/x/net v0.0.0-20190213061140-3a22650c66bd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/sys v0.0.0-20190204203706-41f3e6584952/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/tools v0.0.0-20190307163923-6a08e3108db3 h1:2oZsfYnKfYzL4I57uYiRFsUf0bqlLkiuw8nnj3+voUA=
+golang.org/x/tools v0.0.0-20190307163923-6a08e3108db3/go.mod h1:25r3+/G6/xytQM8iWZKq3Hn0kr0rgFKPUNVEL/dr3z4=

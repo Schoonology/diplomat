@@ -2,7 +2,9 @@ package differs
 
 import (
 	"encoding/json"
+	"fmt"
 	"mime"
+	"strings"
 
 	"github.com/google/go-cmp/cmp"
 )
@@ -21,6 +23,16 @@ func diffBody(expected []byte, actual []byte, contentType string) (string, error
 }
 
 func diffText(expected []byte, actual []byte) (string, error) {
+	expectedBody := string(expected)
+	actualBody := string(actual)
+	if expectedBody != actualBody {
+		output := strings.Builder{}
+
+		output.WriteString(fmt.Sprintf("	-: %v\n", actualBody))
+		output.WriteString(fmt.Sprintf("	+: %v\n", expectedBody))
+
+		return output.String(), nil
+	}
 	return cmp.Diff(expected, actual), nil
 }
 

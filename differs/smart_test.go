@@ -120,3 +120,36 @@ root["key"]:
 	+: "wrong"
 `, diff)
 }
+
+func TestSmartCorrectText(t *testing.T) {
+	subject := differs.Smart{}
+	actual := http.NewResponse(200, "OK")
+	expected := http.NewResponse(200, "OK")
+
+	expected.Body = []byte(`This is correct!`)
+	actual.Headers["Content-Type"] = "plain/text"
+	actual.Body = []byte(`This is correct!`)
+
+	diff, err := subject.Diff(expected, actual)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "", diff)
+}
+
+func TestSmartIncorrectText(t *testing.T) {
+	subject := differs.Smart{}
+	actual := http.NewResponse(200, "OK")
+	expected := http.NewResponse(200, "OK")
+
+	expected.Body = []byte(`This is correct!`)
+	actual.Headers["Content-Type"] = "plain/text"
+	actual.Body = []byte(`This is incorrect!`)
+
+	diff, err := subject.Diff(expected, actual)
+
+	assert.Nil(t, err)
+	assert.Equal(t, `Invalid Body:
+	-: This is incorrect!
+	+: This is correct!
+`, diff)
+}

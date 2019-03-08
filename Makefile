@@ -1,11 +1,10 @@
 .PHONY := format watch clean e2e test generate
-PKGS=$(shell go list -deps | grep http-assertion-tool)
 
 main: main.go */*.go
 	go build -o main
 
 format:
-	go fmt $(PKGS)
+	@go fmt ./...
 
 bin/mockery:
 	GOBIN=`pwd`/bin go get github.com/vektra/mockery/.../
@@ -32,4 +31,4 @@ e2e:
 	./main fixtures/test.markdown http://httpbin.org
 
 test:
-	go test $(PKGS)
+	@go test ./...

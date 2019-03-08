@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "required": [
+    "slideshow"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "slideshow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "author",
+        "date",
+        "slides",
+        "title"
+      ],
+      "properties": {
+        "author": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "slides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "title",
+              "type"
+            ],
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

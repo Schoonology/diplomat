@@ -106,3 +106,14 @@
   [ "${lines[2]}" = "ok 0 GET /status/422 -> 422" ]
   [ "${lines[3]}" = "" ]
 }
+
+@test "JSON Schema" {
+  run ./main test/fixtures/json-schema.md http://localhost:7357
+
+  # echo actual status: "$status"
+  # [ "$status" -eq 0 ]
+
+  echo actual output: $output
+  [ "${lines[0]}" = "JSON Schema Test" ]
+  [ "${lines[1]}" = "" ]
+}

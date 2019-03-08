@@ -5,13 +5,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	main "github.com/testdouble/http-assertion-tool"
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/loaders"
-	"github.com/testdouble/http-assertion-tool/mocks"
-	"github.com/testdouble/http-assertion-tool/parsers"
-	"github.com/testdouble/http-assertion-tool/runners"
-	"github.com/testdouble/http-assertion-tool/transforms"
+	main "github.com/testdouble/diplomat"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/loaders"
+	"github.com/testdouble/diplomat/mocks"
+	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/runners"
+	"github.com/testdouble/diplomat/transforms"
 )
 
 func TestEngineStart(t *testing.T) {

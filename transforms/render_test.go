@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/parsers"
-	"github.com/testdouble/http-assertion-tool/transforms"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/transforms"
 )
 
 // TODO(schoon) - There's probably a better way to test all this...do that.

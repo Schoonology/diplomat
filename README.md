@@ -1,8 +1,8 @@
-# HTTP Assertion Tool
+# Diplomat
 
-While tools like Cypress have evolved to provide concise, dependable end-to-end tests, these tools rely on driving a UI and asserting its state. What is lacking is a similarly concise, similarly dependable, similarly _enjoyable_ tool for driving an HTTP API and asserting its responses. This tool aims to meet that need.
+While tools like Cypress have evolved to provide concise, dependable end-to-end tests, these tools rely on driving a UI and asserting its state. What is lacking is a similarly concise, similarly dependable, similarly _enjoyable_ tool for driving an HTTP API and asserting its responses. Diplomat aims to meet that need.
 
-Like most TD tools, this tool aims to codify the opinions of its authors for not only a technology, but its influence on the _process_ and _practice_ of making software. This tool is opinionated.
+Like most TD tools, this tool aims to codify the opinions of its authors for not only a technology, but its influence on the _process_ and _practice_ of making software. Diplomat is opinionated.
 
 ## Features
 
@@ -45,6 +45,7 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 - Default body diffs to application/octet-stream; diff byte by byte
 - BATS
 - Rename to Diplomat
+- Custom scripts
 - Make HTTP/V optional? Assert it and make it a first party instead?
 - Debug flag
 - UX

@@ -1,4 +1,4 @@
-module github.com/testdouble/http-assertion-tool
+module github.com/testdouble/diplomat
 
 go 1.12
 

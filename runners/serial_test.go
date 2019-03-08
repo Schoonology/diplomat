@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/mocks"
-	"github.com/testdouble/http-assertion-tool/parsers"
-	"github.com/testdouble/http-assertion-tool/runners"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/mocks"
+	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/runners"
 )
 
 func TestRunSerial(t *testing.T) {

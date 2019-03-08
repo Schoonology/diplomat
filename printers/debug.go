@@ -3,7 +3,7 @@ package printers
 import (
 	"fmt"
 
-	"github.com/testdouble/http-assertion-tool/runners"
+	"github.com/testdouble/diplomat/runners"
 )
 
 // Debug defines an unfiltered Printer.

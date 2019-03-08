@@ -4,13 +4,13 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/testdouble/http-assertion-tool/differs"
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/loaders"
-	"github.com/testdouble/http-assertion-tool/parsers"
-	"github.com/testdouble/http-assertion-tool/printers"
-	"github.com/testdouble/http-assertion-tool/runners"
-	"github.com/testdouble/http-assertion-tool/transforms"
+	"github.com/testdouble/diplomat/differs"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/loaders"
+	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/printers"
+	"github.com/testdouble/diplomat/runners"
+	"github.com/testdouble/diplomat/transforms"
 )
 
 // Args contains all CLI arguments passed to the tool.

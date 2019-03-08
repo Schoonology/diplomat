@@ -3,7 +3,7 @@ package parsers
 import (
 	"strings"
 
-	"github.com/testdouble/http-assertion-tool/loaders"
+	"github.com/testdouble/diplomat/loaders"
 )
 
 // The Markdown parser parses all lines inside of code fences (```).

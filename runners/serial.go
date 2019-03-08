@@ -1,9 +1,9 @@
 package runners
 
 import (
-	"github.com/testdouble/http-assertion-tool/differs"
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/parsers"
+	"github.com/testdouble/diplomat/differs"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/parsers"
 )
 
 // Serial runs all tests one at a time.

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/testdouble/http-assertion-tool/http"
+	"github.com/testdouble/diplomat/http"
 )
 
 // The Smart differ provides looser restrictions on diffing, only printing

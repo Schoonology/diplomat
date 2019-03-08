@@ -3,7 +3,7 @@ package scripting
 import (
 	"fmt"
 
-	scripts "github.com/testdouble/http-assertion-tool/scripting/lua"
+	scripts "github.com/testdouble/diplomat/scripting/lua"
 	lua "github.com/yuin/gopher-lua"
 )
 

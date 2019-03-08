@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/http-assertion-tool/loaders"
-	"github.com/testdouble/http-assertion-tool/parsers"
+	"github.com/testdouble/diplomat/loaders"
+	"github.com/testdouble/diplomat/parsers"
 )
 
 func TestMarkdownText(t *testing.T) {

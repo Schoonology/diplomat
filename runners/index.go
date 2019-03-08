@@ -1,6 +1,6 @@
 package runners
 
-import "github.com/testdouble/http-assertion-tool/parsers"
+import "github.com/testdouble/diplomat/parsers"
 
 // A SpecRunner runs the entirety of a Spec in a given order, returning the
 // complete results.

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/http-assertion-tool/scripting"
+	"github.com/testdouble/diplomat/scripting"
 )
 
 func Test__Test(t *testing.T) {

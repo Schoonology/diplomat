@@ -3,7 +3,7 @@ package parsers
 import (
 	"fmt"
 
-	"github.com/testdouble/http-assertion-tool/loaders"
+	"github.com/testdouble/diplomat/loaders"
 )
 
 // PlainTextParser parses all provided text as-is.

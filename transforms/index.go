@@ -1,7 +1,7 @@
 package transforms
 
 import (
-	"github.com/testdouble/http-assertion-tool/parsers"
+	"github.com/testdouble/diplomat/parsers"
 )
 
 // Transform mutates a Spec in some meaningful way.

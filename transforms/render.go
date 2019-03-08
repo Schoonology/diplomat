@@ -3,8 +3,8 @@ package transforms
 import (
 	"regexp"
 
-	"github.com/testdouble/http-assertion-tool/parsers"
-	"github.com/testdouble/http-assertion-tool/scripting"
+	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/scripting"
 )
 
 var templateChunk *regexp.Regexp

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/testdouble/http-assertion-tool/http"
+	"github.com/testdouble/diplomat/http"
 )
 
 const (

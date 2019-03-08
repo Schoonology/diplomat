@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/http-assertion-tool/parsers"
+	"github.com/testdouble/diplomat/parsers"
 )
 
 func TestTextInput(t *testing.T) {

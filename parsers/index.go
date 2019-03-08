@@ -1,8 +1,8 @@
 package parsers
 
 import (
-	"github.com/testdouble/http-assertion-tool/http"
-	"github.com/testdouble/http-assertion-tool/loaders"
+	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/loaders"
 )
 
 // A SpecParser is capable of parsing all lines in `body`.

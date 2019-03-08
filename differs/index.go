@@ -1,6 +1,6 @@
 package differs
 
-import "github.com/testdouble/http-assertion-tool/http"
+import "github.com/testdouble/diplomat/http"
 
 // A Differ returns a string representing the difference between an expected
 // and actual Response.

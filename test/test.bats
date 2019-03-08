@@ -1,27 +1,27 @@
 #!/usr/bin/env bats
 
 @test "Text: GET 422 Unprocessable Entity: Test Title" {
-  run ./main test/fixtures/match-get-422.txt http://httpbin.org
+  run ./main test/fixtures/match-get-422.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual output: "$output" 
+  echo actual output: "$output"
   [ "$output" = "GET /status/422 -> 422" ]
 }
 
 @test "Text: GET 422 Unprocessable Entity: Diff" {
-  run ./main test/fixtures/match-get-422.txt http://httpbin.org
+  run ./main test/fixtures/match-get-422.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual lines[1]: "${lines[1]}"
+  echo actual line: "${lines[1]}"
   [ "${lines[1]}" = "" ]
 }
 
 @test "Text: GET 200 OK" {
-  run ./main test/fixtures/match-get-200.txt http://httpbin.org
+  run ./main test/fixtures/match-get-200.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
@@ -31,7 +31,7 @@
 }
 
 @test "Text: GET 200 OK with Body" {
-  run ./main test/fixtures/match-get-200-with-body.txt http://httpbin.org
+  run ./main test/fixtures/match-get-200-with-body.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
@@ -41,49 +41,49 @@
 }
 
 @test "Text: POST" {
-  run ./main test/fixtures/match-post-200.txt http://httpbin.org
+  run ./main test/fixtures/match-post-200.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual lines[1]: "${lines[1]}"
-  [ "${lines[1]}" = "" ]
+  echo actual output: "$output"
+  [ "$output" = "POST /post -> 200" ]
 }
 
 # TODO: this test should pass, despite having brackets in the body
 @test "Text: POST with HTTP response" {
   skip
-  run ./main test/fixtures/match-post-200-http.txt http://httpbin.org
+  run ./main test/fixtures/match-post-200-http.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual output: "$output" 
+  echo actual output: "$output"
   [ "$output" = "POST /post -> 200" ]
 }
 
 @test "Markdown: .markdown: GET 422 Unprocessable Entity" {
-  run ./main test/fixtures/match-get-422.markdown http://httpbin.org
+  run ./main test/fixtures/match-get-422.markdown http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual output: "$output" 
+  echo actual output: "$output"
   [ "$output" = "Markdown: GET /status/422" ]
 }
 
 @test "Markdown: .md: GET 422 Unprocessable Entity" {
-  run ./main test/fixtures/match-get-422.md http://httpbin.org
+  run ./main test/fixtures/match-get-422.md http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
 
-  echo actual output: "$output" 
+  echo actual output: "$output"
   [ "$output" = "Markdown: GET /status/422" ]
 }
 
 @test "Markdown: Multiple specs" {
-  run ./main test/fixtures/multiple.markdown http://httpbin.org
+  run ./main test/fixtures/multiple.markdown http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]
@@ -95,7 +95,7 @@
 }
 
 @test "--tap Option" {
-  run ./main --tap test/fixtures/match-get-422.txt http://httpbin.org
+  run ./main --tap test/fixtures/match-get-422.txt http://localhost:7357
 
   echo actual status: "$status"
   [ "$status" -eq 0 ]

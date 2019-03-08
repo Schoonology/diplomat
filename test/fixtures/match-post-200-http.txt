@@ -4,7 +4,7 @@
 > Accept: text/html
 > Content-Type: text/html
 > Content-Length: 7
-> 
+>
 <div />
 < HTTP/1.1 200 OK
 < Access-Control-Allow-Credentials: true
@@ -14,20 +14,20 @@
 < Server: nginx
 < Content-Length: 339
 < Connection: keep-alive
-< 
+<
 {
-  "args": {}, 
-  "data": "<div />", 
-  "files": {}, 
-  "form": {}, 
+  "args": {},
+  "data": "<div />",
+  "files": {},
+  "form": {},
   "headers": {
-    "Accept": "text/html", 
-    "Content-Length": "7", 
-    "Content-Type": "text/html", 
-    "Host": "httpbin.org", 
+    "Accept": "text/html",
+    "Content-Length": "7",
+    "Content-Type": "text/html",
+    "Host": "httpbin.org",
     "User-Agent": "curl/7.54.0"
-  }, 
-  "json": null, 
-  "origin": "65.50.123.72, 65.50.123.72", 
+  },
+  "json": null,
+  "origin": "65.50.123.72, 65.50.123.72",
   "url": "https://httpbin.org/post"
 }

@@ -1,6 +1,6 @@
 # Markdown Test
 
-## Markdown: GET /status/422 
+## Markdown: GET /status/422
 
 ```
 > GET /status/422 HTTP/1.1

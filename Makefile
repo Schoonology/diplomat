@@ -30,6 +30,11 @@ clean:
 	rm -f main
 
 e2e:
+	@if ! curl -sS localhost:7357 &> /dev/null; then\
+		echo "Starting local httpbin...";\
+		docker run -d -p 7357:80 --rm --name httpbin kennethreitz/httpbin;\
+		wget --spider localhost:7357 &> /dev/null;\
+	fi
 	bats test/test.bats
 
 test:

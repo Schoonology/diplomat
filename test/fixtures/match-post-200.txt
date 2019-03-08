@@ -6,18 +6,18 @@ This test makes a POST request with a body.
 The request body
 < HTTP/1.1 200 OK
 {
-  "args": {}, 
-  "data": "The request body\n", 
-  "files": {}, 
-  "form": {}, 
+  "args": {},
+  "data": "The request body\n",
+  "files": {},
+  "form": {},
   "headers": {
-    "Accept": "text/plain", 
-    "Content-Length": "17", 
-    "Content-Type": "application/json", 
-    "Host": "httpbin.org", 
+    "Accept": "text/plain",
+    "Content-Length": "17",
+    "Content-Type": "application/json",
+    "Host": "localhost:7357",
     "User-Agent": "Go-http-client/1.1"
-  }, 
-  "json": null, 
-  "origin": "65.50.123.72, 65.50.123.72", 
-  "url": "https://httpbin.org/post"
+  },
+  "json": null,
+  "origin": "172.17.0.1",
+  "url": "http://localhost:7357/post"
 }

@@ -23,8 +23,9 @@ func diffBody(expected []byte, actual []byte, contentType string) (string, error
 }
 
 func diffText(expected []byte, actual []byte) (string, error) {
-	expectedBody := string(expected)
-	actualBody := string(actual)
+	expectedBody := strings.TrimSpace(string(expected))
+	actualBody := strings.TrimSpace(string(actual))
+
 	if expectedBody != actualBody {
 		output := strings.Builder{}
 
@@ -33,7 +34,8 @@ func diffText(expected []byte, actual []byte) (string, error) {
 
 		return output.String(), nil
 	}
-	return cmp.Diff(expected, actual), nil
+
+	return "", nil
 }
 
 func diffJSON(expected []byte, actual []byte) (string, error) {

@@ -13,6 +13,7 @@ import (
 	"github.com/testdouble/http-assertion-tool/transforms"
 )
 
+// Args contains all CLI arguments passed to the tool.
 type Args struct {
 	Tap      bool
 	Address  string
@@ -30,6 +31,8 @@ func loadArgs() (args Args) {
 	return
 }
 
+// Engine encapsulates all the behaviour of the tool as defined by the
+// attached components.
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
@@ -38,6 +41,7 @@ type Engine struct {
 	Printer    printers.ResultsPrinter
 }
 
+// Start runs the Engine.
 func (r *Engine) Start(filename string) error {
 	file, err := r.Loader.Load(filename)
 	if err != nil {

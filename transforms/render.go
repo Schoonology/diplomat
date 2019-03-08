@@ -88,6 +88,8 @@ func renderBodies(test *parsers.Test) error {
 	return nil
 }
 
+// RenderTemplates renders all the Headers and Bodies in all the Tests in the
+// given `spec`.
 func RenderTemplates(spec *parsers.Spec) error {
 	for _, test := range spec.Tests {
 		if err := renderAllHeaders(test.Request.Headers); err != nil {

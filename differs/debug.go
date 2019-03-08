@@ -5,10 +5,10 @@ import (
 	"github.com/testdouble/http-assertion-tool/http"
 )
 
-// TODO(schoon) - Is there a better way to allow mocking for functional
-// components? Should dependents take a `func` member instead?
+// The Debug differ returns any and all differences.
 type Debug struct{}
 
+// Diff returns the difference between `expected` and `actual`.
 func (s *Debug) Diff(expected *http.Response, actual *http.Response) (string, error) {
 	return cmp.Diff(expected, actual), nil
 }

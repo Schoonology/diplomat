@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	ModeAwaitingRequest = iota
-	ModeInRequestHeaders
-	ModeInRequestBody
-	ModeInResponseHeaders
-	ModeInResponseBody
+	modeAwaitingRequest = iota
+	modeInRequestHeaders
+	modeInRequestBody
+	modeInResponseHeaders
+	modeInResponseBody
 )
 
 type testFinalizer func(test *Test)
@@ -30,7 +30,7 @@ func newParserState() parserState {
 	spec.Tests = make([]Test, 0)
 
 	return parserState{
-		mode: ModeAwaitingRequest,
+		mode: modeAwaitingRequest,
 		spec: spec,
 	}
 }
@@ -53,11 +53,11 @@ func isResponseMetadataIndicator(char byte) bool {
 }
 
 func isRequestMode(mode int) bool {
-	return mode == ModeInRequestHeaders || mode == ModeInRequestBody
+	return mode == modeInRequestHeaders || mode == modeInRequestBody
 }
 
 func isResponseMode(mode int) bool {
-	return mode == ModeInResponseHeaders || mode == ModeInResponseBody
+	return mode == modeInResponseHeaders || mode == modeInResponseBody
 }
 
 func (s *parserState) addLine(line string) error {
@@ -76,15 +76,15 @@ func (s *parserState) addLine(line string) error {
 			s.pushCurrentTest()
 		}
 
-		if isResponseMode(s.mode) || s.mode == ModeAwaitingRequest {
-			s.mode = ModeInRequestHeaders
-			s.currentTest.Request = RequestFromLine(trimmedLine)
+		if isResponseMode(s.mode) || s.mode == modeAwaitingRequest {
+			s.mode = modeInRequestHeaders
+			s.currentTest.Request = requestFromLine(trimmedLine)
 			return nil
-		} else if s.mode == ModeInRequestHeaders && len(trimmedLine) == 0 {
-			s.mode = ModeInRequestBody
+		} else if s.mode == modeInRequestHeaders && len(trimmedLine) == 0 {
+			s.mode = modeInRequestBody
 			return nil
-		} else if s.mode == ModeInRequestHeaders {
-			key, value, err := HeaderFromLine(trimmedLine)
+		} else if s.mode == modeInRequestHeaders {
+			key, value, err := headerFromLine(trimmedLine)
 			if err != nil {
 				return err
 			}
@@ -96,14 +96,14 @@ func (s *parserState) addLine(line string) error {
 
 	if isResponseMetadataIndicator(char) {
 		if isRequestMode(s.mode) {
-			s.mode = ModeInResponseHeaders
-			s.currentTest.Response = ResponseFromLine(trimmedLine)
+			s.mode = modeInResponseHeaders
+			s.currentTest.Response = responseFromLine(trimmedLine)
 			return nil
-		} else if s.mode == ModeInResponseHeaders && len(trimmedLine) == 0 {
-			s.mode = ModeInResponseBody
+		} else if s.mode == modeInResponseHeaders && len(trimmedLine) == 0 {
+			s.mode = modeInResponseBody
 			return nil
-		} else if s.mode == ModeInResponseHeaders {
-			key, value, err := HeaderFromLine(trimmedLine)
+		} else if s.mode == modeInResponseHeaders {
+			key, value, err := headerFromLine(trimmedLine)
 			if err != nil {
 				return err
 			}
@@ -114,13 +114,13 @@ func (s *parserState) addLine(line string) error {
 	}
 
 	if isRequestMode(s.mode) {
-		s.mode = ModeInRequestBody
+		s.mode = modeInRequestBody
 		s.currentTest.Request.Body = append(s.currentTest.Request.Body, []byte(line+"\n")...)
 		return nil
 	}
 
 	if isResponseMode(s.mode) {
-		s.mode = ModeInResponseBody
+		s.mode = modeInResponseBody
 		s.currentTest.Response.Body = append(s.currentTest.Response.Body, []byte(line+"\n")...)
 		return nil
 	}
@@ -129,7 +129,7 @@ func (s *parserState) addLine(line string) error {
 }
 
 func (s *parserState) finalize() (*Spec, error) {
-	if s.mode != ModeAwaitingRequest {
+	if s.mode != modeAwaitingRequest {
 		s.pushCurrentTest()
 	}
 
@@ -137,14 +137,14 @@ func (s *parserState) finalize() (*Spec, error) {
 }
 
 // TODO(schoon) - Handle badly-formatted lines.
-func RequestFromLine(line string) *http.Request {
+func requestFromLine(line string) *http.Request {
 	pieces := strings.Split(line, " ")
 
 	return http.NewRequest(pieces[0], pieces[1])
 }
 
 // TODO(schoon) - Handle badly-formatted lines.
-func HeaderFromLine(line string) (string, string, error) {
+func headerFromLine(line string) (string, string, error) {
 	pieces := strings.Split(line, ":")
 
 	if len(pieces) < 2 {
@@ -155,7 +155,7 @@ func HeaderFromLine(line string) (string, string, error) {
 }
 
 // TODO(schoon) - Handle badly-formatted lines.
-func ResponseFromLine(line string) *http.Response {
+func responseFromLine(line string) *http.Response {
 	pieces := strings.Split(line, " ")
 	code, _ := strconv.Atoi(pieces[1])
 

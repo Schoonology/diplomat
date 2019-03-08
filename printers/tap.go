@@ -6,8 +6,10 @@ import (
 	"github.com/testdouble/http-assertion-tool/runners"
 )
 
+// Tap provides a TAP-conforming Printer.
 type Tap struct{}
 
+// Print sends TAP-conforming test results to STDOUT.
 func (t *Tap) Print(result *runners.Result) error {
 	fmt.Println("TAP version 13")
 	fmt.Printf("1..%d\n", len(result.Results))

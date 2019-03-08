@@ -12,7 +12,7 @@ func diffBody(expected []byte, actual []byte, contentType string) (string, error
 
 	switch mediaType {
 	case "application/json":
-		return diffJson(expected, actual)
+		return diffJSON(expected, actual)
 	default:
 		return "", nil
 		// TODO(schoon) - Once we have a "strict" mode:
@@ -20,7 +20,7 @@ func diffBody(expected []byte, actual []byte, contentType string) (string, error
 	}
 }
 
-func diffJson(expected []byte, actual []byte) (string, error) {
+func diffJSON(expected []byte, actual []byte) (string, error) {
 	parsedExp := make(map[string]interface{})
 	parsedAct := make(map[string]interface{})
 

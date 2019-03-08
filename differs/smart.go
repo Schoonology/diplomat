@@ -7,8 +7,11 @@ import (
 	"github.com/testdouble/http-assertion-tool/http"
 )
 
+// The Smart differ provides looser restrictions on diffing, only printing
+// diff output if an expected value is provided.
 type Smart struct{}
 
+// Diff returns the difference between `expected` and `actual`.
 func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, error) {
 	output := strings.Builder{}
 

@@ -6,17 +6,19 @@ import (
 	"github.com/testdouble/http-assertion-tool/loaders"
 )
 
+// The Markdown parser parses all lines inside of code fences (```).
 type Markdown struct {
 	plainText PlainTextParser
 }
 
 const (
-	InRichText = iota
-	InCodeFence
+	inRichText = iota
+	inCodeFence
 )
 
+// Parse parses all lines in `body`.
 func (m *Markdown) Parse(body *loaders.Body) (*Spec, error) {
-	mode := InRichText
+	mode := inRichText
 	thisTestName := ""
 	nextTestName := ""
 	state := newParserState()
@@ -36,17 +38,17 @@ func (m *Markdown) Parse(body *loaders.Body) (*Spec, error) {
 
 		switch {
 		case strings.HasPrefix(trimmedLine, "```"):
-			if mode == InRichText {
-				mode = InCodeFence
+			if mode == inRichText {
+				mode = inCodeFence
 			} else {
-				mode = InRichText
+				mode = inRichText
 			}
-		case mode == InCodeFence:
+		case mode == inCodeFence:
 			state.addLine(line)
 		case strings.HasPrefix(trimmedLine, "#"):
 			name := strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 
-			if state.mode == ModeAwaitingRequest {
+			if state.mode == modeAwaitingRequest {
 				thisTestName = name
 			} else {
 				nextTestName = name

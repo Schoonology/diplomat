@@ -17,6 +17,8 @@ func init() {
 	}
 }
 
+// RunPipeline returns the result of the function at `src`, which should
+// return a string.
 func RunPipeline(src string) (string, error) {
 	err := state.DoString(fmt.Sprintf("return %s()", src))
 	if err != nil {
@@ -29,6 +31,8 @@ func RunPipeline(src string) (string, error) {
 	return ret.String(), nil
 }
 
+// RunValidator returns the result of the function at `src`, given `value`,
+// which should return a boolean.
 func RunValidator(src string, value string) (bool, error) {
 	err := state.DoString(fmt.Sprintf("return %s(\"%s\")", src, value))
 	if err != nil {

@@ -6,11 +6,13 @@ import (
 	"github.com/testdouble/http-assertion-tool/parsers"
 )
 
+// Serial runs all tests one at a time.
 type Serial struct {
 	Differ differs.Differ
 	Client http.Client
 }
 
+// Run returns the results of running all tests in `spec`.
 func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
 	result := new(Result)
 

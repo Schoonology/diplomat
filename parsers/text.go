@@ -6,6 +6,7 @@ import (
 	"github.com/testdouble/http-assertion-tool/loaders"
 )
 
+// PlainTextParser parses all provided text as-is.
 type PlainTextParser struct{}
 
 func fallbackTestName(test *Test) {
@@ -16,6 +17,7 @@ func fallbackTestName(test *Test) {
 		test.Response.StatusCode)
 }
 
+// Parse parses all lines in `body`.
 func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 	state := newParserState()
 	state.finalizer = fallbackTestName

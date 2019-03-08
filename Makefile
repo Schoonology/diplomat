@@ -20,10 +20,10 @@ generate: bin/mockery bin/templify
 	go generate ./...
 
 lint: bin/golint
-	bin/golint ./...
+	@bin/golint -set_exit_status ./...
 
 watch:
-	rg --files | entr -rc sh -c "make format && make main && make test && make e2e"
+	rg --files | entr -rc sh -c "make format && make main&& make test && make e2e && make lint"
 
 clean:
 	rm -f *.go.* */*.go.*

@@ -10,6 +10,7 @@ func init() {
 	mime.AddExtensionType(".markdown", "text/markdown")
 }
 
+// GetParserFromFileName : Does what it says on the tin.
 func GetParserFromFileName(filename string) SpecParser {
 	mimeType := mime.TypeByExtension(path.Ext(filename))
 	mimeMediaType, _, _ := mime.ParseMediaType(mimeType)

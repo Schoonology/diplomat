@@ -8,13 +8,15 @@ import (
 	"strings"
 )
 
-type client struct {
+// NativeClient provides a concrete implementation, making HTTP requests.
+type NativeClient struct {
 	Address string
 	client  http.Client
 }
 
-func NewClient(address string) *client {
-	return &client{
+// NewClient returns a new native Client targeting the provided `address`.
+func NewClient(address string) *NativeClient {
+	return &NativeClient{
 		Address: address,
 		client: http.Client{
 			Transport: &http.Transport{
@@ -24,7 +26,8 @@ func NewClient(address string) *client {
 	}
 }
 
-func (c *client) Do(request *Request) (*Response, error) {
+// Do returns the Response from executing the provided Request.
+func (c *NativeClient) Do(request *Request) (*Response, error) {
 	nativeAddress, err := url.Parse(c.Address)
 	if err != nil {
 		return nil, err

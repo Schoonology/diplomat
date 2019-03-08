@@ -1,4 +1,4 @@
-.PHONY := format lint watch clean e2e test generate
+.PHONY: format lint watch clean e2e test generate
 
 main: main.go */*.go
 	go build -o main
@@ -30,11 +30,7 @@ clean:
 	rm -f main
 
 e2e:
-	./main fixtures/test1.txt http://httpbin.org
-	./main fixtures/test2.txt http://httpbin.org
-	./main fixtures/test3.txt http://httpbin.org
-	./main fixtures/test-post.txt http://httpbin.org
-	./main fixtures/test.markdown http://httpbin.org
+	bats test/test.bats
 
 test:
 	@go test ./...

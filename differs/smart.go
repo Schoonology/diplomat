@@ -2,10 +2,19 @@ package differs
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
+
+	"github.com/testdouble/diplomat/scripting"
 
 	"github.com/testdouble/diplomat/http"
 )
+
+var matcherRegex *regexp.Regexp
+
+func init() {
+	matcherRegex = regexp.MustCompile("^\\s*{\\? ([^\\?]+) \\?}\\s*$")
+}
 
 // The Smart differ provides looser restrictions on diffing, only printing
 // diff output if an expected value is provided.
@@ -32,7 +41,18 @@ func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, er
 		}
 	}
 
-	if len(expected.Body) > 0 {
+	validatorMatch := matcherRegex.FindSubmatch(expected.Body)
+	if len(validatorMatch) > 0 {
+		validator := string(validatorMatch[1])
+		valid, err := scripting.RunValidator(validator, string(actual.Body))
+		if err != nil {
+			return "", err
+		}
+
+		if !valid {
+			output.WriteString(fmt.Sprintf("Body did not match validator: %s", validator))
+		}
+	} else if len(expected.Body) > 0 {
 		contentType, present := expected.Headers["Content-Type"]
 		if !present {
 			contentType, present = actual.Headers["Content-Type"]

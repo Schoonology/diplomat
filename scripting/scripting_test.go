@@ -15,7 +15,23 @@ func Test__Test(t *testing.T) {
 }
 
 func TestIsTrue(t *testing.T) {
-	result, err := scripting.RunValidator("is_true", "true")
+	result, err := scripting.RunValidator("is_test", "test")
+
+	assert.Nil(t, err)
+	assert.True(t, result)
+}
+
+func TestJsonSchema(t *testing.T) {
+	result, err := scripting.RunValidator(`json_schema([[{
+		"type": "object",
+		"properties": {
+			"test": {
+				"type": "boolean"
+			}
+		}
+	}]])`, `{
+		"test": true
+	}`)
 
 	assert.Nil(t, err)
 	assert.True(t, result)

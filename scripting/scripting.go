@@ -34,7 +34,7 @@ func RunPipeline(src string) (string, error) {
 // RunValidator returns the result of the function at `src`, given `value`,
 // which should return a boolean.
 func RunValidator(src string, value string) (bool, error) {
-	err := state.DoString(fmt.Sprintf("return %s(\"%s\")", src, value))
+	err := state.DoString(fmt.Sprintf("return %s([===[%s]===])", src, value))
 	if err != nil {
 		return false, err
 	}

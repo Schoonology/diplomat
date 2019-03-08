@@ -16,12 +16,14 @@ import (
 // Args contains all CLI arguments passed to the tool.
 type Args struct {
 	Tap      bool
+	Debug    bool
 	Address  string
 	Filename string
 }
 
 func loadArgs() (args Args) {
 	flag.BoolVar(&args.Tap, "tap", false, "Display results in TAP format")
+	flag.BoolVar(&args.Debug, "debug", false, "Display results using the debug differ")
 
 	flag.Parse()
 
@@ -82,6 +84,12 @@ func main() {
 		printer = &printers.Tap{}
 	}
 
+	var differ differs.Differ
+	differ = &differs.Smart{}
+	if args.Debug {
+		differ = &differs.Debug{}
+	}
+
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(args.Filename),
@@ -90,7 +98,7 @@ func main() {
 		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(args.Address),
-			Differ: &differs.Debug{},
+			Differ: differ,
 		},
 		Printer: printer,
 	}

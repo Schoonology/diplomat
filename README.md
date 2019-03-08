@@ -47,7 +47,6 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 - Rename to Diplomat
 - Custom scripts
 - Make HTTP/V optional? Assert it and make it a first party instead?
-- Debug flag
 - UX
 - Streaming
 - Strict mode

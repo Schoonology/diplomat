@@ -41,8 +41,6 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 
 ## TODO
 
-- Request bodies
-- Rendering templates before parsing
 - Matchers while diffing
 - Default body diffs to application/octet-stream; diff byte by byte
 - Linting
@@ -52,4 +50,5 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 - Debug flag
 - UX
 - Streaming
-- Trailers
+- Strict mode
+- Non-strict mode for JSON

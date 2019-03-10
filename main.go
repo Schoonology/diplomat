@@ -10,8 +10,20 @@ import (
 	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/printers"
 	"github.com/testdouble/diplomat/runners"
+	"github.com/testdouble/diplomat/scripting"
 	"github.com/testdouble/diplomat/transforms"
 )
+
+type customScripts []string
+
+func (i *customScripts) String() string {
+	return "Scripts"
+}
+
+func (i *customScripts) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
 
 // Args contains all CLI arguments passed to the tool.
 type Args struct {
@@ -19,11 +31,13 @@ type Args struct {
 	Debug    bool
 	Address  string
 	Filename string
+	Scripts  customScripts
 }
 
 func loadArgs() (args Args) {
 	flag.BoolVar(&args.Tap, "tap", false, "Display results in TAP format")
 	flag.BoolVar(&args.Debug, "debug", false, "Display results using the debug differ")
+	flag.Var(&args.Scripts, "script", "Custom scripts")
 
 	flag.Parse()
 
@@ -88,6 +102,13 @@ func main() {
 	differ = &differs.Smart{}
 	if args.Debug {
 		differ = &differs.Debug{}
+	}
+
+	for _, filename := range args.Scripts {
+		err := scripting.LoadFile(filename)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	engine := Engine{

@@ -17,6 +17,12 @@ func init() {
 	}
 }
 
+// LoadFile runs the Lua file in `filename`. Theoretically this file
+// should add custom functions into the global namespace.
+func LoadFile(filename string) error {
+	return state.DoFile(filename)
+}
+
 // RunPipeline returns the result of the function at `src`, which should
 // return a string.
 func RunPipeline(src string) (string, error) {

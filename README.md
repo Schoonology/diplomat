@@ -50,9 +50,6 @@ brew install bats
 
 ## TODO
 
-- Matchers while diffing
-- Default body diffs to application/octet-stream; diff byte by byte
-- Custom scripts
 - Make HTTP/V optional? Assert it and make it a first party instead?
 - UX
 - Streaming

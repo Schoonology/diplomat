@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/http"
@@ -11,17 +12,29 @@ import (
 	"github.com/testdouble/diplomat/runners"
 	"github.com/testdouble/diplomat/scripting"
 	"github.com/testdouble/diplomat/transforms"
-	kingpin "gopkg.in/alecthomas/kingpin.v2"
+	kingpin "gopkg.in/alecthomas/kingpin.v3-unstable"
 )
 
 var (
-	debug   = kingpin.Flag("debug", "Enable debug mode.").Bool()
-	scripts = kingpin.Flag("script", "Custom Lua script(s) to import.").Strings()
-	tap     = kingpin.Flag("tap", "Display results in TAP format.").Bool()
+	app = kingpin.New("diplomat", "")
 
-	filename = kingpin.Arg("filename", "Treaty file to load.").Required().String()
-	address  = kingpin.Arg("address", "Default base URL to use.").Required().String()
+	debug   = app.Flag("debug", "Enable debug mode.").Bool()
+	scripts = app.Flag("script", "Custom Lua script(s) to import.").PlaceHolder("FILE").Strings()
+	tap     = app.Flag("tap", "Display results in TAP format.").Bool()
+
+	filename = app.Arg("filename", "Treaty file to load.").Required().ExistingFile()
+	address  = app.Arg("address", "Default base URL to use.").Required().String()
 )
+
+func init() {
+	app.Version("0.0.1")
+	app.UsageTemplate(`Usage: {{.App.Name}} {{.App.FlagSummary}} {{.App.ArgSummary}}
+
+Flags:
+{{.Context.Flags|FlagsToTwoColumns|FormatTwoColumns}}
+Args:
+{{.Context.Args|ArgsToTwoColumns|FormatTwoColumns}}`)
+}
 
 // Engine encapsulates all the behaviour of the tool as defined by the
 // attached components.
@@ -66,8 +79,7 @@ func (r *Engine) Start(filename string) error {
 }
 
 func main() {
-	kingpin.Version("0.0.1")
-	kingpin.Parse()
+	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	var printer printers.ResultsPrinter
 	printer = &printers.Debug{}

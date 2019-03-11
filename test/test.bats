@@ -127,7 +127,7 @@
   run ./main --help
 
   echo actual output: $output
-  [ "${lines[0]}" = "usage: main [<flags>] <filename> <address>" ]
+  [ "${lines[0]}" = "Usage: diplomat [<flags>] <filename> <address>" ]
   [[ "$output" =~ "Flags:" ]]
   [[ "$output" =~ "--debug" ]]
   [[ "$output" =~ "--help" ]]

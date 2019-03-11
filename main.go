@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 
 	"github.com/testdouble/diplomat/differs"
@@ -12,40 +11,17 @@ import (
 	"github.com/testdouble/diplomat/runners"
 	"github.com/testdouble/diplomat/scripting"
 	"github.com/testdouble/diplomat/transforms"
+	kingpin "gopkg.in/alecthomas/kingpin.v2"
 )
 
-type customScripts []string
+var (
+	debug   = kingpin.Flag("debug", "Enable debug mode.").Bool()
+	scripts = kingpin.Flag("script", "Custom Lua script(s) to import.").Strings()
+	tap     = kingpin.Flag("tap", "Display results in TAP format.").Bool()
 
-func (i *customScripts) String() string {
-	return "Scripts"
-}
-
-func (i *customScripts) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-// Args contains all CLI arguments passed to the tool.
-type Args struct {
-	Tap      bool
-	Debug    bool
-	Address  string
-	Filename string
-	Scripts  customScripts
-}
-
-func loadArgs() (args Args) {
-	flag.BoolVar(&args.Tap, "tap", false, "Display results in TAP format")
-	flag.BoolVar(&args.Debug, "debug", false, "Display results using the debug differ")
-	flag.Var(&args.Scripts, "script", "Custom scripts")
-
-	flag.Parse()
-
-	args.Filename = flag.Arg(0)
-	args.Address = flag.Arg(1)
-
-	return
-}
+	filename = kingpin.Arg("filename", "Treaty file to load.").Required().String()
+	address  = kingpin.Arg("address", "Default base URL to use.").Required().String()
+)
 
 // Engine encapsulates all the behaviour of the tool as defined by the
 // attached components.
@@ -90,21 +66,22 @@ func (r *Engine) Start(filename string) error {
 }
 
 func main() {
-	args := loadArgs()
+	kingpin.Version("0.0.1")
+	kingpin.Parse()
 
 	var printer printers.ResultsPrinter
 	printer = &printers.Debug{}
-	if args.Tap {
+	if *tap {
 		printer = &printers.Tap{}
 	}
 
 	var differ differs.Differ
 	differ = &differs.Smart{}
-	if args.Debug {
+	if *debug {
 		differ = &differs.Debug{}
 	}
 
-	for _, filename := range args.Scripts {
+	for _, filename := range *scripts {
 		err := scripting.LoadFile(filename)
 		if err != nil {
 			panic(err)
@@ -113,18 +90,18 @@ func main() {
 
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
-		Parser: parsers.GetParserFromFileName(args.Filename),
+		Parser: parsers.GetParserFromFileName(*filename),
 		Transforms: []transforms.Transform{
 			transforms.RenderTemplates,
 		},
 		Runner: &runners.Serial{
-			Client: http.NewClient(args.Address),
+			Client: http.NewClient(*address),
 			Differ: differ,
 		},
 		Printer: printer,
 	}
 
-	err := engine.Start(args.Filename)
+	err := engine.Start(*filename)
 	if err != nil {
 		fmt.Printf("Failed with: %v", err)
 	}

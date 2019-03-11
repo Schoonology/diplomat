@@ -122,3 +122,24 @@
   [ "${lines[0]}" = "Custom Script Test" ]
   [ "${lines[1]}" = "" ]
 }
+
+@test "Help" {
+  run ./main --help
+
+  echo actual output: $output
+  [ "${lines[0]}" = "usage: main [<flags>] <filename> <address>" ]
+  [[ "$output" =~ "Flags:" ]]
+  [[ "$output" =~ "--debug" ]]
+  [[ "$output" =~ "--help" ]]
+  [[ "$output" =~ "--script" ]]
+  [[ "$output" =~ "--tap" ]]
+  [[ "$output" =~ "--version" ]]
+  [[ "$output" =~ "Args:" ]]
+}
+
+@test "Missing arguments" {
+  run ./main
+
+  echo actual output: $lines[0]
+  [[ "${lines[0]}" =~ "error: required argument" ]]
+}

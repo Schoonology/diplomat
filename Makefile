@@ -35,7 +35,12 @@ e2e:
 		docker run -d -p 7357:80 --rm --name httpbin kennethreitz/httpbin;\
 		wget --spider localhost:7357 &> /dev/null;\
 	fi
-	bats test/test.bats
+	# When run within `entr -r`, STDIN is closed, and `bats` really doesn't like
+	# that. To assuage it, we create a "fake STDIN" with `echo`.
+	# More: https://bitbucket.org/eradman/entr/commits/ec5e793ae710
+	#
+	# "We're professionals..."
+	echo | bats --pretty test/*.bats
 
 test:
 	@go test ./...

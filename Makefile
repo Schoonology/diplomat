@@ -1,7 +1,10 @@
-.PHONY: format lint watch clean e2e test generate
+.PHONY: format lint watch clean e2e test generate install
 
-main: main.go */*.go */*/*.go
-	go build -o main
+bin/diplomat: main.go */*.go */*/*.go
+	go build -o bin/diplomat
+
+install: bin/diplomat
+	ln -sf `pwd`/bin/diplomat /usr/local/bin/diplomat
 
 format:
 	@go fmt ./...
@@ -23,11 +26,11 @@ lint: bin/golint
 	@bin/golint -set_exit_status ./...
 
 watch:
-	rg --files | entr -rc sh -c "make format && make main&& make test && make e2e && make lint"
+	rg --files | entr -rc sh -c "make format && make bin/diplomat && make test && make e2e && make lint"
 
 clean:
 	rm -f *.go.* */*.go.*
-	rm -f main
+	rm -f bin/diplomat
 
 e2e:
 	@if ! curl -sS localhost:7357 &> /dev/null; then\

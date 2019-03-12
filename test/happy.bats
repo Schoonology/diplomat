@@ -3,7 +3,7 @@
 load helpers/helpers
 
 @test "Text: Fallback title" {
-  run ./main $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
 
   log_on_failure
 
@@ -12,7 +12,7 @@ load helpers/helpers
 }
 
 @test "Text: Empty diff on success" {
-  run ./main $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
 
   log_on_failure
 
@@ -21,7 +21,7 @@ load helpers/helpers
 }
 
 @test "Text: Status diff on incorrect status" {
-  run ./main $FIXTURES_ROOT/fail-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/fail-get-422.txt $TEST_HOST
 
   log_on_failure
 
@@ -33,7 +33,7 @@ Status:
 }
 
 @test "Text: GET 200 OK" {
-  run ./main $FIXTURES_ROOT/match-get-200.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt $TEST_HOST
 
   log_on_failure
 
@@ -42,7 +42,7 @@ Status:
 }
 
 @test "Text: GET 200 OK with Body" {
-  run ./main $FIXTURES_ROOT/match-get-200-with-body.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-200-with-body.txt $TEST_HOST
 
   log_on_failure
 
@@ -51,7 +51,7 @@ Status:
 }
 
 @test "Text: POST" {
-  run ./main $FIXTURES_ROOT/match-post-200.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-post-200.txt $TEST_HOST
 
   log_on_failure
 
@@ -62,7 +62,7 @@ Status:
 # TODO: this test should pass, despite having brackets in the body
 @test "Text: POST with HTTP response" {
   skip
-  run ./main $FIXTURES_ROOT/match-post-200-http.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-post-200-http.txt $TEST_HOST
 
   log_on_failure
 
@@ -71,7 +71,7 @@ Status:
 }
 
 @test "Markdown: .markdown: Title from header" {
-  run ./main $FIXTURES_ROOT/match-get-422.markdown $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.markdown $TEST_HOST
 
   log_on_failure
 
@@ -80,7 +80,7 @@ Status:
 }
 
 @test "Markdown: .md: Title from header" {
-  run ./main $FIXTURES_ROOT/match-get-422.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.md $TEST_HOST
 
   log_on_failure
 
@@ -89,7 +89,7 @@ Status:
 }
 
 @test "Markdown: Multiple specs" {
-  run ./main $FIXTURES_ROOT/multiple.markdown $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/multiple.markdown $TEST_HOST
 
   log_on_failure
 
@@ -100,7 +100,7 @@ Status:
 }
 
 @test "--tap Option" {
-  run ./main --tap $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat --tap $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
 
   log_on_failure
 
@@ -112,7 +112,7 @@ Status:
 }
 
 @test "JSON Schema" {
-  run ./main $FIXTURES_ROOT/json-schema.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/json-schema.md $TEST_HOST
 
   log_on_failure
 
@@ -121,7 +121,7 @@ Status:
 }
 
 @test "Custom Script" {
-  run ./main --script $FIXTURES_ROOT/custom.lua $FIXTURES_ROOT/custom-script.md $TEST_HOST
+  run bin/diplomat --script $FIXTURES_ROOT/custom.lua $FIXTURES_ROOT/custom-script.md $TEST_HOST
 
   log_on_failure
 
@@ -130,7 +130,7 @@ Status:
 }
 
 @test "Help" {
-  run ./main --help
+  run bin/diplomat --help
 
   log_on_failure
 

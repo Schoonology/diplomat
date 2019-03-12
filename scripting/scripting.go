@@ -3,6 +3,7 @@ package scripting
 import (
 	"fmt"
 
+	"github.com/testdouble/diplomat/errors"
 	scripts "github.com/testdouble/diplomat/scripting/lua"
 	lua "github.com/yuin/gopher-lua"
 )
@@ -26,15 +27,29 @@ func LoadFile(filename string) error {
 // RunPipeline returns the result of the function at `src`, which should
 // return a string.
 func RunPipeline(src string) (string, error) {
-	err := state.DoString(fmt.Sprintf("return %s()", src))
+	err := state.DoString(fmt.Sprintf("return %s", src))
 	if err != nil {
 		return "", err
 	}
 
-	ret := state.Get(-1)
+	value := state.Get(-1)
 	state.Pop(1)
 
-	return ret.String(), nil
+	switch value.Type() {
+	case lua.LTFunction:
+		state.Push(value)
+		err = state.PCall(0, 1, nil)
+		if err != nil {
+			return "", err
+		}
+
+		value = state.Get(-1)
+		state.Pop(1)
+	case lua.LTNil:
+		return "", &errors.MissingTemplate{Template: src}
+	}
+
+	return value.String(), nil
 }
 
 // RunValidator returns the result of the function at `src`, given `value`,

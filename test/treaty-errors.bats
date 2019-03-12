@@ -98,8 +98,7 @@ load helpers/helpers
   log_on_failure
 
   [ $status -eq 3 ]
-  [[ "$output" =~ "Error while running Lua script" ]]
-  [[ "$output" =~ "attempt to call a non-function object" ]]
+  [[ "$output" = 'Template `missing` could not be found.' ]]
 }
 
 @test "Missing validator function" {

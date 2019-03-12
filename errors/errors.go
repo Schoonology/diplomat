@@ -121,6 +121,15 @@ func (err *MissingResponse) Error() string {
 	return "Found a request without a corresponding response."
 }
 
+// MissingTemplate is the error type for a template that could not be found.
+type MissingTemplate struct {
+	Template string
+}
+
+func (err *MissingTemplate) Error() string {
+	return fmt.Sprintf("Template `%s` could not be found.", err.Template)
+}
+
 // BuildErrorTable returns an LTTable filled with the errors in `result`.
 func BuildErrorTable(L *lua.LState, result *jsonschema.Result) *lua.LTable {
 	table := L.NewTable()

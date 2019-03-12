@@ -7,7 +7,13 @@ import (
 
 // A SpecParser is capable of parsing all lines in `body`.
 type SpecParser interface {
+	Streamer
 	Parse(*loaders.Body) (*Spec, error)
+}
+
+// A Streamer parses objects via a stream.
+type Streamer interface {
+	Stream(chan *loaders.Body) (chan *Spec, chan error)
 }
 
 // Spec contains a set of tests.

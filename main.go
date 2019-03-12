@@ -41,30 +41,29 @@ Args:
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
-	Transforms []transforms.Transform
+	Transforms []transforms.TransformStream
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
 }
 
 // Start runs the Engine.
 func (r *Engine) Start(filename string) error {
+	// TODO: Use a single error channel passed to each function
+
 	loadChannel, errorChannel := r.Loader.Stream(filename)
 	parseChannel, errorChannel := r.Parser.Stream(loadChannel)
 
-	var err error
-	var spec *parsers.Spec
-
-	select {
-	case spec = <-parseChannel:
-	case err = <-errorChannel:
-		return err
+	specChannel := parseChannel
+	for _, transform := range r.Transforms {
+		// TODO: transform is currently returning the passed in errorChannel
+		specChannel, errorChannel = transform(specChannel, errorChannel)
 	}
 
-	for _, transform := range r.Transforms {
-		err = transform(spec)
-		if err != nil {
-			return err
-		}
+	var spec *parsers.Spec
+	select {
+	case spec = <-specChannel:
+	case err := <-errorChannel:
+		return err
 	}
 
 	result, err := r.Runner.Run(spec)
@@ -106,8 +105,8 @@ func main() {
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(*filename),
-		Transforms: []transforms.Transform{
-			transforms.RenderTemplates,
+		Transforms: []transforms.TransformStream{
+			transforms.RenderTemplatesStream,
 		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(*address),

@@ -105,3 +105,48 @@ func RenderTemplates(spec *parsers.Spec) error {
 
 	return nil
 }
+
+// RenderTemplatesImmutable renders all the Headers and Bodies in all the Tests in the
+// given `spec`.
+// TODO: Consolidate all of this
+func RenderTemplatesImmutable(spec *parsers.Spec) (*parsers.Spec, error) {
+	for _, test := range spec.Tests {
+		if err := renderAllHeaders(test.Request.Headers); err != nil {
+			return nil, err
+		}
+		if err := renderAllHeaders(test.Response.Headers); err != nil {
+			return nil, err
+		}
+		if err := renderBodies(&test); err != nil {
+			return nil, err
+		}
+	}
+
+	return spec, nil
+}
+
+// RenderTemplatesStream updates a stream of specs using RenderTemplates.
+// given `specChannel`.
+func RenderTemplatesStream(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
+	c := make(chan *parsers.Spec)
+	e := make(chan error)
+
+	go func() {
+		var spec *parsers.Spec
+		select {
+		case spec = <-specChannel:
+		case err := <-errorChannel:
+			e <- err
+			return
+		}
+
+		updatedSpec, err := RenderTemplatesImmutable(spec)
+		if err != nil {
+			e <- err
+		}
+
+		c <- updatedSpec
+	}()
+
+	return c, e
+}

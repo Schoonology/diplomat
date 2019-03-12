@@ -60,20 +60,14 @@ func (r *Engine) Start(filename string) error {
 	}
 
 	runChannel, errorChannel := r.Runner.Stream(specChannel, errorChannel)
+	quit, errorChannel := r.Printer.Stream(runChannel, errorChannel)
 
-	var result *runners.Result
 	select {
-	case result = <-runChannel:
 	case err := <-errorChannel:
 		return err
+	case <-quit:
+		return nil
 	}
-
-	err := r.Printer.Print(result)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func main() {

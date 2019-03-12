@@ -17,3 +17,28 @@ func (t *Debug) Print(result *runners.Result) error {
 
 	return nil
 }
+
+// Stream applies Print to results via a channel.
+func (t *Debug) Stream(resultChannel chan *runners.Result, errorChannel chan error) (chan int, chan error) {
+	c := make(chan int)
+	e := make(chan error)
+
+	go func() {
+		var result *runners.Result
+		select {
+		case result = <-resultChannel:
+		case err := <-errorChannel:
+			e <- err
+			return
+		}
+
+		err := t.Print(result)
+		if err != nil {
+			e <- err
+		}
+
+		c <- 0
+	}()
+
+	return c, e
+}

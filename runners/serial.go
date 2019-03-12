@@ -35,3 +35,28 @@ func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
 
 	return result, nil
 }
+
+// Stream executes Run on specs in a channel.
+func (s *Serial) Stream(specChannel chan *parsers.Spec, errorChannel chan error) (chan *Result, chan error) {
+	c := make(chan *Result)
+	e := make(chan error)
+
+	go func() {
+		var spec *parsers.Spec
+		select {
+		case spec = <-specChannel:
+		case err := <-errorChannel:
+			e <- err
+			return
+		}
+
+		result, err := s.Run(spec)
+		if err != nil {
+			e <- err
+		}
+
+		c <- result
+	}()
+
+	return c, e
+}

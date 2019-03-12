@@ -33,3 +33,28 @@ func (_m *SpecRunner) Run(_a0 *parsers.Spec) (*runners.Result, error) {
 
 	return r0, r1
 }
+
+// Stream provides a mock function with given fields: _a0, _a1
+func (_m *SpecRunner) Stream(_a0 chan *parsers.Spec, _a1 chan error) (chan *runners.Result, chan error) {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 chan *runners.Result
+	if rf, ok := ret.Get(0).(func(chan *parsers.Spec, chan error) chan *runners.Result); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(chan *runners.Result)
+		}
+	}
+
+	var r1 chan error
+	if rf, ok := ret.Get(1).(func(chan *parsers.Spec, chan error) chan error); ok {
+		r1 = rf(_a0, _a1)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(chan error)
+		}
+	}
+
+	return r0, r1
+}

@@ -59,19 +59,16 @@ func (r *Engine) Start(filename string) error {
 		specChannel, errorChannel = transform(specChannel, errorChannel)
 	}
 
-	var spec *parsers.Spec
+	runChannel, errorChannel := r.Runner.Stream(specChannel, errorChannel)
+
+	var result *runners.Result
 	select {
-	case spec = <-specChannel:
+	case result = <-runChannel:
 	case err := <-errorChannel:
 		return err
 	}
 
-	result, err := r.Runner.Run(spec)
-	if err != nil {
-		return err
-	}
-
-	err = r.Printer.Print(result)
+	err := r.Printer.Print(result)
 	if err != nil {
 		return err
 	}

@@ -19,6 +19,9 @@ func TestEngineStart(t *testing.T) {
 	parser := &mocks.SpecParser{}
 	runner := &mocks.SpecRunner{}
 	printer := &mocks.ResultsPrinter{}
+
+	lastSpecChannel := make(chan *parsers.Spec)
+
 	transforms := []transforms.TransformStream{
 		func(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
 			updatedSpecChannel := make(chan *parsers.Spec)
@@ -30,13 +33,12 @@ func TestEngineStart(t *testing.T) {
 			return updatedSpecChannel, errorChannel
 		},
 		func(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
-			updatedSpecChannel := make(chan *parsers.Spec)
 			go func() {
 				spec := <-specChannel
 				spec.Tests = append(spec.Tests, parsers.Test{Request: &http.Request{Method: "Two"}})
-				updatedSpecChannel <- spec
+				lastSpecChannel <- spec
 			}()
-			return updatedSpecChannel, errorChannel
+			return lastSpecChannel, errorChannel
 		},
 	}
 
@@ -58,9 +60,17 @@ func TestEngineStart(t *testing.T) {
 		specChannel <- spec
 	}()
 
+	resultChannel := make(chan *runners.Result)
+	resultErrorChannel := make(chan error)
+
+	go func() {
+		resultChannel <- result
+	}()
+
 	loader.On("Stream", "test-file").Return(bodyChannel, errorChannel)
 	parser.On("Stream", bodyChannel).Return(specChannel, specErrorChannel)
-	runner.On("Run", spec).Return(result, nil)
+	runner.On("Stream", lastSpecChannel, specErrorChannel).Return(resultChannel, resultErrorChannel)
+	// runner.On("Run", spec).Return(result, nil)
 	printer.On("Print", result).Return(nil)
 
 	subject := main.Engine{

@@ -44,7 +44,10 @@ func (m *Markdown) Parse(body *loaders.Body) (*Spec, error) {
 				mode = inRichText
 			}
 		case mode == inCodeFence:
-			state.addLine(line)
+			err := state.addLine(line)
+			if err != nil {
+				return nil, err
+			}
 		case strings.HasPrefix(trimmedLine, "#"):
 			name := strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 

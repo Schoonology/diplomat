@@ -1,10 +1,10 @@
 package parsers
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
 )
 
@@ -35,13 +35,21 @@ func newParserState() parserState {
 	}
 }
 
-func (s *parserState) pushCurrentTest() {
+func (s *parserState) pushCurrentTest() error {
+	if s.currentTest.Request == nil {
+		return &errors.MissingRequest{}
+	}
+	if s.currentTest.Response == nil {
+		return &errors.MissingResponse{}
+	}
+
 	if s.finalizer != nil {
 		s.finalizer(&s.currentTest)
 	}
 
 	s.spec.Tests = append(s.spec.Tests, s.currentTest)
 	s.currentTest = Test{}
+	return nil
 }
 
 func isRequestMetadataIndicator(char byte) bool {
@@ -73,12 +81,20 @@ func (s *parserState) addLine(line string) error {
 
 	if isRequestMetadataIndicator(char) {
 		if isResponseMode(s.mode) {
-			s.pushCurrentTest()
+			err := s.pushCurrentTest()
+			if err != nil {
+				return err
+			}
 		}
 
 		if isResponseMode(s.mode) || s.mode == modeAwaitingRequest {
 			s.mode = modeInRequestHeaders
-			s.currentTest.Request = requestFromLine(trimmedLine)
+			request, err := requestFromLine(trimmedLine)
+			if err != nil {
+				return err
+			}
+
+			s.currentTest.Request = request
 			return nil
 		} else if s.mode == modeInRequestHeaders && len(trimmedLine) == 0 {
 			s.mode = modeInRequestBody
@@ -97,7 +113,12 @@ func (s *parserState) addLine(line string) error {
 	if isResponseMetadataIndicator(char) {
 		if isRequestMode(s.mode) {
 			s.mode = modeInResponseHeaders
-			s.currentTest.Response = responseFromLine(trimmedLine)
+			response, err := responseFromLine(trimmedLine)
+			if err != nil {
+				return err
+			}
+
+			s.currentTest.Response = response
 			return nil
 		} else if s.mode == modeInResponseHeaders && len(trimmedLine) == 0 {
 			s.mode = modeInResponseBody
@@ -110,6 +131,11 @@ func (s *parserState) addLine(line string) error {
 
 			s.currentTest.Response.Headers[key] = value
 			return nil
+		} else if s.mode == modeAwaitingRequest || s.mode == modeInResponseBody {
+			// This can happen if an expected response body contains a response
+			// indicator (e.g. `<`) as the first character. This explicitly
+			// disallows that, preventing unexpected issues with missing requests.
+			return &errors.MissingRequest{}
 		}
 	}
 
@@ -130,34 +156,43 @@ func (s *parserState) addLine(line string) error {
 
 func (s *parserState) finalize() (*Spec, error) {
 	if s.mode != modeAwaitingRequest {
-		s.pushCurrentTest()
+		err := s.pushCurrentTest()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return s.spec, nil
 }
 
-// TODO(schoon) - Handle badly-formatted lines.
-func requestFromLine(line string) *http.Request {
+func requestFromLine(line string) (*http.Request, error) {
 	pieces := strings.Split(line, " ")
 
-	return http.NewRequest(pieces[0], pieces[1])
+	if len(pieces) < 2 {
+		return nil, &errors.BadRequestLine{Line: line}
+	}
+
+	return http.NewRequest(pieces[0], pieces[1]), nil
 }
 
-// TODO(schoon) - Handle badly-formatted lines.
 func headerFromLine(line string) (string, string, error) {
 	pieces := strings.Split(line, ":")
 
 	if len(pieces) < 2 {
-		return "", "", fmt.Errorf("badly formatted header: %v", line)
+		return "", "", &errors.BadHeader{Header: line}
 	}
 
 	return strings.TrimSpace(pieces[0]), strings.TrimSpace(pieces[1]), nil
 }
 
-// TODO(schoon) - Handle badly-formatted lines.
-func responseFromLine(line string) *http.Response {
+func responseFromLine(line string) (*http.Response, error) {
 	pieces := strings.Split(line, " ")
+
+	if len(pieces) < 3 {
+		return nil, &errors.BadResponseStatus{Line: line}
+	}
+
 	code, _ := strconv.Atoi(pieces[1])
 
-	return http.NewResponse(code, strings.Join(pieces[2:], " "))
+	return http.NewResponse(code, strings.Join(pieces[2:], " ")), nil
 }

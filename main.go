@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/testdouble/diplomat/differs"
+	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
 	"github.com/testdouble/diplomat/loaders"
 	"github.com/testdouble/diplomat/parsers"
@@ -115,6 +115,7 @@ func main() {
 
 	err := engine.Start(*filename)
 	if err != nil {
-		fmt.Printf("Failed with: %v", err)
+		errors.Display(err)
+		os.Exit(3)
 	}
 }

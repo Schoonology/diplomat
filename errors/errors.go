@@ -6,6 +6,10 @@ import (
 	"net/url"
 	"os"
 	"syscall"
+
+	jsonschema "github.com/xeipuuv/gojsonschema"
+	lua "github.com/yuin/gopher-lua"
+	luaParse "github.com/yuin/gopher-lua/parse"
 )
 
 func displayURLError(err *url.Error) {
@@ -24,9 +28,43 @@ func displayURLError(err *url.Error) {
 	Display(err.Err)
 }
 
+func displayLuaError(err *lua.ApiError) {
+	switch err.Type {
+	case lua.ApiErrorSyntax:
+		fmt.Printf("Syntax error while parsing custom script:\n")
+	case lua.ApiErrorRun, lua.ApiErrorError:
+		fmt.Printf("Error while running Lua script:\n")
+	case lua.ApiErrorPanic:
+		fmt.Printf("Panic while running Lua script:\n")
+	default:
+		fmt.Printf("Unknown error %v: %v", err.Type, err.Error())
+	}
+
+	switch err.Object.Type() {
+	case lua.LTString:
+		fmt.Printf("	%s\n", err.Object)
+	case lua.LTTable:
+		err.Object.(*lua.LTable).ForEach(func(_ lua.LValue, value lua.LValue) {
+			fmt.Printf("	%v", value)
+		})
+	}
+
+	switch e := err.Cause.(type) {
+	case *luaParse.Error:
+		fmt.Printf("%s:%d:%d: %s", e.Pos.Source, e.Pos.Line, e.Pos.Column, e.Token)
+	case nil:
+	default:
+		fmt.Printf("Unknown cause %T: %v", e, e)
+	}
+}
+
 // Display emits a human-readable version of the error to STDOUT.
 func Display(err error) {
 	switch e := err.(type) {
+	case *lua.ApiError:
+		displayLuaError(e)
+	case *lua.CompileError:
+		fmt.Printf("Compile error: %v -- %s", e.Line, e.Message)
 	case *os.SyscallError:
 		fmt.Printf("Syscall error: %s\n", e.Syscall)
 		Display(e.Err)
@@ -81,4 +119,15 @@ type MissingResponse struct{}
 
 func (err *MissingResponse) Error() string {
 	return "Found a request without a corresponding response."
+}
+
+// BuildErrorTable returns an LTTable filled with the errors in `result`.
+func BuildErrorTable(L *lua.LState, result *jsonschema.Result) *lua.LTable {
+	table := L.NewTable()
+
+	for _, err := range result.Errors() {
+		table.Append(lua.LString(err.String()))
+	}
+
+	return table
 }

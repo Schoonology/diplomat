@@ -6,6 +6,7 @@
 package lua
 
 import (
+	"github.com/testdouble/diplomat/errors"
 	jsonschema "github.com/xeipuuv/gojsonschema"
 	lua "github.com/yuin/gopher-lua"
 )
@@ -42,11 +43,12 @@ func validateJSONSchema(L *lua.LState) int {
 		jsonschema.NewStringLoader(value),
 	)
 	if err != nil {
-		// TODO(schoon) - Where does this go?
-		panic(err)
+		L.RaiseError(err.Error())
 	}
 
-	// TODO(schoon) - Provide result.Errors() to Diplomat proper.
+	if len(result.Errors()) > 0 {
+		L.Error(errors.BuildErrorTable(L, result), 1)
+	}
 
 	L.Push(lua.LBool(result.Valid()))
 

@@ -96,7 +96,8 @@ func main() {
 	for _, filename := range *scripts {
 		err := scripting.LoadFile(filename)
 		if err != nil {
-			panic(err)
+			errors.Display(err)
+			os.Exit(3)
 		}
 	}
 

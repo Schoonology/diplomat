@@ -1,6 +1,6 @@
 .PHONY: format lint watch clean e2e test generate
 
-main: main.go */*.go
+main: main.go */*.go */*/*.go
 	go build -o main
 
 format:

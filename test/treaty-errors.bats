@@ -91,3 +91,34 @@ load helpers/helpers
   [ $status -eq 3 ]
   [[ "$output" = "Found a response without a corresponding request." ]]
 }
+
+@test "Missing template function" {
+  run ./main $FIXTURES_ROOT/broken/missing-template-function.txt $TEST_HOST
+
+  log_on_failure
+
+  [ $status -eq 3 ]
+  [[ "$output" =~ "Error while running Lua script" ]]
+  [[ "$output" =~ "attempt to call a non-function object" ]]
+}
+
+@test "Missing validator function" {
+  run ./main $FIXTURES_ROOT/broken/missing-validator-function.txt $TEST_HOST
+
+  log_on_failure
+
+  [ $status -eq 3 ]
+  [[ "$output" =~ "Error while running Lua script" ]]
+  [[ "$output" =~ "attempt to call a non-function object" ]]
+}
+
+@test "Invalid script syntax" {
+  run ./main --script $FIXTURES_ROOT/broken/invalid-script-syntax.lua \
+    $FIXTURES_ROOT/match-get-200.txt $TEST_HOST
+
+  log_on_failure
+
+  [ $status -eq 3 ]
+  [[ "$output" =~ "Syntax error while parsing custom script:" ]]
+  [[ "$output" =~ "test/fixtures/broken/invalid-script-syntax.lua:1:41: {" ]]
+}

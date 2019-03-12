@@ -48,8 +48,14 @@ type Engine struct {
 
 // Start runs the Engine.
 func (r *Engine) Start(filename string) error {
-	file, err := r.Loader.Load(filename)
-	if err != nil {
+	loadChannel, errorChannel := r.Loader.Stream(filename)
+
+	var file *loaders.Body
+	var err error
+
+	select {
+	case file = <-loadChannel:
+	case err = <-errorChannel:
 		return err
 	}
 

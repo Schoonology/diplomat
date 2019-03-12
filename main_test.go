@@ -34,7 +34,15 @@ func TestEngineStart(t *testing.T) {
 	spec := new(parsers.Spec)
 	result := new(runners.Result)
 
-	loader.On("Load", "test-file").Return(body, nil)
+	bodyChannel := make(chan *loaders.Body)
+	errorChannel := make(chan error)
+
+	go func() {
+		bodyChannel <- body
+		errorChannel <- nil
+	}()
+
+	loader.On("Stream", "test-file").Return(bodyChannel, errorChannel)
 	parser.On("Parse", body).Return(spec, nil)
 	runner.On("Run", spec).Return(result, nil)
 	printer.On("Print", result).Return(nil)

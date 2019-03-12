@@ -75,7 +75,7 @@ func TestEngineStart(t *testing.T) {
 	}()
 
 	loader.On("Stream", "test-file").Return(bodyChannel, errorChannel)
-	parser.On("Stream", bodyChannel).Return(specChannel, specErrorChannel)
+	parser.On("Stream", bodyChannel, errorChannel).Return(specChannel, specErrorChannel)
 	runner.On("Stream", lastSpecChannel, specErrorChannel).Return(resultChannel, resultErrorChannel)
 	printer.On("Stream", resultChannel, resultErrorChannel).Return(quitChannel, printErrorChannel)
 

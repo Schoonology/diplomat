@@ -13,7 +13,7 @@ type SpecParser interface {
 
 // A Streamer parses objects via a stream.
 type Streamer interface {
-	Stream(chan *loaders.Body) (chan *Spec, chan error)
+	Stream(chan *loaders.Body, chan error) (chan *Spec, chan error)
 }
 
 // Spec contains a set of tests.

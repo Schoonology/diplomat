@@ -51,7 +51,7 @@ func (r *Engine) Start(filename string) error {
 	// TODO: Use a single error channel passed to each function
 
 	loadChannel, errorChannel := r.Loader.Stream(filename)
-	parseChannel, errorChannel := r.Parser.Stream(loadChannel)
+	parseChannel, errorChannel := r.Parser.Stream(loadChannel, errorChannel)
 
 	specChannel := parseChannel
 	for _, transform := range r.Transforms {

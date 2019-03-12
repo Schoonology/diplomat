@@ -33,12 +33,18 @@ func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
 }
 
 // Stream parses a streamed body
-func (m *PlainTextParser) Stream(bodyChannel chan *loaders.Body) (chan *Spec, chan error) {
+func (m *PlainTextParser) Stream(bodyChannel chan *loaders.Body, errorChannel chan error) (chan *Spec, chan error) {
 	c := make(chan *Spec)
 	e := make(chan error)
 
 	go func() {
-		body := <-bodyChannel
+		var body *loaders.Body
+		select {
+		case body = <-bodyChannel:
+		case err := <-errorChannel:
+			e <- err
+			return
+		}
 
 		spec, err := m.Parse(body)
 		if err != nil {

@@ -55,7 +55,7 @@ func (r *Engine) Start(filename string, errors chan error) {
 		testChannel = transformer.TransformAll(testChannel, errors)
 	}
 
-	resultChannel := r.Runner.Run(testChannel, errors)
+	resultChannel := r.Runner.RunAll(testChannel, errors)
 
 	r.Printer.Print(resultChannel, errors)
 }

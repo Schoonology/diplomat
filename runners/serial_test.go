@@ -10,18 +10,6 @@ import (
 	"github.com/testdouble/diplomat/runners"
 )
 
-func streamTests(tests []parsers.Test) chan parsers.Test {
-	testChannel := make(chan parsers.Test)
-
-	go func() {
-		for _, test := range tests {
-			testChannel <- test
-		}
-	}()
-
-	return testChannel
-}
-
 func TestRunSerial(t *testing.T) {
 	assert := assert.New(t)
 
@@ -32,13 +20,10 @@ func TestRunSerial(t *testing.T) {
 		Client: &client,
 		Differ: &differ,
 	}
-	tests := streamTests([]parsers.Test{
-		parsers.Test{
-			Request:  http.NewRequest("METHOD", "path"),
-			Response: http.NewResponse(200, "STATUS TEXT"),
-		},
-	})
-	errors := make(chan error)
+	test := parsers.Test{
+		Request:  http.NewRequest("METHOD", "path"),
+		Response: http.NewResponse(200, "STATUS TEXT"),
+	}
 
 	client.
 		On("Do", http.NewRequest("METHOD", "path")).
@@ -47,9 +32,9 @@ func TestRunSerial(t *testing.T) {
 		On("Diff", http.NewResponse(200, "STATUS TEXT"), http.NewResponse(200, "STATUS TEXT")).
 		Return("some diff", nil)
 
-	results := subject.Run(tests, errors)
+	result, err := subject.Run(test)
 
-	result := <-results
+	assert.Nil(err)
 
 	client.AssertExpectations(t)
 	differ.AssertExpectations(t)

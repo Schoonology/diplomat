@@ -29,7 +29,7 @@ func TestEngineStart(t *testing.T) {
 	parser.On("Parse", bodyChannel, errorChannel).Return(testChannel)
 	firstTransformer.On("TransformAll", testChannel, errorChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)
-	runner.On("Run", secondTransformerChannel, errorChannel).Return(resultChannel)
+	runner.On("RunAll", secondTransformerChannel, errorChannel).Return(resultChannel)
 	printer.On("Print", resultChannel, errorChannel).Return()
 
 	subject := main.Engine{

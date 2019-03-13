@@ -11,8 +11,29 @@ type SpecRunner struct {
 	mock.Mock
 }
 
-// Run provides a mock function with given fields: _a0, _a1
-func (_m *SpecRunner) Run(_a0 chan parsers.Test, _a1 chan error) chan runners.TestResult {
+// Run provides a mock function with given fields: _a0
+func (_m *SpecRunner) Run(_a0 parsers.Test) (runners.TestResult, error) {
+	ret := _m.Called(_a0)
+
+	var r0 runners.TestResult
+	if rf, ok := ret.Get(0).(func(parsers.Test) runners.TestResult); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Get(0).(runners.TestResult)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(parsers.Test) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// RunAll provides a mock function with given fields: _a0, _a1
+func (_m *SpecRunner) RunAll(_a0 chan parsers.Test, _a1 chan error) chan runners.TestResult {
 	ret := _m.Called(_a0, _a1)
 
 	var r0 chan runners.TestResult

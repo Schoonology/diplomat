@@ -21,17 +21,14 @@ type testFinalizer func(test *Test)
 type parserState struct {
 	currentTest Test
 	mode        int
-	spec        *Spec
 	finalizer   testFinalizer
+	tests       chan Test
 }
 
 func newParserState() parserState {
-	spec := new(Spec)
-	spec.Tests = make([]Test, 0)
-
 	return parserState{
-		mode: modeAwaitingRequest,
-		spec: spec,
+		mode:  modeAwaitingRequest,
+		tests: make(chan Test),
 	}
 }
 
@@ -47,7 +44,7 @@ func (s *parserState) pushCurrentTest() error {
 		s.finalizer(&s.currentTest)
 	}
 
-	s.spec.Tests = append(s.spec.Tests, s.currentTest)
+	s.tests <- s.currentTest
 	s.currentTest = Test{}
 	return nil
 }
@@ -154,15 +151,14 @@ func (s *parserState) addLine(line string) error {
 	return nil
 }
 
-func (s *parserState) finalize() (*Spec, error) {
+func (s *parserState) finalize() (err error) {
 	if s.mode != modeAwaitingRequest {
-		err := s.pushCurrentTest()
-		if err != nil {
-			return nil, err
-		}
+		err = s.pushCurrentTest()
 	}
 
-	return s.spec, nil
+	close(s.tests)
+
+	return err
 }
 
 func requestFromLine(line string) (*http.Request, error) {

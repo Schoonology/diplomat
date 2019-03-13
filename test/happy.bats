@@ -106,9 +106,8 @@ Status:
 
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "TAP version 13" ]
-  [ "${lines[1]}" = "1..1" ]
-  [ "${lines[2]}" = "ok 0 GET /status/422 -> 422" ]
-  [ "${lines[3]}" = "" ]
+  [ "${lines[1]}" = "ok 0 GET /status/422 -> 422" ]
+  [ "${lines[2]}" = "" ]
 }
 
 @test "JSON Schema" {

@@ -13,50 +13,31 @@ type Serial struct {
 }
 
 // Run returns the results of running all tests in `spec`.
-func (s *Serial) Run(spec *parsers.Spec) (*Result, error) {
-	result := new(Result)
-
-	for _, test := range spec.Tests {
-		response, err := s.Client.Do(test.Request)
-		if err != nil {
-			return nil, err
-		}
-
-		diff, err := s.Differ.Diff(test.Response, response)
-		if err != nil {
-			return nil, err
-		}
-
-		result.Results = append(result.Results, TestResult{
-			Name: test.Name,
-			Diff: diff,
-		})
-	}
-
-	return result, nil
-}
-
-// Stream executes Run on specs in a channel.
-func (s *Serial) Stream(specChannel chan *parsers.Spec, errorChannel chan error) (chan *Result, chan error) {
-	c := make(chan *Result)
-	e := make(chan error)
+func (s *Serial) Run(tests chan parsers.Test, errors chan error) chan TestResult {
+	results := make(chan TestResult)
 
 	go func() {
-		var spec *parsers.Spec
-		select {
-		case spec = <-specChannel:
-		case err := <-errorChannel:
-			e <- err
-			return
+		for test := range tests {
+			response, err := s.Client.Do(test.Request)
+			if err != nil {
+				errors <- err
+				return
+			}
+
+			diff, err := s.Differ.Diff(test.Response, response)
+			if err != nil {
+				errors <- err
+				return
+			}
+
+			results <- TestResult{
+				Name: test.Name,
+				Diff: diff,
+			}
 		}
 
-		result, err := s.Run(spec)
-		if err != nil {
-			e <- err
-		}
-
-		c <- result
+		close(results)
 	}()
 
-	return c, e
+	return results
 }

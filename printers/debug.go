@@ -10,35 +10,12 @@ import (
 type Debug struct{}
 
 // Print prints all output, unfiltered.
-func (t *Debug) Print(result *runners.Result) error {
-	for _, result := range result.Results {
-		fmt.Printf("%v\n%v\n", result.Name, result.Diff)
-	}
-
-	return nil
-}
-
-// Stream applies Print to results via a channel.
-func (t *Debug) Stream(resultChannel chan *runners.Result, errorChannel chan error) (chan int, chan error) {
-	c := make(chan int)
-	e := make(chan error)
-
+func (t *Debug) Print(results chan runners.TestResult, errors chan error) {
 	go func() {
-		var result *runners.Result
-		select {
-		case result = <-resultChannel:
-		case err := <-errorChannel:
-			e <- err
-			return
+		for result := range results {
+			fmt.Printf("%v\n%v\n", result.Name, result.Diff)
 		}
 
-		err := t.Print(result)
-		if err != nil {
-			e <- err
-		}
-
-		c <- 0
+		close(errors)
 	}()
-
-	return c, e
 }

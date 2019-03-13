@@ -3,206 +3,226 @@ package parsers_test
 import (
 	"testing"
 
+	"github.com/testdouble/diplomat/http"
+
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/loaders"
 	"github.com/testdouble/diplomat/parsers"
 )
 
-func TestMarkdownText(t *testing.T) {
-	assert := assert.New(t)
-	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"# Markdown",
-			"```",
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-		},
+func streamBody(body []string) chan string {
+	lines := make(chan string)
+
+	go func() {
+		for _, line := range body {
+			lines <- line
+		}
+
+		close(lines)
+	}()
+
+	return lines
+}
+
+func assertTest(t *testing.T, expected parsers.Test, tests chan parsers.Test, errors chan error) {
+	select {
+	case err := <-errors:
+		assert.FailNow(t, "Error should not exist.", err)
+	case test := <-tests:
+		assert.Equal(t, expected, test)
 	}
+}
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(1, len(spec.Tests))
+func fillRequest(method string, path string, headers map[string]string, body string) *http.Request {
+	request := http.NewRequest(method, path)
+	for key, value := range headers {
+		request.Headers[key] = value
+	}
+	request.Body = []byte(body)
+	return request
+}
 
-	test := spec.Tests[0]
-	assert.Equal("Markdown", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+func fillResponse(code int, status string, headers map[string]string, body string) *http.Response {
+	response := http.NewResponse(code, status)
+	for key, value := range headers {
+		response.Headers[key] = value
+	}
+	response.Body = []byte(body)
+	return response
+}
+
+func TestMarkdownText(t *testing.T) {
+	subject := parsers.Markdown{}
+	body := streamBody([]string{
+		"# Markdown",
+		"```",
+		"> METHOD path",
+		"> Header: Request",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+	})
+	errors := make(chan error)
+
+	tests := subject.Parse(body, errors)
+
+	assertTest(t, parsers.Test{
+		Name: "Markdown",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
+	// TODO(schoon) - Assert that the channel is closed here.
 }
 
 func TestMarkdownSplitReqRes(t *testing.T) {
-	assert := assert.New(t)
 	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"# Markdown",
-			"```",
-			"> METHOD path",
-			"> Header: Request",
-			"```",
-			"```",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-		},
-	}
+	body := streamBody([]string{
+		"# Markdown",
+		"```",
+		"> METHOD path",
+		"> Header: Request",
+		"```",
+		"```",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+	})
+	errors := make(chan error)
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(1, len(spec.Tests))
+	tests := subject.Parse(body, errors)
 
-	test := spec.Tests[0]
-	assert.Equal("Markdown", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "Markdown",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
 }
 
 func TestMarkdownDouble(t *testing.T) {
-	assert := assert.New(t)
 	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"# Markdown",
-			"## First request",
-			"```",
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-			"## Second request",
-			"```",
-			"> SECOND path",
-			"> Header: Request 2",
-			"< PROTO 1234 AGAIN",
-			"< Header: Response 2",
-			"```",
-		},
-	}
+	body := streamBody([]string{
+		"# Markdown",
+		"## First request",
+		"```",
+		"> METHOD path",
+		"> Header: Request",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+		"## Second request",
+		"```",
+		"> SECOND path",
+		"> Header: Request 2",
+		"< PROTO 1234 AGAIN",
+		"< Header: Response 2",
+		"```",
+	})
+	errors := make(chan error)
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(2, len(spec.Tests))
+	tests := subject.Parse(body, errors)
 
-	test := spec.Tests[0]
-	assert.Equal("First request", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "First request",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
 
-	test = spec.Tests[1]
-	assert.Equal("Second request", test.Name)
-	assert.Equal("SECOND", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request 2", test.Request.Headers["Header"])
-	assert.Equal(1234, test.Response.StatusCode)
-	assert.Equal("AGAIN", test.Response.StatusText)
-	assert.Equal("Response 2", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "Second request",
+		Request: fillRequest("SECOND", "path", map[string]string{
+			"Header": "Request 2",
+		}, ""),
+		Response: fillResponse(1234, "AGAIN", map[string]string{
+			"Header": "Response 2",
+		}, ""),
+	}, tests, errors)
 }
 
 func TestMarkdownTaggedCodeBlock(t *testing.T) {
-	assert := assert.New(t)
 	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"# Markdown",
-			"```tag",
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-		},
-	}
+	body := streamBody([]string{
+		"# Markdown",
+		"```tag",
+		"> METHOD path",
+		"> Header: Request",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+	})
+	errors := make(chan error)
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(1, len(spec.Tests))
+	tests := subject.Parse(body, errors)
 
-	test := spec.Tests[0]
-	assert.Equal("Markdown", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "Markdown",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
 }
 
 func TestMarkdownBlockQuote(t *testing.T) {
-	assert := assert.New(t)
 	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"# Markdown",
-			"> Quoting some spec or something",
-			"```",
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-		},
-	}
+	body := streamBody([]string{
+		"# Markdown",
+		"> Quoting some spec or something",
+		"```",
+		"> METHOD path",
+		"> Header: Request",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+	})
+	errors := make(chan error)
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(1, len(spec.Tests))
+	tests := subject.Parse(body, errors)
 
-	test := spec.Tests[0]
-	assert.Equal("Markdown", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "Markdown",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
 }
 
 func TestMarkdownFallbackName(t *testing.T) {
-	assert := assert.New(t)
 	subject := parsers.Markdown{}
-	body := loaders.Body{
-		Lines: []string{
-			"```",
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-			"```",
-		},
-	}
+	body := streamBody([]string{
+		"```",
+		"> METHOD path",
+		"> Header: Request",
+		"< PROTO 1337 STATUS TEXT",
+		"< Header: Response",
+		"```",
+	})
+	errors := make(chan error)
 
-	spec, err := subject.Parse(&body)
-	assert.Nil(err)
-	assert.NotNil(spec)
-	assert.Equal(1, len(spec.Tests))
+	tests := subject.Parse(body, errors)
 
-	test := spec.Tests[0]
-	assert.Equal("METHOD path -> 1337", test.Name)
-	assert.Equal("METHOD", test.Request.Method)
-	assert.Equal("path", test.Request.Path)
-	assert.Equal("Request", test.Request.Headers["Header"])
-	assert.Equal(1337, test.Response.StatusCode)
-	assert.Equal("STATUS TEXT", test.Response.StatusText)
-	assert.Equal("Response", test.Response.Headers["Header"])
+	assertTest(t, parsers.Test{
+		Name: "METHOD path -> 1337",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, tests, errors)
 }

@@ -3,11 +3,7 @@ package main_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	main "github.com/testdouble/diplomat"
-	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/loaders"
 	"github.com/testdouble/diplomat/mocks"
 	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/runners"
@@ -19,65 +15,17 @@ func TestEngineStart(t *testing.T) {
 	parser := &mocks.SpecParser{}
 	runner := &mocks.SpecRunner{}
 	printer := &mocks.ResultsPrinter{}
+	transforms := []transforms.Transform{}
 
-	lastSpecChannel := make(chan *parsers.Spec)
-
-	transforms := []transforms.TransformStream{
-		func(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
-			updatedSpecChannel := make(chan *parsers.Spec)
-			go func() {
-				spec := <-specChannel
-				spec.Tests = append(spec.Tests, parsers.Test{Request: &http.Request{Method: "One"}})
-				updatedSpecChannel <- spec
-			}()
-			return updatedSpecChannel, errorChannel
-		},
-		func(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
-			go func() {
-				spec := <-specChannel
-				spec.Tests = append(spec.Tests, parsers.Test{Request: &http.Request{Method: "Two"}})
-				lastSpecChannel <- spec
-			}()
-			return lastSpecChannel, errorChannel
-		},
-	}
-
-	body := new(loaders.Body)
-	spec := new(parsers.Spec)
-	result := new(runners.Result)
-
-	bodyChannel := make(chan *loaders.Body)
 	errorChannel := make(chan error)
+	bodyChannel := make(chan string)
+	testChannel := make(chan parsers.Test)
+	resultChannel := make(chan runners.TestResult)
 
-	go func() {
-		bodyChannel <- body
-	}()
-
-	specChannel := make(chan *parsers.Spec)
-	specErrorChannel := make(chan error)
-
-	go func() {
-		specChannel <- spec
-	}()
-
-	resultChannel := make(chan *runners.Result)
-	resultErrorChannel := make(chan error)
-
-	go func() {
-		resultChannel <- result
-	}()
-
-	quitChannel := make(chan int)
-	printErrorChannel := make(chan error)
-
-	go func() {
-		quitChannel <- 0
-	}()
-
-	loader.On("Stream", "test-file").Return(bodyChannel, errorChannel)
-	parser.On("Stream", bodyChannel, errorChannel).Return(specChannel, specErrorChannel)
-	runner.On("Stream", lastSpecChannel, specErrorChannel).Return(resultChannel, resultErrorChannel)
-	printer.On("Stream", resultChannel, resultErrorChannel).Return(quitChannel, printErrorChannel)
+	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
+	parser.On("Parse", bodyChannel, errorChannel).Return(testChannel)
+	runner.On("Run", testChannel, errorChannel).Return(resultChannel)
+	printer.On("Print", resultChannel, errorChannel).Return()
 
 	subject := main.Engine{
 		Loader:     loader,
@@ -87,15 +35,10 @@ func TestEngineStart(t *testing.T) {
 		Printer:    printer,
 	}
 
-	err := subject.Start("test-file")
-	if err != nil {
-		t.Fatalf("Failed with: %v", err)
-	}
+	subject.Start("test-file", errorChannel)
 
 	loader.AssertExpectations(t)
 	parser.AssertExpectations(t)
 	runner.AssertExpectations(t)
 	printer.AssertExpectations(t)
-
-	assert.Equal(t, len(spec.Tests), 2)
 }

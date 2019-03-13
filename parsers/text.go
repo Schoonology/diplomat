@@ -2,8 +2,6 @@ package parsers
 
 import (
 	"fmt"
-
-	"github.com/testdouble/diplomat/loaders"
 )
 
 // PlainTextParser parses all provided text as-is.
@@ -18,41 +16,26 @@ func fallbackTestName(test *Test) {
 }
 
 // Parse parses all lines in `body`.
-func (m *PlainTextParser) Parse(body *loaders.Body) (*Spec, error) {
+func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan Test {
 	state := newParserState()
 	state.finalizer = fallbackTestName
 
-	for _, line := range body.Lines {
-		err := state.addLine(line)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return state.finalize()
-}
-
-// Stream parses a streamed body
-func (m *PlainTextParser) Stream(bodyChannel chan *loaders.Body, errorChannel chan error) (chan *Spec, chan error) {
-	c := make(chan *Spec)
-	e := make(chan error)
-
 	go func() {
-		var body *loaders.Body
-		select {
-		case body = <-bodyChannel:
-		case err := <-errorChannel:
-			e <- err
+		for line := range lines {
+			err := state.addLine(line)
+			if err != nil {
+				errors <- err
+				close(state.tests)
+				return
+			}
+		}
+
+		err := state.finalize()
+		if err != nil {
+			errors <- err
 			return
 		}
-
-		spec, err := m.Parse(body)
-		if err != nil {
-			e <- err
-		}
-
-		c <- spec
 	}()
 
-	return c, e
+	return state.tests
 }

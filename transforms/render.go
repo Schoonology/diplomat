@@ -90,63 +90,29 @@ func renderBodies(test *parsers.Test) error {
 
 // RenderTemplates renders all the Headers and Bodies in all the Tests in the
 // given `spec`.
-func RenderTemplates(spec *parsers.Spec) error {
-	for _, test := range spec.Tests {
-		if err := renderAllHeaders(test.Request.Headers); err != nil {
-			return err
-		}
-		if err := renderAllHeaders(test.Response.Headers); err != nil {
-			return err
-		}
-		if err := renderBodies(&test); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-// RenderTemplatesImmutable renders all the Headers and Bodies in all the Tests in the
-// given `spec`.
-// TODO: Consolidate all of this
-func RenderTemplatesImmutable(spec *parsers.Spec) (*parsers.Spec, error) {
-	for _, test := range spec.Tests {
-		if err := renderAllHeaders(test.Request.Headers); err != nil {
-			return nil, err
-		}
-		if err := renderAllHeaders(test.Response.Headers); err != nil {
-			return nil, err
-		}
-		if err := renderBodies(&test); err != nil {
-			return nil, err
-		}
-	}
-
-	return spec, nil
-}
-
-// RenderTemplatesStream updates a stream of specs using RenderTemplates.
-// given `specChannel`.
-func RenderTemplatesStream(specChannel chan *parsers.Spec, errorChannel chan error) (chan *parsers.Spec, chan error) {
-	c := make(chan *parsers.Spec)
-	e := make(chan error)
+func RenderTemplates(tests chan parsers.Test, errors chan error) chan parsers.Test {
+	output := make(chan parsers.Test)
 
 	go func() {
-		var spec *parsers.Spec
-		select {
-		case spec = <-specChannel:
-		case err := <-errorChannel:
-			e <- err
-			return
+		for test := range tests {
+			if err := renderAllHeaders(test.Request.Headers); err != nil {
+				errors <- err
+				return
+			}
+			if err := renderAllHeaders(test.Response.Headers); err != nil {
+				errors <- err
+				return
+			}
+			if err := renderBodies(&test); err != nil {
+				errors <- err
+				return
+			}
+
+			output <- test
 		}
 
-		updatedSpec, err := RenderTemplatesImmutable(spec)
-		if err != nil {
-			e <- err
-		}
-
-		c <- updatedSpec
+		close(output)
 	}()
 
-	return c, e
+	return output
 }

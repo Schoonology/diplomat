@@ -41,33 +41,23 @@ Args:
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
-	Transforms []transforms.TransformStream
+	Transforms []transforms.Transform
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
 }
 
 // Start runs the Engine.
-func (r *Engine) Start(filename string) error {
-	// TODO: Use a single error channel passed to each function
+func (r *Engine) Start(filename string, errors chan error) {
+	lineChannel := r.Loader.Load(filename, errors)
+	testChannel := r.Parser.Parse(lineChannel, errors)
 
-	loadChannel, errorChannel := r.Loader.Stream(filename)
-	parseChannel, errorChannel := r.Parser.Stream(loadChannel, errorChannel)
-
-	specChannel := parseChannel
 	for _, transform := range r.Transforms {
-		// TODO: transform is currently returning the passed in errorChannel
-		specChannel, errorChannel = transform(specChannel, errorChannel)
+		testChannel = transform(testChannel, errors)
 	}
 
-	runChannel, errorChannel := r.Runner.Stream(specChannel, errorChannel)
-	quit, errorChannel := r.Printer.Stream(runChannel, errorChannel)
+	resultChannel := r.Runner.Run(testChannel, errors)
 
-	select {
-	case err := <-errorChannel:
-		return err
-	case <-quit:
-		return nil
-	}
+	r.Printer.Print(resultChannel, errors)
 }
 
 func main() {
@@ -96,8 +86,8 @@ func main() {
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(*filename),
-		Transforms: []transforms.TransformStream{
-			transforms.RenderTemplatesStream,
+		Transforms: []transforms.Transform{
+			transforms.RenderTemplates,
 		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(*address),
@@ -106,8 +96,11 @@ func main() {
 		Printer: printer,
 	}
 
-	err := engine.Start(*filename)
-	if err != nil {
+	errorStream := make(chan error)
+
+	engine.Start(*filename, errorStream)
+
+	for err := range errorStream {
 		errors.Display(err)
 		os.Exit(3)
 	}

@@ -11,41 +11,7 @@ type ResultsPrinter struct {
 	mock.Mock
 }
 
-// Print provides a mock function with given fields: _a0
-func (_m *ResultsPrinter) Print(_a0 *runners.Result) error {
-	ret := _m.Called(_a0)
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*runners.Result) error); ok {
-		r0 = rf(_a0)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
-// Stream provides a mock function with given fields: _a0, _a1
-func (_m *ResultsPrinter) Stream(_a0 chan *runners.Result, _a1 chan error) (chan int, chan error) {
-	ret := _m.Called(_a0, _a1)
-
-	var r0 chan int
-	if rf, ok := ret.Get(0).(func(chan *runners.Result, chan error) chan int); ok {
-		r0 = rf(_a0, _a1)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(chan int)
-		}
-	}
-
-	var r1 chan error
-	if rf, ok := ret.Get(1).(func(chan *runners.Result, chan error) chan error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(chan error)
-		}
-	}
-
-	return r0, r1
+// Print provides a mock function with given fields: _a0, _a1
+func (_m *ResultsPrinter) Print(_a0 chan runners.TestResult, _a1 chan error) {
+	_m.Called(_a0, _a1)
 }

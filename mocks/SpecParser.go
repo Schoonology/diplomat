@@ -2,7 +2,6 @@
 
 package mocks
 
-import loaders "github.com/testdouble/diplomat/loaders"
 import mock "github.com/stretchr/testify/mock"
 import parsers "github.com/testdouble/diplomat/parsers"
 
@@ -11,50 +10,18 @@ type SpecParser struct {
 	mock.Mock
 }
 
-// Parse provides a mock function with given fields: _a0
-func (_m *SpecParser) Parse(_a0 *loaders.Body) (*parsers.Spec, error) {
-	ret := _m.Called(_a0)
-
-	var r0 *parsers.Spec
-	if rf, ok := ret.Get(0).(func(*loaders.Body) *parsers.Spec); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*parsers.Spec)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(*loaders.Body) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// Stream provides a mock function with given fields: _a0, _a1
-func (_m *SpecParser) Stream(_a0 chan *loaders.Body, _a1 chan error) (chan *parsers.Spec, chan error) {
+// Parse provides a mock function with given fields: _a0, _a1
+func (_m *SpecParser) Parse(_a0 chan string, _a1 chan error) chan parsers.Test {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 chan *parsers.Spec
-	if rf, ok := ret.Get(0).(func(chan *loaders.Body, chan error) chan *parsers.Spec); ok {
+	var r0 chan parsers.Test
+	if rf, ok := ret.Get(0).(func(chan string, chan error) chan parsers.Test); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(chan *parsers.Spec)
+			r0 = ret.Get(0).(chan parsers.Test)
 		}
 	}
 
-	var r1 chan error
-	if rf, ok := ret.Get(1).(func(chan *loaders.Body, chan error) chan error); ok {
-		r1 = rf(_a0, _a1)
-	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(chan error)
-		}
-	}
-
-	return r0, r1
+	return r0
 }

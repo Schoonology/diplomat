@@ -92,27 +92,35 @@ func renderBodies(test *parsers.Test) error {
 	return nil
 }
 
-// Transform renders all the Headers and Bodies in all the Tests in the
+// Transform renders all the Headers and Bodies in a single Test.
+func (*TemplateRenderer) Transform(test parsers.Test) (parsers.Test, error) {
+	if err := renderAllHeaders(test.Request.Headers); err != nil {
+		return test, err
+	}
+	if err := renderAllHeaders(test.Response.Headers); err != nil {
+		return test, err
+	}
+	if err := renderBodies(&test); err != nil {
+		return test, err
+	}
+
+	return test, nil
+}
+
+// TransformAll renders all the Headers and Bodies in all the Tests in the
 // provided channel.
-func (*TemplateRenderer) Transform(tests chan parsers.Test, errors chan error) chan parsers.Test {
+func (renderer *TemplateRenderer) TransformAll(tests chan parsers.Test, errors chan error) chan parsers.Test {
 	output := make(chan parsers.Test)
 
 	go func() {
 		for test := range tests {
-			if err := renderAllHeaders(test.Request.Headers); err != nil {
-				errors <- err
-				return
-			}
-			if err := renderAllHeaders(test.Response.Headers); err != nil {
-				errors <- err
-				return
-			}
-			if err := renderBodies(&test); err != nil {
+			rendered, err := renderer.Transform(test)
+			if err != nil {
 				errors <- err
 				return
 			}
 
-			output <- test
+			output <- rendered
 		}
 
 		close(output)

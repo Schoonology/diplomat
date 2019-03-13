@@ -52,7 +52,7 @@ func (r *Engine) Start(filename string, errors chan error) {
 	testChannel := r.Parser.Parse(lineChannel, errors)
 
 	for _, transformer := range r.Transforms {
-		testChannel = transformer.Transform(testChannel, errors)
+		testChannel = transformer.TransformAll(testChannel, errors)
 	}
 
 	resultChannel := r.Runner.Run(testChannel, errors)

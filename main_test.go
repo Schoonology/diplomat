@@ -27,8 +27,8 @@ func TestEngineStart(t *testing.T) {
 
 	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
 	parser.On("Parse", bodyChannel, errorChannel).Return(testChannel)
-	firstTransformer.On("Transform", testChannel, errorChannel).Return(firstTransformerChannel)
-	secondTransformer.On("Transform", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)
+	firstTransformer.On("TransformAll", testChannel, errorChannel).Return(firstTransformerChannel)
+	secondTransformer.On("TransformAll", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)
 	runner.On("Run", secondTransformerChannel, errorChannel).Return(resultChannel)
 	printer.On("Print", resultChannel, errorChannel).Return()
 

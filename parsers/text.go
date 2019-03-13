@@ -15,7 +15,9 @@ func fallbackTestName(test *Test) {
 		test.Response.StatusCode)
 }
 
-// Parse parses all lines in `body`.
+// Parse parses all the lines received over the provided channel, parsing
+// them into Tests it sends over the returned channel.
+// It sends any errors encountered over the errors channel.
 func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan Test {
 	state := newParserState()
 	state.finalizer = fallbackTestName

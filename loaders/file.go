@@ -8,7 +8,9 @@ import (
 // FileLoader loads all lines in a file.
 type FileLoader struct{}
 
-// Load returns all lines from the provided `filename`.
+// Load sends all lines from the provided `filename` along the returned
+// channel, closing the channel once all lines have been sent.
+// Load sends any errors to the provided error channel.
 func (l *FileLoader) Load(filename string, errors chan error) chan string {
 	lines := make(chan string)
 

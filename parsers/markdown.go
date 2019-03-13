@@ -14,7 +14,9 @@ const (
 	inCodeFence
 )
 
-// Parse parses all lines in `body`.
+// Parse parses all the lines received over the provided channel, parsing
+// them into Tests it sends over the returned channel.
+// It sends any errors encountered over the errors channel.
 func (m *Markdown) Parse(lines chan string, errors chan error) chan Test {
 	state := newParserState()
 

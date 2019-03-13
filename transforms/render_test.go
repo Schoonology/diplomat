@@ -44,9 +44,10 @@ func TestRenderHeaders(t *testing.T) {
 			},
 		},
 	}})
+	subject := new(transforms.TemplateRenderer)
 	errors := make(chan error)
 
-	rendered := transforms.RenderTemplates(tests, errors)
+	rendered := subject.Transform(tests, errors)
 
 	assertTest(t, parsers.Test{
 		Request: &http.Request{
@@ -67,9 +68,10 @@ func TestRenderBodies(t *testing.T) {
 			Body: []byte("{{ __test }}"),
 		},
 	}})
+	subject := new(transforms.TemplateRenderer)
 	errors := make(chan error)
 
-	rendered := transforms.RenderTemplates(tests, errors)
+	rendered := subject.Transform(tests, errors)
 
 	assertTest(t, parsers.Test{
 		Request: &http.Request{

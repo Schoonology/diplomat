@@ -4,5 +4,7 @@ import (
 	"github.com/testdouble/diplomat/parsers"
 )
 
-// Transform mutates a Test, returning the mutated Test.
-type Transform func(chan parsers.Test, chan error) chan parsers.Test
+// Transformer is capable of mutating Tests.
+type Transformer interface {
+	Transform(chan parsers.Test, chan error) chan parsers.Test
+}

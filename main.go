@@ -41,7 +41,7 @@ Args:
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
-	Transforms []transforms.Transform
+	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
 }
@@ -51,8 +51,8 @@ func (r *Engine) Start(filename string, errors chan error) {
 	lineChannel := r.Loader.Load(filename, errors)
 	testChannel := r.Parser.Parse(lineChannel, errors)
 
-	for _, transform := range r.Transforms {
-		testChannel = transform(testChannel, errors)
+	for _, transformer := range r.Transforms {
+		testChannel = transformer.Transform(testChannel, errors)
 	}
 
 	resultChannel := r.Runner.Run(testChannel, errors)
@@ -86,8 +86,8 @@ func main() {
 	engine := Engine{
 		Loader: &loaders.FileLoader{},
 		Parser: parsers.GetParserFromFileName(*filename),
-		Transforms: []transforms.Transform{
-			transforms.RenderTemplates,
+		Transforms: []transforms.Transformer{
+			&transforms.TemplateRenderer{},
 		},
 		Runner: &runners.Serial{
 			Client: http.NewClient(*address),

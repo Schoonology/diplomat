@@ -15,24 +15,32 @@ func TestEngineStart(t *testing.T) {
 	parser := &mocks.SpecParser{}
 	runner := &mocks.SpecRunner{}
 	printer := &mocks.ResultsPrinter{}
-	transforms := []transforms.Transform{}
+	firstTransformer := &mocks.Transformer{}
+	secondTransformer := &mocks.Transformer{}
 
 	errorChannel := make(chan error)
 	bodyChannel := make(chan string)
 	testChannel := make(chan parsers.Test)
+	firstTransformerChannel := make(chan parsers.Test)
+	secondTransformerChannel := make(chan parsers.Test)
 	resultChannel := make(chan runners.TestResult)
 
 	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
 	parser.On("Parse", bodyChannel, errorChannel).Return(testChannel)
-	runner.On("Run", testChannel, errorChannel).Return(resultChannel)
+	firstTransformer.On("Transform", testChannel, errorChannel).Return(firstTransformerChannel)
+	secondTransformer.On("Transform", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)
+	runner.On("Run", secondTransformerChannel, errorChannel).Return(resultChannel)
 	printer.On("Print", resultChannel, errorChannel).Return()
 
 	subject := main.Engine{
-		Loader:     loader,
-		Parser:     parser,
-		Transforms: transforms,
-		Runner:     runner,
-		Printer:    printer,
+		Loader: loader,
+		Parser: parser,
+		Transforms: []transforms.Transformer{
+			firstTransformer,
+			secondTransformer,
+		},
+		Runner:  runner,
+		Printer: printer,
 	}
 
 	subject.Start("test-file", errorChannel)

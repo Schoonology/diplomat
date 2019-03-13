@@ -9,6 +9,10 @@ import (
 
 var templateChunk *regexp.Regexp
 
+// TemplateRenderer renders all the Headers and Bodies in all the Tests in the
+// provided channel.
+type TemplateRenderer struct{}
+
 func init() {
 	templateChunk = regexp.MustCompilePOSIX("{{ ([^}]+) }}")
 }
@@ -88,9 +92,9 @@ func renderBodies(test *parsers.Test) error {
 	return nil
 }
 
-// RenderTemplates renders all the Headers and Bodies in all the Tests in the
-// given `spec`.
-func RenderTemplates(tests chan parsers.Test, errors chan error) chan parsers.Test {
+// Transform renders all the Headers and Bodies in all the Tests in the
+// provided channel.
+func (*TemplateRenderer) Transform(tests chan parsers.Test, errors chan error) chan parsers.Test {
 	output := make(chan parsers.Test)
 
 	go func() {

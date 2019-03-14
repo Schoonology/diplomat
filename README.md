@@ -62,7 +62,7 @@ brew install bats
 brew install go
 ```
 
-In order to develop on this repository, you'll also need to install Docker.
+In order to develop on this repository, you'll also need to install Docker. By default, we use a Docker image version of [`httpbin`](https://httpbin.org/) to make requests for the `bats` tests. If you prefer not to use Docker, change the value of `TEST_HOST` in `test/helpers/helpers.bash` to point to `https://httpbin.org`.
 
 ### Watch Code and Run Tests
 
@@ -83,3 +83,7 @@ If you add or modify any `type`s, you will need to regenerate the mocks.
 ```sh
 make generate
 ```
+
+## Code of Conduct
+
+This project follows Test Double's [code of conduct](https://testdouble.com/code-of-conduct) for all community interactions, including (but not limited to) one-on-one communications, public posts/comments, code reviews, pull requests, and GitHub issues. If violations occur, Test Double will take any action they deem appropriate for the infraction, up to and including blocking a user from the organization's repositories.

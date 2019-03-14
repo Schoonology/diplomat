@@ -74,10 +74,6 @@ func (s *State) Build(lines []string) (parsers.Test, error) {
 	test := parsers.Test{}
 
 	for _, line := range lines {
-		// log.Println(mode)
-		// log.Println(line)
-		// log.Println("")
-
 		char := byte(0)
 		trimmedLine := ""
 

@@ -6,7 +6,7 @@ import (
 
 // A SpecParser is capable of parsing all lines in `body`.
 type SpecParser interface {
-	Parse(chan string, chan error) chan Test
+	Parse(chan string, chan error) chan []string
 }
 
 // Test contains a name, request, and expected response.

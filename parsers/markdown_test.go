@@ -3,32 +3,8 @@ package parsers_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/testdouble/diplomat/parsers"
 )
-
-func streamBody(body []string) chan string {
-	lines := make(chan string)
-
-	go func() {
-		for _, line := range body {
-			lines <- line
-		}
-
-		close(lines)
-	}()
-
-	return lines
-}
-
-func assertTest(t *testing.T, expected parsers.Spec, specs chan parsers.Spec, errors chan error) {
-	select {
-	case err := <-errors:
-		assert.FailNow(t, "Error should not exist.", err)
-	case spec := <-specs:
-		assert.Equal(t, expected, spec)
-	}
-}
 
 func TestMarkdownText(t *testing.T) {
 	subject := parsers.Markdown{}
@@ -46,8 +22,8 @@ func TestMarkdownText(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"Markdown",
-		[]string{
+		Name: "Markdown",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -110,8 +86,8 @@ func TestMarkdownDouble(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"First request",
-		[]string{
+		Name: "First request",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -120,8 +96,8 @@ func TestMarkdownDouble(t *testing.T) {
 	}, specs, errors)
 
 	assertTest(t, parsers.Spec{
-		"Second request",
-		[]string{
+		Name: "Second request",
+		Body: []string{
 			"> SECOND path",
 			"> Header: Request 2",
 			"< PROTO 1234 AGAIN",
@@ -146,8 +122,8 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"Markdown",
-		[]string{
+		Name: "Markdown",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -173,8 +149,8 @@ func TestMarkdownBlockQuote(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"Markdown",
-		[]string{
+		Name: "Markdown",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",

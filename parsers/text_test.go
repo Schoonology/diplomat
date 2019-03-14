@@ -20,8 +20,8 @@ func TestLoadText(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -88,8 +88,8 @@ func TestSingleLineBody(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -116,8 +116,8 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -143,8 +143,8 @@ func TestMissingBracket(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"< PROTO 1337 STATUS TEXT",
@@ -169,8 +169,8 @@ func TestCommentsAboveSpec(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"comments!!",
 			"> METHOD path",
 			"> Header: Request",
@@ -197,8 +197,8 @@ func TestRequestBody(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
+		Name: "",
+		Body: []string{
 			"> METHOD path",
 			"> Header: Request",
 			"Some request body",

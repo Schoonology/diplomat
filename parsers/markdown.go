@@ -45,6 +45,10 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 			}
 		}
 
+		if len(spec.Body) != 0 {
+			c <- spec
+		}
+
 		close(c)
 	}()
 

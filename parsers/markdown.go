@@ -5,9 +5,7 @@ import (
 )
 
 // The Markdown parser parses all lines inside of code fences (```).
-type Markdown struct {
-	plainText PlainTextParser
-}
+type Markdown struct{}
 
 const (
 	inRichText = iota

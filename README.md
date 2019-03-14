@@ -41,6 +41,125 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 - Dredd
 - Roll-your-own
 
+## Usage
+
+### Writing Specifications
+
+In order to define a test in Diplomat, you'll need to provide what we call a _specification_. A specification is a file containing a request and its expected response.
+
+Here's an extremely simple specification, that just checks for a status code (`examples/simple/pass.txt`):
+
+```
+You can put any amount of text above the specification in a text file.
+Like comments, it will be ignored by the parser.
+
+> GET /status/200 HTTP/1.1
+>
+< HTTP/1.1 200 OK
+< Content-Length: 0
+<
+```
+
+To run this specification as a test using Diplomat:
+
+```
+$ bin/diplomat examples/simple/pass.txt https://httpbin.org
+GET /status/200 -> 200
+```
+
+The command doesn't output any diff information, which means the test passed. Let's look at a specification that we know will fail (`examples/simple/fail.txt`):
+
+```
+We don't expect this specification to pass, because the status code and text don't match!
+
+> GET /status/200 HTTP/1.1
+>
+< HTTP/1.1 422 UNPROCESSABLE ENTITY
+< Content-Length: 0
+<
+```
+
+```
+$ bin/diplomat examples/simple/fail.txt https://httpbin.org
+GET /status/200 -> 422
+Status:
+        - 422 UNPROCESSABLE ENTITY
+        + 200 OK
+```
+
+Running this specification through Diplomat provides output that `Status` is not expected.
+
+Currently supported file extensions for specifications: `.txt`, `.md`, `.markdown`.
+
+### Using Curl to Generate Specifications
+
+Something we've kept in mind while developing this project is the concept of [runnable documentation](https://github.blog/2015-10-06-runnable-documentation/). The idea is that a Diplomat specification can be both documentation _and_ a test file. You can build and check in specifications alongside your source code, or create a quick one-off file that can be attached to a ticket to demonstrate an issue.
+
+Specification syntax is based on the output you get from [`curl`'s `--verbose` option](https://ec.haxx.se/usingcurl-verbose.html). This means that you can quickly generate specifications from real API calls using `curl`.
+
+For example:
+
+```
+$ curl --verbose https://httpbin.org/status/422
+*   Trying 3.85.154.144...
+* TCP_NODELAY set
+* Connected to httpbin.org (3.85.154.144) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* successfully set certificate verify locations:
+*   CAfile: /etc/ssl/cert.pem
+  CApath: none
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS change cipher, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server did not agree to a protocol
+* Server certificate:
+*  subject: CN=httpbin.org
+*  start date: Feb 17 00:00:00 2019 GMT
+*  expire date: Mar 17 12:00:00 2020 GMT
+*  subjectAltName: host "httpbin.org" matched cert's "httpbin.org"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+> GET /status/422 HTTP/1.1
+> Host: httpbin.org
+> User-Agent: curl/7.54.0
+> Accept: */*
+> 
+< HTTP/1.1 422 UNPROCESSABLE ENTITY
+< Access-Control-Allow-Credentials: true
+< Access-Control-Allow-Origin: *
+< Content-Type: text/html; charset=utf-8
+< Date: Thu, 14 Mar 2019 20:48:15 GMT
+< Server: nginx
+< Content-Length: 0
+< Connection: keep-alive
+< 
+* Connection #0 to host httpbin.org left intact
+```
+
+If you look at the `curl --verbose` output above, you'll notice that the sections prefixed by `>` and `<` look like the specification above. Simply delete any line starting with `*`, and any headers you don't need to verify.
+
+### Advanced Diffs
+
+Coming Soon!
+
+### CLI Options
+
+Coming Soon!
+
+### Using Lua to Customize Specifications
+
+Coming Soon!
+
 ## Development
 
 ### Get the Source Code

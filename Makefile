@@ -1,13 +1,13 @@
 .PHONY: format lint watch clean e2e test generate install
 
-bin/diplomat: main.go */*.go */*/*.go
-	go build -o bin/diplomat
+bin/diplomat: src/main.go src/*/*.go src/*/*/*.go
+	cd src && go build -o ../bin/diplomat
 
 install: bin/diplomat
 	ln -sf `pwd`/bin/diplomat /usr/local/bin/diplomat
 
 format:
-	@go fmt ./...
+	cd src && go fmt ./...
 
 bin/golint:
 	GOBIN=`pwd`/bin go get golang.org/x/lint/golint
@@ -19,11 +19,11 @@ bin/templify:
 	GOBIN=`pwd`/bin go get github.com/wlbr/templify
 
 generate: bin/mockery bin/templify
-	bin/mockery -all
+	cd src && ../bin/mockery -all
 	go generate ./...
 
 lint: bin/golint
-	@bin/golint -set_exit_status ./...
+	bin/golint -set_exit_status ./...
 
 watch:
 	rg --files | entr -rc sh -c "make format && make bin/diplomat && make test && make e2e && make lint"
@@ -46,4 +46,4 @@ e2e:
 	echo | bats --pretty test/*.bats
 
 test:
-	@go test ./...
+	cd src && go test ./...

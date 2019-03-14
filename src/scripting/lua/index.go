@@ -1,8 +1,8 @@
 // Package lua contains all pre-packaged scripts: templates, validators, etc.
 //
-//go:generate ../../bin/templify -p lua generate.lua
-//go:generate ../../bin/templify -p lua util.lua
-//go:generate ../../bin/templify -p lua validate.lua
+//go:generate ../../../bin/templify -p lua generate.lua
+//go:generate ../../../bin/templify -p lua util.lua
+//go:generate ../../../bin/templify -p lua validate.lua
 package lua
 
 import (

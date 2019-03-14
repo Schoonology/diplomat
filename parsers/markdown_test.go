@@ -21,7 +21,7 @@ func streamBody(body []string) chan string {
 	return lines
 }
 
-func assertTest(t *testing.T, expected []string, specs chan []string, errors chan error) {
+func assertTest(t *testing.T, expected parsers.Spec, specs chan parsers.Spec, errors chan error) {
 	select {
 	case err := <-errors:
 		assert.FailNow(t, "Error should not exist.", err)
@@ -45,11 +45,14 @@ func TestMarkdownText(t *testing.T) {
 
 	specs := subject.Parse(body, errors)
 
-	assertTest(t, []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}, specs, errors)
 	// TODO(schoon) - Assert that the channel is closed here.
 }
@@ -106,18 +109,24 @@ func TestMarkdownDouble(t *testing.T) {
 
 	specs := subject.Parse(body, errors)
 
-	assertTest(t, []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}, specs, errors)
 
-	assertTest(t, []string{
-		"> SECOND path",
-		"> Header: Request 2",
-		"< PROTO 1234 AGAIN",
-		"< Header: Response 2",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> SECOND path",
+			"> Header: Request 2",
+			"< PROTO 1234 AGAIN",
+			"< Header: Response 2",
+		},
 	}, specs, errors)
 }
 
@@ -136,11 +145,14 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 
 	specs := subject.Parse(body, errors)
 
-	assertTest(t, []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}, specs, errors)
 }
 
@@ -160,11 +172,14 @@ func TestMarkdownBlockQuote(t *testing.T) {
 
 	specs := subject.Parse(body, errors)
 
-	assertTest(t, []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}, specs, errors)
 }
 
@@ -182,10 +197,13 @@ func TestMarkdownFallbackName(t *testing.T) {
 
 	specs := subject.Parse(body, errors)
 
-	assertTest(t, []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	assertTest(t, parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}, specs, errors)
 }

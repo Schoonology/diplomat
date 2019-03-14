@@ -7,6 +7,7 @@ import (
 	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
+	"github.com/testdouble/diplomat/parsers"
 )
 
 func assertTest(t *testing.T, expected builders.Test, actual builders.Test, err error) {
@@ -37,11 +38,14 @@ func fillResponse(code int, status string, headers map[string]string, body strin
 
 func TestNoBody(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+		},
 	}
 
 	test, err := subject.Build(body)
@@ -58,13 +62,16 @@ func TestNoBody(t *testing.T) {
 
 func TestSingleLineBody(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"<",
-		"Some response body",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"Some response body",
+		},
 	}
 
 	test, err := subject.Build(body)
@@ -81,14 +88,17 @@ func TestSingleLineBody(t *testing.T) {
 
 func TestMultiLineBodyWithIndentation(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"<",
-		"This is the first line",
-		"  This is the second line",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"This is the first line",
+			"  This is the second line",
+		},
 	}
 
 	test, err := subject.Build(body)
@@ -105,12 +115,15 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 
 func TestMissingBracket(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"Some response body",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"Some response body",
+		},
 	}
 
 	test, err := subject.Build(body)
@@ -127,14 +140,17 @@ func TestMissingBracket(t *testing.T) {
 
 func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"<",
-		"This is the first line",
-		"<   This is the second line",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"This is the first line",
+			"<   This is the second line",
+		},
 	}
 
 	_, err := subject.Build(body)
@@ -145,14 +161,17 @@ func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 
 func TestRequestBody(t *testing.T) {
 	subject := builders.State{}
-	body := []string{
-		"> METHOD path",
-		"> Header: Request",
-		"Some request body",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"<",
-		"Some response body",
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+			"Some request body",
+			"< PROTO 1337 STATUS TEXT",
+			"< Header: Response",
+			"<",
+			"Some response body",
+		},
 	}
 
 	test, err := subject.Build(body)

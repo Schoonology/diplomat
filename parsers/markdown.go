@@ -17,11 +17,11 @@ const (
 // Parse parses all the lines received over the provided channel, parsing
 // them into Tests it sends over the returned channel.
 // It sends any errors encountered over the errors channel.
-func (m *Markdown) Parse(lines chan string, errors chan error) chan []string {
-	c := make(chan []string)
+func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
+	c := make(chan Spec)
 
 	go func() {
-		spec := []string{}
+		spec := Spec{}
 		mode := inRichText
 		// thisTestName := ""
 		// nextTestName := ""
@@ -45,13 +45,13 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan []string {
 					mode = inCodeFence
 				} else if mode == inCodeFence {
 					c <- spec
-					spec = []string{}
+					spec = Spec{}
 					mode = inRichText
 				} else {
 					mode = inRichText
 				}
 			case mode == inCodeFence:
-				spec = append(spec, line)
+				spec.Body = append(spec.Body, line)
 				// case strings.HasPrefix(trimmedLine, "#"):
 				// 	name := strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 

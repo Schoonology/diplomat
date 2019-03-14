@@ -14,19 +14,19 @@ type PlainTextParser struct{}
 // Parse parses all the lines received over the provided channel, parsing
 // them into Tests it sends over the returned channel.
 // It sends any errors encountered over the errors channel.
-func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan []string {
-	c := make(chan []string)
+func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan Spec {
+	c := make(chan Spec)
 	// state := newParserState()
 	// state.finalizer = fallbackTestName
 
 	go func() {
-		spec := []string{}
+		spec := Spec{}
 
 		for line := range lines {
-			spec = append(spec, line)
+			spec.Body = append(spec.Body, line)
 		}
 
-		if len(spec) > 0 {
+		if len(spec.Body) > 0 {
 			c <- spec
 		}
 

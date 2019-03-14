@@ -23,18 +23,6 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 	go func() {
 		spec := Spec{}
 		mode := inRichText
-		// thisTestName := ""
-		// nextTestName := ""
-		// state.finalizer = func(test *Test) {
-		// 	if len(thisTestName) == 0 {
-		// 		fallbackTestName(test)
-		// 	} else {
-		// 		test.Name = thisTestName
-		// 	}
-
-		// 	thisTestName = nextTestName
-		// 	nextTestName = ""
-		// }
 
 		for line := range lines {
 			trimmedLine := strings.TrimSpace(line)
@@ -52,23 +40,12 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 				}
 			case mode == inCodeFence:
 				spec.Body = append(spec.Body, line)
-				// case strings.HasPrefix(trimmedLine, "#"):
-				// 	name := strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
-
-				// 	if state.mode == modeAwaitingRequest {
-				// 		thisTestName = name
-				// 	} else {
-				// 		nextTestName = name
-				// 	}
+			case strings.HasPrefix(trimmedLine, "#"):
+				spec.Name = strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 			}
 		}
 
 		close(c)
-
-		// err := state.finalize()
-		// if err != nil {
-		// 	errors <- err
-		// }
 	}()
 
 	return c

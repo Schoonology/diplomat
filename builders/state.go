@@ -1,6 +1,7 @@
 package builders
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -68,10 +69,20 @@ func responseFromLine(line string) (*http.Response, error) {
 	return http.NewResponse(code, strings.Join(pieces[2:], " ")), nil
 }
 
+func fallbackTestName(test Test) string {
+	return fmt.Sprintf(
+		"%s %s -> %d",
+		test.Request.Method,
+		test.Request.Path,
+		test.Response.StatusCode)
+}
+
 // Build parses a set of lines into a test.
 func (s *State) Build(spec parsers.Spec) (Test, error) {
 	mode := modeAwaitingRequest
-	test := Test{}
+	test := Test{
+		Name: spec.Name,
+	}
 
 	for _, line := range spec.Body {
 		char := byte(0)
@@ -135,6 +146,10 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 			mode = modeInResponseBody
 			test.Response.Body = append(test.Response.Body, []byte(line+"\n")...)
 		}
+	}
+
+	if len(test.Name) == 0 {
+		test.Name = fallbackTestName(test)
 	}
 
 	return test, nil

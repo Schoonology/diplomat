@@ -51,6 +51,7 @@ func TestNoBody(t *testing.T) {
 	test, err := subject.Build(body)
 
 	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -77,6 +78,7 @@ func TestSingleLineBody(t *testing.T) {
 	test, err := subject.Build(body)
 
 	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -104,6 +106,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 	test, err := subject.Build(body)
 
 	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -129,6 +132,7 @@ func TestMissingBracket(t *testing.T) {
 	test, err := subject.Build(body)
 
 	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -177,6 +181,7 @@ func TestRequestBody(t *testing.T) {
 	test, err := subject.Build(body)
 
 	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, "Some request body\n"),

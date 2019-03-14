@@ -46,7 +46,7 @@ func TestMarkdownText(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
+		"Markdown",
 		[]string{
 			"> METHOD path",
 			"> Header: Request",
@@ -110,7 +110,7 @@ func TestMarkdownDouble(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
+		"First request",
 		[]string{
 			"> METHOD path",
 			"> Header: Request",
@@ -120,7 +120,7 @@ func TestMarkdownDouble(t *testing.T) {
 	}, specs, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
+		"Second request",
 		[]string{
 			"> SECOND path",
 			"> Header: Request 2",
@@ -146,7 +146,7 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
+		"Markdown",
 		[]string{
 			"> METHOD path",
 			"> Header: Request",
@@ -173,32 +173,7 @@ func TestMarkdownBlockQuote(t *testing.T) {
 	specs := subject.Parse(body, errors)
 
 	assertTest(t, parsers.Spec{
-		"",
-		[]string{
-			"> METHOD path",
-			"> Header: Request",
-			"< PROTO 1337 STATUS TEXT",
-			"< Header: Response",
-		},
-	}, specs, errors)
-}
-
-func TestMarkdownFallbackName(t *testing.T) {
-	subject := parsers.Markdown{}
-	body := streamBody([]string{
-		"```",
-		"> METHOD path",
-		"> Header: Request",
-		"< PROTO 1337 STATUS TEXT",
-		"< Header: Response",
-		"```",
-	})
-	errors := make(chan error)
-
-	specs := subject.Parse(body, errors)
-
-	assertTest(t, parsers.Spec{
-		"",
+		"Markdown",
 		[]string{
 			"> METHOD path",
 			"> Header: Request",

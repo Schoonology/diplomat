@@ -148,6 +148,12 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 		}
 	}
 
+	if test.Request == nil {
+		return test, &errors.MissingRequest{}
+	}
+	if test.Response == nil {
+		return test, &errors.MissingResponse{}
+	}
 	if len(test.Name) == 0 {
 		test.Name = fallbackTestName(test)
 	}

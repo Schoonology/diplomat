@@ -190,3 +190,34 @@ func TestRequestBody(t *testing.T) {
 		}, "Some response body\n"),
 	}, test, err)
 }
+
+func TestRequestOnly(t *testing.T) {
+	subject := builders.State{}
+	body := parsers.Spec{
+		"",
+		[]string{
+			"> METHOD path",
+			"> Header: Request",
+		},
+	}
+
+	_, err := subject.Build(body)
+
+	assert.Equal(t, &errors.MissingResponse{}, err)
+}
+
+func TestResponseOnly(t *testing.T) {
+	subject := builders.State{}
+	body := parsers.Spec{
+		"",
+		[]string{
+			"< HTTP/1.1 200 OK",
+			"< Content-Length: 0",
+			"<",
+		},
+	}
+
+	_, err := subject.Build(body)
+
+	assert.Equal(t, &errors.MissingRequest{}, err)
+}

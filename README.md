@@ -13,11 +13,12 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 
 ## Setup
 
-Install [`bats`](https://github.com/sstephenson/bats):
+Install [`bats`](https://github.com/sstephenson/bats) and [go](https://golang.org/doc/install):
 
 ```sh
 # Mac OSX with Homebrew
 brew install bats
+brew install go
 ```
 
 ## Goals

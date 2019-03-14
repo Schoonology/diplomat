@@ -125,7 +125,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Custom Script Test" ]
+  [ "$output" = "Custom Script Test" ]
 }
 
 @test "Help" {

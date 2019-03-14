@@ -15,7 +15,7 @@ The request body
     "Content-Length": "17",
     "Content-Type": "application/json",
     "Host": "localhost:7357",
-    "User-Agent": "Go-http-client/1.1"
+    "User-Agent": "Diplomat/0.0.1"
   },
   "json": null,
   "origin": "172.17.0.1",

@@ -46,6 +46,7 @@ func (c *NativeClient) Do(request *Request) (*Response, error) {
 	for key, value := range request.Headers {
 		nativeRequest.Header.Set(key, value)
 	}
+	nativeRequest.Header.Set("User-Agent", "Diplomat/0.0.1")
 
 	nativeResponse, err := c.client.Do(nativeRequest)
 	if err != nil {

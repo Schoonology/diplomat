@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
@@ -41,6 +42,7 @@ Args:
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
+	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
@@ -84,8 +86,9 @@ func main() {
 	}
 
 	engine := Engine{
-		Loader: &loaders.FileLoader{},
-		Parser: parsers.GetParserFromFileName(*filename),
+		Loader:  &loaders.FileLoader{},
+		Parser:  parsers.GetParserFromFileName(*filename),
+		Builder: &builders.State{},
 		Transforms: []transforms.Transformer{
 			&transforms.TemplateRenderer{},
 		},

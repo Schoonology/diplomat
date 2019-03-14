@@ -72,7 +72,7 @@ func TestMarkdownText(t *testing.T) {
 
 // 	specs := subject.Parse(body, errors)
 
-// 	assertTest(t, parsers.Test{
+// 	assertTest(t, builders.Test{
 // 		Name: "Markdown",
 // 		Request: fillRequest("METHOD", "path", map[string]string{
 // 			"Header": "Request",

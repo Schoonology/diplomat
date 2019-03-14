@@ -6,7 +6,6 @@ import (
 
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/parsers"
 )
 
 // The State builder converts a set of lines into a test.
@@ -69,9 +68,9 @@ func responseFromLine(line string) (*http.Response, error) {
 }
 
 // Build parses a set of lines into a test.
-func (s *State) Build(lines []string) (parsers.Test, error) {
+func (s *State) Build(lines []string) (Test, error) {
 	mode := modeAwaitingRequest
-	test := parsers.Test{}
+	test := Test{}
 
 	for _, line := range lines {
 		char := byte(0)
@@ -142,8 +141,8 @@ func (s *State) Build(lines []string) (parsers.Test, error) {
 
 // BuildAll returns the results of running Build on all string arrays in a channel.
 // spec in this case refers to a group of lines
-func (s *State) BuildAll(specs chan []string, errors chan error) chan parsers.Test {
-	tests := make(chan parsers.Test)
+func (s *State) BuildAll(specs chan []string, errors chan error) chan Test {
+	tests := make(chan Test)
 
 	go func() {
 		for spec := range specs {

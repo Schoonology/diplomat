@@ -7,10 +7,9 @@ import (
 	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/parsers"
 )
 
-func assertTest(t *testing.T, expected parsers.Test, actual parsers.Test, err error) {
+func assertTest(t *testing.T, expected builders.Test, actual builders.Test, err error) {
 	if err != nil {
 		assert.FailNow(t, "Error should not exist.")
 		return
@@ -47,7 +46,7 @@ func TestNoBody(t *testing.T) {
 
 	test, err := subject.Build(body)
 
-	assertTest(t, parsers.Test{
+	assertTest(t, builders.Test{
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -70,7 +69,7 @@ func TestSingleLineBody(t *testing.T) {
 
 	test, err := subject.Build(body)
 
-	assertTest(t, parsers.Test{
+	assertTest(t, builders.Test{
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -94,7 +93,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 
 	test, err := subject.Build(body)
 
-	assertTest(t, parsers.Test{
+	assertTest(t, builders.Test{
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -116,7 +115,7 @@ func TestMissingBracket(t *testing.T) {
 
 	test, err := subject.Build(body)
 
-	assertTest(t, parsers.Test{
+	assertTest(t, builders.Test{
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, ""),
@@ -158,7 +157,7 @@ func TestRequestBody(t *testing.T) {
 
 	test, err := subject.Build(body)
 
-	assertTest(t, parsers.Test{
+	assertTest(t, builders.Test{
 		Request: fillRequest("METHOD", "path", map[string]string{
 			"Header": "Request",
 		}, "Some request body\n"),

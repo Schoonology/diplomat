@@ -1,11 +1,9 @@
 package transforms
 
-import (
-	"github.com/testdouble/diplomat/parsers"
-)
+import "github.com/testdouble/diplomat/builders"
 
 // Transformer is capable of mutating Tests.
 type Transformer interface {
-	Transform(parsers.Test) (parsers.Test, error)
-	TransformAll(chan parsers.Test, chan error) chan parsers.Test
+	Transform(builders.Test) (builders.Test, error)
+	TransformAll(chan builders.Test, chan error) chan builders.Test
 }

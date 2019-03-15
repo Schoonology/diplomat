@@ -114,6 +114,13 @@ func (err *MissingRequest) Error() string {
 	return "Found a response without a corresponding request."
 }
 
+// MisplacedRequest is the error type for an unexpected request line in or after a response.
+type MisplacedRequest struct{}
+
+func (err *MisplacedRequest) Error() string {
+	return "Found a request in or after the response. A spec should have one request that comes before the response."
+}
+
 // MissingResponse is the error type for a request without an expected response.
 type MissingResponse struct{}
 

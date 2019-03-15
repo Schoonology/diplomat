@@ -3,7 +3,7 @@ package transforms
 import (
 	"regexp"
 
-	"github.com/testdouble/diplomat/parsers"
+	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/scripting"
 )
 
@@ -74,7 +74,7 @@ func renderAllHeaders(headers map[string]string) error {
 	return nil
 }
 
-func renderBodies(test *parsers.Test) error {
+func renderBodies(test *builders.Test) error {
 	newBody, err := renderTemplateBytes(test.Request.Body)
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ func renderBodies(test *parsers.Test) error {
 }
 
 // Transform renders all the Headers and Bodies in a single Test.
-func (*TemplateRenderer) Transform(test parsers.Test) (parsers.Test, error) {
+func (*TemplateRenderer) Transform(test builders.Test) (builders.Test, error) {
 	if err := renderAllHeaders(test.Request.Headers); err != nil {
 		return test, err
 	}
@@ -109,8 +109,8 @@ func (*TemplateRenderer) Transform(test parsers.Test) (parsers.Test, error) {
 
 // TransformAll renders all the Headers and Bodies in all the Tests in the
 // provided channel.
-func (renderer *TemplateRenderer) TransformAll(tests chan parsers.Test, errors chan error) chan parsers.Test {
-	output := make(chan parsers.Test)
+func (renderer *TemplateRenderer) TransformAll(tests chan builders.Test, errors chan error) chan builders.Test {
+	output := make(chan builders.Test)
 
 	go func() {
 		for test := range tests {

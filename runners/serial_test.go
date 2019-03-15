@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/http"
 	"github.com/testdouble/diplomat/mocks"
-	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/runners"
 )
 
@@ -20,7 +20,7 @@ func TestRunSerial(t *testing.T) {
 		Client: &client,
 		Differ: &differ,
 	}
-	test := parsers.Test{
+	test := builders.Test{
 		Request:  http.NewRequest("METHOD", "path"),
 		Response: http.NewResponse(200, "STATUS TEXT"),
 	}

@@ -4,14 +4,14 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/transforms"
 )
 
 // TODO(schoon) - There's probably a better way to test all this...do that.
 func TestRenderHeaders(t *testing.T) {
-	input := parsers.Test{
+	input := builders.Test{
 		Request: &http.Request{
 			Headers: map[string]string{
 				"Key": "{{ __test }}",
@@ -28,7 +28,7 @@ func TestRenderHeaders(t *testing.T) {
 	output, err := subject.Transform(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, parsers.Test{
+	assert.Equal(t, builders.Test{
 		Request: &http.Request{
 			Headers: map[string]string{"Key": "this is a test"},
 		},
@@ -39,7 +39,7 @@ func TestRenderHeaders(t *testing.T) {
 }
 
 func TestRenderBodies(t *testing.T) {
-	input := parsers.Test{
+	input := builders.Test{
 		Request: &http.Request{
 			Body: []byte("{{ __test }}"),
 		},
@@ -52,7 +52,7 @@ func TestRenderBodies(t *testing.T) {
 	output, err := subject.Transform(input)
 
 	assert.Nil(t, err)
-	assert.Equal(t, parsers.Test{
+	assert.Equal(t, builders.Test{
 		Request: &http.Request{
 			Body: []byte("this is a test"),
 		},

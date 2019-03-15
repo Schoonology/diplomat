@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
@@ -41,6 +42,7 @@ Args:
 type Engine struct {
 	Loader     loaders.Loader
 	Parser     parsers.SpecParser
+	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
@@ -49,7 +51,8 @@ type Engine struct {
 // Start runs the Engine.
 func (r *Engine) Start(filename string, errors chan error) {
 	lineChannel := r.Loader.Load(filename, errors)
-	testChannel := r.Parser.Parse(lineChannel, errors)
+	specChannel := r.Parser.Parse(lineChannel, errors)
+	testChannel := r.Builder.BuildAll(specChannel, errors)
 
 	for _, transformer := range r.Transforms {
 		testChannel = transformer.TransformAll(testChannel, errors)
@@ -84,8 +87,9 @@ func main() {
 	}
 
 	engine := Engine{
-		Loader: &loaders.FileLoader{},
-		Parser: parsers.GetParserFromFileName(*filename),
+		Loader:  &loaders.FileLoader{},
+		Parser:  parsers.GetParserFromFileName(*filename),
+		Builder: &builders.State{},
 		Transforms: []transforms.Transformer{
 			&transforms.TemplateRenderer{},
 		},

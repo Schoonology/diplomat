@@ -173,15 +173,23 @@ cd diplomat
 
 ### Setup
 
-Install [`bats`](https://github.com/sstephenson/bats) and [go](https://golang.org/doc/install):
+Install [`go`](https://golang.org/doc/install):
+
+```sh
+# Mac OSX with Homebrew
+brew install go
+```
+
+Install [`bats`](https://github.com/sstephenson/bats):
 
 ```sh
 # Mac OSX with Homebrew
 brew install bats
-brew install go
 ```
 
-In order to develop on this repository, you'll also need to install Docker. By default, we use a Docker image version of [`httpbin`](https://httpbin.org/) to make requests for the `bats` tests. If you prefer not to use Docker, change the value of `TEST_HOST` in `test/helpers/helpers.bash` to point to `https://httpbin.org`.
+In order to develop on this repository, you'll also need to install [Docker](https://docs.docker.com/install/).
+
+By default, we use a Docker image version of [`httpbin`](https://httpbin.org/) to make requests for the `bats` tests. If you prefer not to use Docker, change the value of `TEST_HOST` in `test/helpers/helpers.bash` to point to `https://httpbin.org`.
 
 ### Watch Code and Run Tests
 

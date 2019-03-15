@@ -194,3 +194,28 @@ func TestResponseOnly(t *testing.T) {
 
 	assert.Equal(t, &errors.MissingRequest{}, err)
 }
+
+func TestNoVersion(t *testing.T) {
+	subject := builders.State{}
+	body := parsers.Spec{
+		Name: "",
+		Body: []string{
+			"> METHOD path",
+			"> Header: Request",
+			"< 1337 STATUS TEXT",
+			"< Header: Response",
+		},
+	}
+
+	test, err := subject.Build(body)
+
+	assertTest(t, builders.Test{
+		Name: "METHOD path -> 1337",
+		Request: fillRequest("METHOD", "path", map[string]string{
+			"Header": "Request",
+		}, ""),
+		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
+			"Header": "Response",
+		}, ""),
+	}, test, err)
+}

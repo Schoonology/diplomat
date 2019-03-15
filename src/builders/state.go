@@ -60,13 +60,21 @@ func headerFromLine(line string) (string, string, error) {
 func responseFromLine(line string) (*http.Response, error) {
 	pieces := strings.Split(line, " ")
 
-	if len(pieces) < 3 {
+	if len(pieces) < 2 {
 		return nil, &errors.BadResponseStatus{Line: line}
 	}
 
-	code, _ := strconv.Atoi(pieces[1])
+	code, err := strconv.Atoi(pieces[0])
+	remainder := pieces[1:]
 
-	return http.NewResponse(code, strings.Join(pieces[2:], " ")), nil
+	if err != nil {
+		// TODO(schoon) - Validate this response HTTP version rather than
+		// dropping it.
+		code, _ = strconv.Atoi(pieces[1])
+		remainder = pieces[2:]
+	}
+
+	return http.NewResponse(code, strings.Join(remainder, " ")), nil
 }
 
 func fallbackTestName(test Test) string {

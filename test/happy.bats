@@ -128,6 +128,15 @@ Status:
   [ "$output" = "Custom Script Test" ]
 }
 
+@test "Multiple Custom Scripts" {
+  run bin/diplomat --script $FIXTURES_ROOT/custom-header.lua $FIXTURES_ROOT/custom-script-multiple.md $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "Multiple Custom Script Test" ]
+}
+
 @test "Help" {
   run bin/diplomat --help
 

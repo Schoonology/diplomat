@@ -278,6 +278,41 @@ The schema given in `examples/json-schema/post-schema.json`:
 
 Feel free to experiement with the JSON schema in this example. Check out the [JSON Schema specification](https://json-schema.org/specification.html) to learn more about the schema syntax.
 
+### Using Custom Lua Scripts
+
+Diplomat specifications also support the loading of custom [Lua](https://www.lua.org/) scripts, which can be used to add dynamic or calculated values to a specification.
+
+This example shows a specification that's using an `apikey` method instead of providing a hard-coded value. In Diplomat, a _non-validator_ custom Lua script should use the syntax `{{func}}` or `{{ func }}`.
+
+*Note:* Since Diplomat uses spaces to parse first request line (`METHOD /path VERSION`), be cautious when embedding Lua there. In the example below, the first interpolated call to `apikey` _cannot_ contain spaces. Everywhere else, the spaces are optional.
+
+`examples/lua-script/spec.txt`:
+```
+> GET /response-headers?Apikey={{apikey()}} HTTP/1.1
+>
+< HTTP/1.1 200 OK
+< Apikey: {{ apikey() }}
+<
+```
+
+In order for this to work, we need to write a Lua script that defines the `apikey` function. To keep the example simple, we'll just return the value we want.
+
+`examples/lua-script/script.lua`
+```lua
+function apikey()
+  return 12345
+end
+```
+
+Finally, we need to pass our Lua script to Diplomat when running the tests, which can be accomplished with the `--script` CLI argument.
+
+```sh
+bin/diplomat examples/lua-script/spec.txt https://httpbin.org \
+  --script examples/lua-script/script.lua
+```
+
+For more information on Lua, check out [the docs](https://www.lua.org/docs.html).
+
 ## Development
 
 ### Get the Source Code

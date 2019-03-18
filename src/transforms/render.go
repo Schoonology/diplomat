@@ -15,7 +15,7 @@ type TemplateRenderer struct{}
 
 func init() {
 	// The syntax {{ func }} is used to embed external custom scripting.
-	templateChunk = regexp.MustCompilePOSIX("{{ ([^}]+) }}")
+	templateChunk = regexp.MustCompilePOSIX("{{ ?([^} ]+) ?}}")
 }
 
 func renderTemplateBytes(src []byte) (dst []byte, err error) {
@@ -93,6 +93,17 @@ func renderBodies(test *builders.Test) error {
 	return nil
 }
 
+func renderPath(test *builders.Test) error {
+	newValue, err := renderTemplateString(test.Request.Path)
+	if err != nil {
+		return err
+	}
+
+	test.Request.Path = newValue
+
+	return nil
+}
+
 // Transform renders all the Headers and Bodies in a single Test.
 func (*TemplateRenderer) Transform(test builders.Test) (builders.Test, error) {
 	if err := renderAllHeaders(test.Request.Headers); err != nil {
@@ -102,6 +113,9 @@ func (*TemplateRenderer) Transform(test builders.Test) (builders.Test, error) {
 		return test, err
 	}
 	if err := renderBodies(&test); err != nil {
+		return test, err
+	}
+	if err := renderPath(&test); err != nil {
 		return test, err
 	}
 

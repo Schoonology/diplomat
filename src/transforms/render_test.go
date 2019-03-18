@@ -9,7 +9,6 @@ import (
 	"github.com/testdouble/diplomat/transforms"
 )
 
-// TODO(schoon) - There's probably a better way to test all this...do that.
 func TestRenderHeaders(t *testing.T) {
 	input := builders.Test{
 		Request: &http.Request{
@@ -59,5 +58,25 @@ func TestRenderBodies(t *testing.T) {
 		Response: &http.Response{
 			Body: []byte("this is a test"),
 		},
+	}, output)
+}
+
+func TestRenderPath(t *testing.T) {
+	input := builders.Test{
+		Request: &http.Request{
+			Path: "/path?value={{ __test }}",
+		},
+		Response: &http.Response{},
+	}
+	subject := new(transforms.TemplateRenderer)
+
+	output, err := subject.Transform(input)
+
+	assert.Nil(t, err)
+	assert.Equal(t, builders.Test{
+		Request: &http.Request{
+			Path: "/path?value=this is a test",
+		},
+		Response: &http.Response{},
 	}, output)
 }

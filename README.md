@@ -101,7 +101,7 @@ Currently supported file extensions for specifications: `.txt`, `.md`, `.markdow
 
 Something we've kept in mind while developing this project is the concept of [runnable documentation](https://github.blog/2015-10-06-runnable-documentation/). The idea is that a Diplomat specification can be both documentation _and_ a test file. You can build and check in specifications alongside your source code, or create a quick one-off file that can be attached to a ticket to demonstrate an issue.
 
-Specification syntax is based on the output you get from [`curl`'s `--verbose` option](https://ec.haxx.se/usingcurl-verbose.html). This means that you can quickly generate specifications from real API calls using `curl`.
+Specification syntax is based on the output you get from `curl`'s [verbose option](https://ec.haxx.se/usingcurl-verbose.html), which means you can run `curl -v` to generate specifications.
 
 For example:
 
@@ -273,7 +273,7 @@ Notice that this schema only validates the top-level properties `data` and `head
 
 ### Get the Source Code
 
-This project uses a version of Go supporting [modules](https://blog.golang.org/modules2019), which means you can clone the repository anywhere you want. It also handles depdencies without need of secondary tooling such as Glide.
+This project uses a version of Go supporting [modules](https://blog.golang.org/modules2019), which means you can clone the repository anywhere you want. It also handles dependencies without need of secondary tooling such as Glide.
 
 ```sh
 git clone git@github.com:testdouble/diplomat.git

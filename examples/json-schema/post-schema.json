@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "data",
+    "headers"
+  ],
+  "properties": {
+    "data": {
+      "type": "string",
+      "const": "The request body\n"
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Accept",
+        "Content-Length",
+        "Content-Type",
+        "Host",
+        "User-Agent"
+      ],
+      "properties": {
+        "Accept": {
+          "type": "string",
+          "const": "text/plain"
+        },
+        "Content-Length": {
+          "type": "string",
+          "const": "17"
+        },
+        "Content-Type": {
+          "type": "string",
+          "const": "application/json"
+        },
+        "Host": {
+          "type": "string"
+        },
+        "User-Agent": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

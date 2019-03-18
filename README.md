@@ -43,6 +43,12 @@ Like most TD tools, this tool aims to codify the opinions of its authors for not
 
 ## Usage
 
+To see the usage information for diplomat, pass the `--help` flag:
+
+```sh
+bin/diplomat --help
+```
+
 ### Writing Specifications
 
 In order to define a test in Diplomat, you'll need to provide what we call a _specification_. A specification is a file containing a request and its expected response.
@@ -146,19 +152,122 @@ $ curl --verbose https://httpbin.org/status/422
 * Connection #0 to host httpbin.org left intact
 ```
 
-If you look at the `curl --verbose` output above, you'll notice that the sections prefixed by `>` and `<` look like the specification above. Simply delete any line starting with `*`, and any headers you don't need to verify.
+Notice that the sections in this `curl` output, particularly those prefixed by `>` and `<`, resemble the specification above. Simply delete any line starting with `*`, and any headers you don't need to verify.
 
-### Advanced Diffs
+### Alternate Printers
 
-Coming Soon!
+#### `--tap`
 
-### CLI Options
+Diplomat supports tap output, by passing the `tap` flag:
 
-Coming Soon!
+```
+$ bin/diplomat --tap examples/simple/pass.txt https://httpbin.org
+TAP version 13
+ok 0 GET /status/200 -> 200
+```
 
-### Using Lua to Customize Specifications
+#### `--debug`
 
-Coming Soon!
+The `debug` flag provides additional information about the differences between the specification's request and response. This flag should not be used in production.
+
+```
+$ bin/diplomat --debug examples/simple/pass.txt https://httpbin.org
+GET /status/200 -> 200
+{*http.Response}.Headers["Access-Control-Allow-Credentials"]:
+        -: <non-existent>
+        +: "true"
+{*http.Response}.Headers["Access-Control-Allow-Origin"]:
+        -: <non-existent>
+        +: "*"
+{*http.Response}.Headers["Connection"]:
+        -: <non-existent>
+        +: "keep-alive"
+{*http.Response}.Headers["Content-Type"]:
+        -: <non-existent>
+        +: "text/html; charset=utf-8"
+{*http.Response}.Headers["Date"]:
+        -: <non-existent>
+        +: "Mon, 18 Mar 2019 14:04:02 GMT"
+{*http.Response}.Headers["Server"]:
+        -: <non-existent>
+        +: "nginx"
+{*http.Response}.Body:
+        -: []uint8(nil)
+        +: []uint8{}
+```
+
+### Dynamic Validation
+
+When validating an API, you may not want or be able to create response specifications using hard-coded values. Diplomat supports a combination of [Lua](https://www.lua.org/about.html) and [JSON Schema](https://json-schema.org/) to create more general specifications.
+
+#### JSON Schemas
+
+Diplomat provides a couple of Lua helpers in the global namespace, meaning that you can use them in your specifications. Let's look at `examples/json-schema/spec.txt`:
+
+```
+> POST /post HTTP/1.1
+> Accept: text/plain
+> Content-Type: application/json
+The request body
+< HTTP/1.1 200 OK
+{? json_schema(file("examples/json-schema/post-schema.json")) ?}
+```
+
+The request is a typical specification, but the body of the response contains embedded code. In Diplomat, the syntax `{? ?}` is used to wrap Lua scripts. This example uses two methods provided by Diplomat:
+- `file` takes a path, and grabs the contents of that file
+- `json_schema` tells Diplomat to validate the response body by schema rather than by the literal JSON
+
+The contents of `examples/json-schema/post-schema.json` follow the [JSON schema specification](https://json-schema.org/specification.html). This provides a bit more flexibility if you just want to check the existence of a single property, or confirm that a property has the correct type without knowing the exact value.
+
+Notice that this schema only validates the top-level properties `data` and `headers`. It expects an exact value for the `Accept`, `Content-Length`, and `Content-Type` headers, but only cares about receiving a string for the `Host` and `User-Agent` headers. Check out the JSON schema specification for more templating options.
+
+```json
+{
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "data",
+    "headers"
+  ],
+  "properties": {
+    "data": {
+      "type": "string",
+      "const": "The request body\n"
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "Accept",
+        "Content-Length",
+        "Content-Type",
+        "Host",
+        "User-Agent"
+      ],
+      "properties": {
+        "Accept": {
+          "type": "string",
+          "const": "text/plain"
+        },
+        "Content-Length": {
+          "type": "string",
+          "const": "17"
+        },
+        "Content-Type": {
+          "type": "string",
+          "const": "application/json"
+        },
+        "Host": {
+          "type": "string"
+        },
+        "User-Agent": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
 
 ## Development
 

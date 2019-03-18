@@ -1,0 +1,8 @@
+You can put any amount of text above the specification in a text file.
+Like comments, it will be ignored by the parser.
+
+> GET /status/200 HTTP/1.1
+>
+< HTTP/1.1 200 OK
+< Content-Length: 0
+<

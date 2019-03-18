@@ -1,0 +1,7 @@
+We don't expect this specification to pass, because the status code and text don't match!
+
+> GET /status/200 HTTP/1.1
+>
+< HTTP/1.1 422 UNPROCESSABLE ENTITY
+< Content-Length: 0
+<

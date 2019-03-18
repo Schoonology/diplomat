@@ -13,6 +13,7 @@ import (
 var matcherRegex *regexp.Regexp
 
 func init() {
+	// The syntax {? func ?} is used to embed Diplomat validators.
 	matcherRegex = regexp.MustCompile("^\\s*{\\? ([^\\?]+) \\?}\\s*$")
 }
 

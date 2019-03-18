@@ -14,6 +14,7 @@ var templateChunk *regexp.Regexp
 type TemplateRenderer struct{}
 
 func init() {
+	// The syntax {{ func }} is used to embed external custom scripting.
 	templateChunk = regexp.MustCompilePOSIX("{{ ([^}]+) }}")
 }
 

@@ -196,14 +196,17 @@ GET /status/200 -> 200
         +: []uint8{}
 ```
 
-### Dynamic Validation
+### Using Diplomat Validators
 
-When validating an API, you may not want or be able to create response specifications using hard-coded values. Diplomat supports a combination of [Lua](https://www.lua.org/about.html) and [JSON Schema](https://json-schema.org/) to create more general specifications.
+Diplomat provides alternate _validators_ that can be embedded in your specification using the syntax `{? validator ?}`. These validators can be used to write more generalized specifications.
 
-#### JSON Schemas
+#### json_schema
 
-Diplomat provides a couple of Lua helpers in the global namespace, meaning that you can use them in your specifications. Let's look at `examples/json-schema/spec.txt`:
+In this example, we are specifying the validator `json_schema`, which is provided by Diplomat. `json_schema` accepts a [JSON Schema specification](https://json-schema.org/specification.html), and will compare the response body output to that specification instead of looking for an exact match
 
+Note: In this example we're also using the Diplomat helper `file` to load that schema from a file.
+
+`examples/json-schema/spec.txt`:
 ```
 > POST /post HTTP/1.1
 > Accept: text/plain
@@ -213,13 +216,17 @@ The request body
 {? json_schema(file("examples/json-schema/post-schema.json")) ?}
 ```
 
-The request is a typical specification, but the body of the response contains embedded code. In Diplomat, the syntax `{? ?}` is used to wrap Lua scripts. This example uses two methods provided by Diplomat:
-- `file` takes a path, and grabs the contents of that file
-- `json_schema` tells Diplomat to validate the response body by schema rather than by the literal JSON
+```
+$ bin/diplomat examples/json-schema/spec.txt https://httpbin.org
+POST /post -> 200
+```
 
-The contents of `examples/json-schema/post-schema.json` follow the [JSON schema specification](https://json-schema.org/specification.html). This provides a bit more flexibility if you just want to check the existence of a single property, or confirm that a property has the correct type without knowing the exact value.
-
-Notice that this schema only validates the top-level properties `data` and `headers`. It expects an exact value for the `Accept`, `Content-Length`, and `Content-Type` headers, but only cares about receiving a string for the `Host` and `User-Agent` headers. Check out the JSON schema specification for more templating options.
+The schema given in `examples/json-schema/post-schema.json`:
+- only validates two top-level properties: `data` and `headers` (`additionalProperties` as true tells it to ignore any extras)
+- checks that the `data` property is a string that matches a given value _exactly_
+- checks that the `headers` property contains exactly five properties, listed in `required`
+- checks that the `Accept`, `Content-Length`, and `Content-Type` headers match given values _exactly_
+- checks that the `Host` and `User-Agent` headers exist with the correct type of "string", but doesn't care about their values
 
 ```json
 {
@@ -268,6 +275,8 @@ Notice that this schema only validates the top-level properties `data` and `head
   }
 }
 ```
+
+Feel free to experiement with the JSON schema in this example. Check out the [JSON Schema specification](https://json-schema.org/specification.html) to learn more about the schema syntax.
 
 ## Development
 

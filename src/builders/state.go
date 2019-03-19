@@ -174,17 +174,16 @@ func (s *State) BuildAll(specs chan parsers.Spec, errors chan error) chan Test {
 	tests := make(chan Test)
 
 	go func() {
+		defer close(tests)
+
 		for spec := range specs {
 			test, err := s.Build(spec)
 			if err != nil {
 				errors <- err
-				return
+			} else {
+				tests <- test
 			}
-
-			tests <- test
 		}
-
-		close(tests)
 	}()
 
 	return tests

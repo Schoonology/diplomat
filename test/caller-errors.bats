@@ -25,7 +25,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 3 ]
+  [ $status -eq 1 ]
   [[ "${lines[0]}" =~ "Could not resolve host" ]]
 }
 
@@ -34,6 +34,6 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 3 ]
+  [ $status -eq 1 ]
   [[ "${lines[0]}" =~ "Failed to connect" ]]
 }

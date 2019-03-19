@@ -82,7 +82,7 @@ func main() {
 		err := scripting.LoadFile(filename)
 		if err != nil {
 			errors.Display(err)
-			os.Exit(3)
+			os.Exit(1)
 		}
 	}
 
@@ -104,8 +104,11 @@ func main() {
 
 	engine.Start(*filename, errorStream)
 
+	errorCount := 0
 	for err := range errorStream {
+		errorCount++
 		errors.Display(err)
-		os.Exit(3)
 	}
+
+	os.Exit(errorCount)
 }

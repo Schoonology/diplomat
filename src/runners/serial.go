@@ -35,17 +35,16 @@ func (s *Serial) RunAll(tests chan builders.Test, errors chan error) chan TestRe
 	results := make(chan TestResult)
 
 	go func() {
+		defer close(results)
+
 		for test := range tests {
 			result, err := s.Run(test)
 			if err != nil {
 				errors <- err
-				return
+			} else {
+				results <- result
 			}
-
-			results <- result
 		}
-
-		close(results)
 	}()
 
 	return results

@@ -128,17 +128,16 @@ func (renderer *TemplateRenderer) TransformAll(tests chan builders.Test, errors 
 	output := make(chan builders.Test)
 
 	go func() {
+		defer close(output)
+
 		for test := range tests {
 			rendered, err := renderer.Transform(test)
 			if err != nil {
 				errors <- err
-				return
+			} else {
+				output <- rendered
 			}
-
-			output <- rendered
 		}
-
-		close(output)
 	}()
 
 	return output

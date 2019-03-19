@@ -15,17 +15,18 @@ func (l *FileLoader) Load(filename string, errors chan error) chan string {
 	lines := make(chan string)
 
 	go func() {
+		defer close(lines)
+
 		bytes, err := ioutil.ReadFile(filename)
 		if err != nil {
 			errors <- err
+			close(errors)
 			return
 		}
 
 		for _, line := range strings.Split(string(bytes), "\n") {
 			lines <- line
 		}
-
-		close(lines)
 	}()
 
 	return lines

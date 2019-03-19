@@ -33,6 +33,12 @@ func RunPipeline(src string) (string, error) {
 	}
 
 	value := state.Get(-1)
+
+	if value.Type() == lua.LTNil {
+		// TODO(schoon) - Error here.
+		return "", nil
+	}
+
 	state.Pop(1)
 
 	switch value.Type() {

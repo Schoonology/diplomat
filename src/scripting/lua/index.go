@@ -39,7 +39,13 @@ func LoadAll(state *lua.LState) error {
 		return err
 	}
 
-	state.PreloadModule("http", gluahttp.NewHttpModule(&http.Client{}).Loader)
+	client := &http.Client{}
+	state.PreloadModule("http", gluahttp.NewHttpModuleWithDo(
+		func(req *http.Request) (*http.Response, error) {
+			req.Header.Set("User-Agent", "Diplomat/0.0.1")
+			return client.Do(req)
+		},
+	).Loader)
 	err = state.DoString("http = require('http')")
 	if err != nil {
 		return err

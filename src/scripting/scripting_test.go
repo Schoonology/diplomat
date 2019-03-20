@@ -66,4 +66,8 @@ func Test__BasicHTTP(t *testing.T) {
 	match, err = regexp.MatchString(`"Basic-Test": "yup"`, result)
 	assert.Nil(t, err)
 	assert.True(t, match)
+
+	match, err = regexp.MatchString(`"User-Agent": "Diplomat/0.0.1"`, result)
+	assert.Nil(t, err)
+	assert.True(t, match)
 }

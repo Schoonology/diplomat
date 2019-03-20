@@ -1,6 +1,8 @@
 package scripting_test
 
 import (
+	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -35,4 +37,33 @@ func TestJsonSchema(t *testing.T) {
 
 	assert.Nil(t, err)
 	assert.True(t, result)
+}
+
+func Test__RoundTripJSON(t *testing.T) {
+	json := `{"key":"value"}`
+
+	result, err := scripting.RunPipeline(
+		fmt.Sprintf("json.encode(json.decode('%s'))", json),
+	)
+
+	assert.Nil(t, err)
+	assert.Equal(t, json, result)
+}
+
+func Test__BasicHTTP(t *testing.T) {
+	result, err := scripting.RunPipeline(`http.post("http://localhost:7357/anything", {
+		headers = {
+			['Basic-Test'] = "yup",
+		},
+	}).body`)
+
+	assert.Nil(t, err)
+
+	match, err := regexp.MatchString(`"method": "POST"`, result)
+	assert.Nil(t, err)
+	assert.True(t, match)
+
+	match, err = regexp.MatchString(`"Basic-Test": "yup"`, result)
+	assert.Nil(t, err)
+	assert.True(t, match)
 }

@@ -6,6 +6,10 @@
 package lua
 
 import (
+	"net/http"
+
+	"github.com/cjoudrey/gluahttp"
+	json "github.com/layeh/gopher-json"
 	"github.com/testdouble/diplomat/errors"
 	jsonschema "github.com/xeipuuv/gojsonschema"
 	lua "github.com/yuin/gopher-lua"
@@ -27,6 +31,18 @@ func LoadAll(state *lua.LState) error {
 		if err := state.DoString(template()); err != nil {
 			return err
 		}
+	}
+
+	json.Preload(state)
+	err := state.DoString("json = require('json')")
+	if err != nil {
+		return err
+	}
+
+	state.PreloadModule("http", gluahttp.NewHttpModule(&http.Client{}).Loader)
+	err = state.DoString("http = require('http')")
+	if err != nil {
+		return err
 	}
 
 	state.SetGlobal("__validateJSON", state.NewFunction(validateJSONSchema))

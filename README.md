@@ -333,11 +333,11 @@ Install [`go`](https://golang.org/doc/install):
 brew install go
 ```
 
-Install [`bats`](https://github.com/sstephenson/bats):
+Install [`bats-core`](https://github.com/bats-core/bats-core):
 
 ```sh
 # Mac OSX with Homebrew
-brew install bats
+brew install bats-core
 ```
 
 In order to develop on this repository, you'll also need to install [Docker](https://docs.docker.com/install/).

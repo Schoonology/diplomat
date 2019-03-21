@@ -7,7 +7,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Failed to parse header: Content-Type" ]]
 }
 
@@ -16,7 +16,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Failed to parse request line: INVALID" ]]
 }
 
@@ -25,9 +25,9 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 2 ]
-  [[ ${lines[0]} = "Failed to parse header: Content-Type" ]]
-  [[ ${lines[1]} = "Failed to parse request line: INVALID" ]]
+  [ "$status" -eq 2 ]
+  [[ "${lines[0]}" = "Failed to parse header: Content-Type" ]]
+  [[ "${lines[1]}" = "Failed to parse request line: INVALID" ]]
 }
 
 @test "Bad response header" {
@@ -35,7 +35,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Failed to parse header: Content-Type" ]]
 }
 
@@ -44,7 +44,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Failed to parse response line: OOPS" ]]
 }
 
@@ -53,7 +53,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 0 ]
+  [ "$status" -eq 0 ]
   [[ "$output" = "GET /status/200 -> 200" ]]
 }
 
@@ -62,7 +62,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 0 ]
+  [ "$status" -eq 0 ]
   [[ "$output" = "Unclosed Code Fence" ]]
 }
 
@@ -71,7 +71,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Found a request without a corresponding response." ]]
 }
 
@@ -80,7 +80,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = "Found a response without a corresponding request." ]]
 }
 
@@ -89,7 +89,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "${lines[0]}" = "Found a request without a corresponding response." ]]
   [[ "${lines[1]}" = "First: Correct" ]]
 }
@@ -99,7 +99,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "${lines[0]}" = "Found a response without a corresponding request." ]]
   [[ "${lines[1]}" = "First: Correct" ]]
 }
@@ -109,7 +109,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" = 'Template `missing` could not be found.' ]]
 }
 
@@ -118,7 +118,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" =~ "Error while running Lua script" ]]
   [[ "$output" =~ "attempt to call a non-function object" ]]
 }
@@ -129,7 +129,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ $status -eq 1 ]
+  [ "$status" -eq 1 ]
   [[ "$output" =~ "Syntax error while parsing custom script:" ]]
   [[ "$output" =~ "test/fixtures/broken/invalid-script-syntax.lua:1:41: {" ]]
 }

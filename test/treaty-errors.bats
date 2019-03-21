@@ -8,7 +8,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Failed to parse header: Content-Type" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
 @test "Bad request line" {
@@ -17,7 +18,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Failed to parse request line: INVALID" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
 @test "Multiple bad requests in a markdown file" {
@@ -26,8 +28,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 2 ]
-  [[ "${lines[0]}" = "Failed to parse header: Content-Type" ]]
-  [[ "${lines[1]}" = "Failed to parse request line: INVALID" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
+  [ "${lines[2]}" = "Error building spec: line 0" ]
+  [[ "${lines[3]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
 @test "Bad response header" {
@@ -36,7 +40,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Failed to parse header: Content-Type" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
 @test "Bad response status" {
@@ -45,7 +50,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Failed to parse response line: OOPS" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Failed to parse response line: OOPS" ]]
 }
 
 @test "Markdown: No header" {
@@ -72,7 +78,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Found a request without a corresponding response." ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
 }
 
 @test "Response only" {
@@ -81,7 +88,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Found a response without a corresponding request." ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
 }
 
 @test "Request only (second assertion)" {
@@ -90,8 +98,9 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "${lines[0]}" = "Found a request without a corresponding response." ]]
-  [[ "${lines[1]}" = "First: Correct" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
+  [ "${lines[2]}" = "First: Correct" ]
 }
 
 @test "Response only (second assertion)" {
@@ -100,8 +109,9 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "${lines[0]}" = "Found a response without a corresponding request." ]]
-  [[ "${lines[1]}" = "First: Correct" ]]
+  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
+  [ "${lines[2]}" = "First: Correct" ]
 }
 
 @test "Missing template function" {

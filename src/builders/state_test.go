@@ -128,12 +128,15 @@ func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 			"This is the first line",
 			"<   This is the second line",
 		},
+		LineNumber: 1,
 	}
 
 	_, err := subject.Build(body)
-	_, ok := err.(*errors.MissingRequest)
 
-	assert.True(t, ok)
+	assert.Equal(t, &errors.BuildError{
+		Err:        &errors.MissingRequest{},
+		LineNumber: 1,
+	}, err)
 }
 
 func TestRequestBody(t *testing.T) {
@@ -172,11 +175,15 @@ func TestRequestOnly(t *testing.T) {
 			"> METHOD path",
 			"> Header: Request",
 		},
+		LineNumber: 1,
 	}
 
 	_, err := subject.Build(body)
 
-	assert.Equal(t, &errors.MissingResponse{}, err)
+	assert.Equal(t, &errors.BuildError{
+		Err:        &errors.MissingResponse{},
+		LineNumber: 1,
+	}, err)
 }
 
 func TestResponseOnly(t *testing.T) {
@@ -188,11 +195,15 @@ func TestResponseOnly(t *testing.T) {
 			"< Content-Length: 0",
 			"<",
 		},
+		LineNumber: 1,
 	}
 
 	_, err := subject.Build(body)
 
-	assert.Equal(t, &errors.MissingRequest{}, err)
+	assert.Equal(t, &errors.BuildError{
+		Err:        &errors.MissingRequest{},
+		LineNumber: 1,
+	}, err)
 }
 
 func TestNoVersion(t *testing.T) {

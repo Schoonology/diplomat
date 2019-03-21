@@ -7,6 +7,7 @@ type SpecParser interface {
 
 // Spec contains a name and a body (array of lines) representing a test specification.
 type Spec struct {
-	Name string
-	Body []string
+	Name       string
+	Body       []string
+	LineNumber int
 }

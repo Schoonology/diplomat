@@ -3,6 +3,7 @@ package printers
 import (
 	"fmt"
 
+	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/runners"
 )
 
@@ -10,12 +11,23 @@ import (
 type Tap struct{}
 
 // Print sends TAP-conforming test results to STDOUT.
-func (t *Tap) Print(results chan runners.TestResult, errors chan error) {
+func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) {
 	fmt.Println("TAP version 13")
 
 	go func() {
+		defer close(errorChannel)
+
 		idx := 0
 		for result := range results {
+			if result.Err != nil {
+				// TODO:(bam) - replace these defers with a string builder
+				// the output is appearing in reverse order.
+				defer errors.Display(result.Err)
+				fmt.Printf("not ok %d %s\n", idx, result.Name)
+				errorChannel <- result.Err
+				continue
+			}
+
 			failed := len(result.Diff) > 0
 			status := "ok"
 			if failed {
@@ -26,10 +38,11 @@ func (t *Tap) Print(results chan runners.TestResult, errors chan error) {
 			idx++
 
 			if failed {
-				fmt.Print(result.Diff)
+				defer fmt.Printf("%s:\n%s\n", result.Name, result.Diff)
+				// fmt.Print(result.Diff)
 			}
 		}
 
-		close(errors)
+		fmt.Println()
 	}()
 }

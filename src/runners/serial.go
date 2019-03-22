@@ -38,12 +38,22 @@ func (s *Serial) RunAll(tests chan builders.Test, errors chan error) chan TestRe
 		defer close(results)
 
 		for test := range tests {
+			if test.Err != nil {
+				results <- TestResult{
+					Name: test.Name,
+					Err:  test.Err,
+				}
+				continue
+			}
+
 			result, err := s.Run(test)
 			if err != nil {
-				errors <- err
-			} else {
+				result.Err = err
 				results <- result
+				continue
 			}
+
+			results <- result
 		}
 	}()
 

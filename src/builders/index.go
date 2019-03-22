@@ -16,4 +16,5 @@ type Test struct {
 	Name     string
 	Request  *http.Request
 	Response *http.Response
+	Err      error
 }

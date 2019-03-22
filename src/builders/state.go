@@ -179,7 +179,8 @@ func (s *State) BuildAll(specs chan parsers.Spec, errors chan error) chan Test {
 		for spec := range specs {
 			test, err := s.Build(spec)
 			if err != nil {
-				errors <- err
+				test.Err = err
+				tests <- test
 			} else {
 				tests <- test
 			}

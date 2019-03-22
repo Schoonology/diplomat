@@ -3,6 +3,7 @@ package printers
 import (
 	"fmt"
 
+	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/runners"
 )
 
@@ -10,12 +11,18 @@ import (
 type Debug struct{}
 
 // Print prints all output, unfiltered.
-func (t *Debug) Print(results chan runners.TestResult, errors chan error) {
+func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) {
 	go func() {
+		defer close(errorChannel)
+
 		for result := range results {
+			if result.Err != nil {
+				errors.Display(result.Err)
+				errorChannel <- result.Err
+				continue
+			}
+
 			fmt.Printf("%v\n%v\n", result.Name, result.Diff)
 		}
-
-		close(errors)
 	}()
 }

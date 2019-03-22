@@ -131,12 +131,18 @@ func (renderer *TemplateRenderer) TransformAll(tests chan builders.Test, errors 
 		defer close(output)
 
 		for test := range tests {
+			if test.Err != nil {
+				output <- test
+				continue
+			}
+
 			rendered, err := renderer.Transform(test)
 			if err != nil {
-				errors <- err
-			} else {
-				output <- rendered
+				test.Err = err
+				output <- test
+				continue
 			}
+			output <- rendered
 		}
 	}()
 

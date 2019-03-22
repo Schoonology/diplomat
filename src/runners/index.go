@@ -13,4 +13,5 @@ type SpecRunner interface {
 type TestResult struct {
 	Name string
 	Diff string
+	Err  error
 }

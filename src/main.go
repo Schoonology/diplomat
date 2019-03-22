@@ -105,9 +105,8 @@ func main() {
 	engine.Start(*filename, errorStream)
 
 	errorCount := 0
-	for err := range errorStream {
+	for range errorStream {
 		errorCount++
-		errors.Display(err)
 	}
 
 	os.Exit(errorCount)

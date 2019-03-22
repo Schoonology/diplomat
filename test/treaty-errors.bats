@@ -100,10 +100,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Second: Wrong" ]
-  [ "${lines[1]}" = "Error building spec: line 14" ]
-  [[ "${lines[2]}" =~ "Found a request without a corresponding response." ]]
-  [ "${lines[3]}" = "First: Correct" ]
+  [ "${lines[0]}" = "First: Correct" ]
+  [ "${lines[1]}" = "Second: Wrong" ]
+  [ "${lines[2]}" = "Error building spec: line 14" ]
+  [[ "${lines[3]}" =~ "Found a request without a corresponding response." ]]
 }
 
 @test "Response only (second assertion)" {
@@ -112,10 +112,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Second: Wrong" ]
-  [ "${lines[1]}" = "Error building spec: line 14" ]
-  [[ "${lines[2]}" =~ "Found a response without a corresponding request." ]]
-  [ "${lines[3]}" = "First: Correct" ]
+  [ "${lines[0]}" = "First: Correct" ]
+  [ "${lines[1]}" = "Second: Wrong" ]
+  [ "${lines[2]}" = "Error building spec: line 14" ]
+  [[ "${lines[3]}" =~ "Found a response without a corresponding request." ]]
 }
 
 @test "Missing template function" {

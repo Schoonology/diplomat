@@ -124,7 +124,7 @@ func (*TemplateRenderer) Transform(test builders.Test) (builders.Test, error) {
 
 // TransformAll renders all the Headers and Bodies in all the Tests in the
 // provided channel.
-func (renderer *TemplateRenderer) TransformAll(tests chan builders.Test, errors chan error) chan builders.Test {
+func (renderer *TemplateRenderer) TransformAll(tests chan builders.Test) chan builders.Test {
 	output := make(chan builders.Test)
 
 	go func() {

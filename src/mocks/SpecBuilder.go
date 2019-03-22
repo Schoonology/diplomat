@@ -32,13 +32,13 @@ func (_m *SpecBuilder) Build(_a0 parsers.Spec) (builders.Test, error) {
 	return r0, r1
 }
 
-// BuildAll provides a mock function with given fields: _a0, _a1
-func (_m *SpecBuilder) BuildAll(_a0 chan parsers.Spec, _a1 chan error) chan builders.Test {
-	ret := _m.Called(_a0, _a1)
+// BuildAll provides a mock function with given fields: _a0
+func (_m *SpecBuilder) BuildAll(_a0 chan parsers.Spec) chan builders.Test {
+	ret := _m.Called(_a0)
 
 	var r0 chan builders.Test
-	if rf, ok := ret.Get(0).(func(chan parsers.Spec, chan error) chan builders.Test); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(chan parsers.Spec) chan builders.Test); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(chan builders.Test)

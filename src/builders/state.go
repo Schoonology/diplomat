@@ -170,7 +170,7 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 }
 
 // BuildAll returns the results of running Build on all string arrays in a channel.
-func (s *State) BuildAll(specs chan parsers.Spec, errors chan error) chan Test {
+func (s *State) BuildAll(specs chan parsers.Spec) chan Test {
 	tests := make(chan Test)
 
 	go func() {

@@ -30,10 +30,10 @@ func TestEngineStart(t *testing.T) {
 
 	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
 	parser.On("Parse", bodyChannel).Return(specChannel)
-	builder.On("BuildAll", specChannel, errorChannel).Return(testChannel)
-	firstTransformer.On("TransformAll", testChannel, errorChannel).Return(firstTransformerChannel)
-	secondTransformer.On("TransformAll", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)
-	runner.On("RunAll", secondTransformerChannel, errorChannel).Return(resultChannel)
+	builder.On("BuildAll", specChannel).Return(testChannel)
+	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
+	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)
+	runner.On("RunAll", secondTransformerChannel).Return(resultChannel)
 	printer.On("Print", resultChannel, errorChannel).Return()
 
 	subject := main.Engine{

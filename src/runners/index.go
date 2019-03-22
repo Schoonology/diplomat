@@ -6,7 +6,7 @@ import "github.com/testdouble/diplomat/builders"
 // results to the returned channel.
 type SpecRunner interface {
 	Run(builders.Test) (TestResult, error)
-	RunAll(chan builders.Test, chan error) chan TestResult
+	RunAll(chan builders.Test) chan TestResult
 }
 
 // TestResult is a container for the name and diff of a completed Test.

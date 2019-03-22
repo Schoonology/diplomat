@@ -52,13 +52,13 @@ type Engine struct {
 func (r *Engine) Start(filename string, errorChannel chan error) {
 	lineChannel := r.Loader.Load(filename, errorChannel)
 	specChannel := r.Parser.Parse(lineChannel)
-	testChannel := r.Builder.BuildAll(specChannel, errorChannel)
+	testChannel := r.Builder.BuildAll(specChannel)
 
 	for _, transformer := range r.Transforms {
-		testChannel = transformer.TransformAll(testChannel, errorChannel)
+		testChannel = transformer.TransformAll(testChannel)
 	}
 
-	resultChannel := r.Runner.RunAll(testChannel, errorChannel)
+	resultChannel := r.Runner.RunAll(testChannel)
 
 	r.Printer.Print(resultChannel, errorChannel)
 }

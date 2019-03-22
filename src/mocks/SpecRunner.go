@@ -32,13 +32,13 @@ func (_m *SpecRunner) Run(_a0 builders.Test) (runners.TestResult, error) {
 	return r0, r1
 }
 
-// RunAll provides a mock function with given fields: _a0, _a1
-func (_m *SpecRunner) RunAll(_a0 chan builders.Test, _a1 chan error) chan runners.TestResult {
-	ret := _m.Called(_a0, _a1)
+// RunAll provides a mock function with given fields: _a0
+func (_m *SpecRunner) RunAll(_a0 chan builders.Test) chan runners.TestResult {
+	ret := _m.Called(_a0)
 
 	var r0 chan runners.TestResult
-	if rf, ok := ret.Get(0).(func(chan builders.Test, chan error) chan runners.TestResult); ok {
-		r0 = rf(_a0, _a1)
+	if rf, ok := ret.Get(0).(func(chan builders.Test) chan runners.TestResult); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(chan runners.TestResult)

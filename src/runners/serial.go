@@ -31,7 +31,7 @@ func (s *Serial) Run(test builders.Test) (TestResult, error) {
 }
 
 // RunAll returns the results of running all tests in the provided channel.
-func (s *Serial) RunAll(tests chan builders.Test, errors chan error) chan TestResult {
+func (s *Serial) RunAll(tests chan builders.Test) chan TestResult {
 	results := make(chan TestResult)
 
 	go func() {

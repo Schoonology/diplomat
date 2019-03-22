@@ -29,6 +29,7 @@ func TestMarkdownText(t *testing.T) {
 			"< PROTO 1337 STATUS TEXT",
 			"< Header: Response",
 		},
+		LineNumber: 3,
 	}, specs, errors)
 	// TODO(schoon) - Assert that the channel is closed here.
 }
@@ -93,6 +94,7 @@ func TestMarkdownDouble(t *testing.T) {
 			"< PROTO 1337 STATUS TEXT",
 			"< Header: Response",
 		},
+		LineNumber: 4,
 	}, specs, errors)
 
 	assertTest(t, parsers.Spec{
@@ -103,6 +105,7 @@ func TestMarkdownDouble(t *testing.T) {
 			"< PROTO 1234 AGAIN",
 			"< Header: Response 2",
 		},
+		LineNumber: 11,
 	}, specs, errors)
 }
 
@@ -129,6 +132,7 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 			"< PROTO 1337 STATUS TEXT",
 			"< Header: Response",
 		},
+		LineNumber: 3,
 	}, specs, errors)
 }
 
@@ -156,5 +160,6 @@ func TestMarkdownBlockQuote(t *testing.T) {
 			"< PROTO 1337 STATUS TEXT",
 			"< Header: Response",
 		},
+		LineNumber: 4,
 	}, specs, errors)
 }

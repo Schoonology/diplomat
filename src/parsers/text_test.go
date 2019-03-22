@@ -27,6 +27,7 @@ func TestLoadText(t *testing.T) {
 			"< PROTO 1337 STATUS TEXT",
 			"< Header: Response",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 
@@ -97,6 +98,7 @@ func TestSingleLineBody(t *testing.T) {
 			"<",
 			"Some response body",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 
@@ -126,6 +128,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 			"This is the first line",
 			"  This is the second line",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 
@@ -151,6 +154,7 @@ func TestMissingBracket(t *testing.T) {
 			"< Header: Response",
 			"Some response body",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 
@@ -178,6 +182,7 @@ func TestCommentsAboveSpec(t *testing.T) {
 			"< Header: Response",
 			"Some response body",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 
@@ -207,6 +212,7 @@ func TestRequestBody(t *testing.T) {
 			"<",
 			"Some response body",
 		},
+		LineNumber: 1,
 	}, specs, errors)
 }
 

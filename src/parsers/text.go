@@ -17,6 +17,7 @@ func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan Spec 
 		}
 
 		if len(spec.Body) > 0 {
+			spec.LineNumber = 1
 			c <- spec
 		}
 

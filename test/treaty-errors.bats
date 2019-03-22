@@ -8,7 +8,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
@@ -18,7 +18,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
@@ -28,9 +28,9 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 2 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 6" ]
   [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
-  [ "${lines[2]}" = "Error building spec: line 0" ]
+  [ "${lines[2]}" = "Error building spec: line 17" ]
   [[ "${lines[3]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
@@ -40,7 +40,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
@@ -50,7 +50,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse response line: OOPS" ]]
 }
 
@@ -78,7 +78,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
 }
 
@@ -88,7 +88,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 1" ]
   [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
 }
 
@@ -98,7 +98,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 14" ]
   [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
   [ "${lines[2]}" = "First: Correct" ]
 }
@@ -109,7 +109,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 0" ]
+  [ "${lines[0]}" = "Error building spec: line 14" ]
   [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
   [ "${lines[2]}" = "First: Correct" ]
 }

@@ -19,8 +19,11 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 	c := make(chan Spec)
 
 	go func() {
-		spec := Spec{}
+		spec := Spec{
+			LineNumber: 1,
+		}
 		mode := inRichText
+		lineNumber := 1
 
 		for line := range lines {
 			trimmedLine := strings.TrimSpace(line)
@@ -29,6 +32,7 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 			case strings.HasPrefix(trimmedLine, "```"):
 				if mode == inRichText {
 					mode = inCodeFence
+					spec.LineNumber = lineNumber + 1
 				} else if mode == inCodeFence {
 					c <- spec
 					spec = Spec{}
@@ -41,6 +45,8 @@ func (m *Markdown) Parse(lines chan string, errors chan error) chan Spec {
 			case strings.HasPrefix(trimmedLine, "#"):
 				spec.Name = strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 			}
+
+			lineNumber++
 		}
 
 		if len(spec.Body) != 0 {

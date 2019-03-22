@@ -67,9 +67,11 @@ func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	var printer printers.ResultsPrinter
-	printer = &printers.Debug{}
+	printer = &printers.Pretty{}
 	if *tap {
 		printer = &printers.Tap{}
+	} else if *debug {
+		printer = &printers.Debug{}
 	}
 
 	var differ differs.Differ

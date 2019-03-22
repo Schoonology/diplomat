@@ -8,7 +8,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "GET /status/422 -> 422" ]
+  [ "$output" = "✓ GET /status/422 -> 422" ]
 }
 
 @test "Text: Empty diff on success" {
@@ -26,7 +26,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "GET /status/422 -> 400
+  [ "$output" = "✓ GET /status/422 -> 400
 Status:
 	- 400 BAD REQUEST
 	+ 422 UNPROCESSABLE ENTITY" ]
@@ -76,7 +76,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "Markdown: GET /status/422" ]
+  [ "$output" = "✓ Markdown: GET /status/422" ]
 }
 
 @test "Markdown: .md: Title from header" {
@@ -85,7 +85,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "Markdown: GET /status/422" ]
+  [ "$output" = "✓ Markdown: GET /status/422" ]
 }
 
 @test "Markdown: Multiple specs" {
@@ -94,8 +94,8 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "Markdown: GET /status/422" ]
-  [ "${lines[1]}" = "Markdown: GET /status/200" ]
+  [ "${lines[0]}" = "✓ Markdown: GET /status/422" ]
+  [ "${lines[1]}" = "✓ Markdown: GET /status/200" ]
   [ "${lines[2]}" = "" ]
 }
 
@@ -116,7 +116,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "JSON Schema Test" ]
+  [ "$output" = "✓ JSON Schema Test" ]
 }
 
 @test "Custom Script" {
@@ -125,7 +125,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "Custom Script Test" ]
+  [ "$output" = "✓ Custom Script Test" ]
 }
 
 @test "Multiple Custom Scripts" {
@@ -134,7 +134,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "Multiple Custom Script Test" ]
+  [ "$output" = "✓ Multiple Custom Script Test" ]
 }
 
 @test "Help" {

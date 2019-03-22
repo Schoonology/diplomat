@@ -28,10 +28,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 2 ]
-  [ "${lines[0]}" = "Bad Request Header" ]
+  [ "${lines[0]}" = "✗ Bad Request Header" ]
   [ "${lines[1]}" = "Error building spec: line 6" ]
   [[ "${lines[2]}" =~ "Failed to parse header: Content-Type" ]]
-  [ "${lines[3]}" = "Bad Request Line" ]
+  [ "${lines[3]}" = "✗ Bad Request Line" ]
   [ "${lines[4]}" = "Error building spec: line 17" ]
   [[ "${lines[5]}" =~ "Failed to parse request line: INVALID" ]]
 }
@@ -62,7 +62,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [[ "$output" = "GET /status/200 -> 200" ]]
+  [[ "$output" = "✓ GET /status/200 -> 200" ]]
 }
 
 @test "Markdown: Unclosed code fence" {
@@ -71,7 +71,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [[ "$output" = "Unclosed Code Fence" ]]
+  [[ "$output" = "✓ Unclosed Code Fence" ]]
 }
 
 @test "Request only" {
@@ -100,8 +100,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "First: Correct" ]
-  [ "${lines[1]}" = "Second: Wrong" ]
+  [ "${lines[0]}" = "✓ First: Correct" ]
+  [ "${lines[1]}" = "✗ Second: Wrong" ]
   [ "${lines[2]}" = "Error building spec: line 14" ]
   [[ "${lines[3]}" =~ "Found a request without a corresponding response." ]]
 }
@@ -112,8 +112,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "First: Correct" ]
-  [ "${lines[1]}" = "Second: Wrong" ]
+  [ "${lines[0]}" = "✓ First: Correct" ]
+  [ "${lines[1]}" = "✗ Second: Wrong" ]
   [ "${lines[2]}" = "Error building spec: line 14" ]
   [[ "${lines[3]}" =~ "Found a response without a corresponding request." ]]
 }
@@ -124,7 +124,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = 'Template `missing` could not be found.' ]]
+  [ "${lines[0]}" = "✗ GET /status/200 -> 200" ]
+  [ "${lines[1]}" = 'Template `missing` could not be found.' ]
 }
 
 @test "Missing validator function" {

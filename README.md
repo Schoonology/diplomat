@@ -70,7 +70,7 @@ To run this specification as a test using Diplomat:
 
 ```
 $ bin/diplomat examples/simple/pass.txt https://httpbin.org
-GET /status/200 -> 200
+✓ GET /status/200 -> 200
 ```
 
 The command doesn't output any diff information, which means the test passed. Let's look at a specification that we know will fail (`examples/simple/fail.txt`):
@@ -87,7 +87,7 @@ We don't expect this specification to pass, because the status code and text don
 
 ```
 $ bin/diplomat examples/simple/fail.txt https://httpbin.org
-GET /status/200 -> 422
+✓ GET /status/200 -> 422
 Status:
         - 422 UNPROCESSABLE ENTITY
         + 200 OK
@@ -218,7 +218,7 @@ The request body
 
 ```
 $ bin/diplomat examples/json-schema/spec.txt https://httpbin.org
-POST /post -> 200
+✓ POST /post -> 200
 ```
 
 The schema given in `examples/json-schema/post-schema.json`:

@@ -28,10 +28,12 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 2 ]
-  [ "${lines[0]}" = "Error building spec: line 6" ]
-  [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
-  [ "${lines[2]}" = "Error building spec: line 17" ]
-  [[ "${lines[3]}" =~ "Failed to parse request line: INVALID" ]]
+  [ "${lines[0]}" = "Bad Request Header" ]
+  [ "${lines[1]}" = "Error building spec: line 6" ]
+  [[ "${lines[2]}" =~ "Failed to parse header: Content-Type" ]]
+  [ "${lines[3]}" = "Bad Request Line" ]
+  [ "${lines[4]}" = "Error building spec: line 17" ]
+  [[ "${lines[5]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
 @test "Bad response header" {
@@ -98,9 +100,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 14" ]
-  [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
-  [ "${lines[2]}" = "First: Correct" ]
+  [ "${lines[0]}" = "Second: Wrong" ]
+  [ "${lines[1]}" = "Error building spec: line 14" ]
+  [[ "${lines[2]}" =~ "Found a request without a corresponding response." ]]
+  [ "${lines[3]}" = "First: Correct" ]
 }
 
 @test "Response only (second assertion)" {
@@ -109,9 +112,10 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 14" ]
-  [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
-  [ "${lines[2]}" = "First: Correct" ]
+  [ "${lines[0]}" = "Second: Wrong" ]
+  [ "${lines[1]}" = "Error building spec: line 14" ]
+  [[ "${lines[2]}" =~ "Found a response without a corresponding request." ]]
+  [ "${lines[3]}" = "First: Correct" ]
 }
 
 @test "Missing template function" {

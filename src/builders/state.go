@@ -103,13 +103,13 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 
 		if isRequestMetadataIndicator(char) {
 			if isResponseMode(mode) {
-				return test, errors.NewBuildError(spec.LineNumber, &errors.MisplacedRequest{})
+				return test, errors.NewBuildError(spec, &errors.MisplacedRequest{})
 			}
 			if mode == modeAwaitingRequest {
 				mode = modeInRequestHeaders
 				request, err := requestFromLine(trimmedLine)
 				if err != nil {
-					return test, errors.NewBuildError(spec.LineNumber, err)
+					return test, errors.NewBuildError(spec, err)
 				}
 
 				test.Request = request
@@ -118,7 +118,7 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 			} else if mode == modeInRequestHeaders {
 				key, value, err := headerFromLine(trimmedLine)
 				if err != nil {
-					return test, errors.NewBuildError(spec.LineNumber, err)
+					return test, errors.NewBuildError(spec, err)
 				}
 
 				test.Request.Headers[key] = value
@@ -128,7 +128,7 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 				mode = modeInResponseHeaders
 				response, err := responseFromLine(trimmedLine)
 				if err != nil {
-					return test, errors.NewBuildError(spec.LineNumber, err)
+					return test, errors.NewBuildError(spec, err)
 				}
 
 				test.Response = response
@@ -137,7 +137,7 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 			} else if mode == modeInResponseHeaders {
 				key, value, err := headerFromLine(trimmedLine)
 				if err != nil {
-					return test, errors.NewBuildError(spec.LineNumber, err)
+					return test, errors.NewBuildError(spec, err)
 				}
 
 				test.Response.Headers[key] = value
@@ -145,7 +145,7 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 				// This can happen if an expected response body contains a response
 				// indicator (e.g. `<`) as the first character. This explicitly
 				// disallows that, preventing unexpected issues with missing requests.
-				return test, errors.NewBuildError(spec.LineNumber, &errors.MissingRequest{})
+				return test, errors.NewBuildError(spec, &errors.MissingRequest{})
 			}
 		} else if isRequestMode(mode) {
 			mode = modeInRequestBody
@@ -157,10 +157,10 @@ func (s *State) Build(spec parsers.Spec) (Test, error) {
 	}
 
 	if test.Request == nil {
-		return test, errors.NewBuildError(spec.LineNumber, &errors.MissingRequest{})
+		return test, errors.NewBuildError(spec, &errors.MissingRequest{})
 	}
 	if test.Response == nil {
-		return test, errors.NewBuildError(spec.LineNumber, &errors.MissingResponse{})
+		return test, errors.NewBuildError(spec, &errors.MissingResponse{})
 	}
 	if len(test.Name) == 0 {
 		test.Name = fallbackTestName(test)

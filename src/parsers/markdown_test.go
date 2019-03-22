@@ -17,9 +17,8 @@ func TestMarkdownText(t *testing.T) {
 		"< Header: Response",
 		"```",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "Markdown",
@@ -30,7 +29,7 @@ func TestMarkdownText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, specs, errors)
+	}, specs)
 	// TODO(schoon) - Assert that the channel is closed here.
 }
 
@@ -82,9 +81,8 @@ func TestMarkdownDouble(t *testing.T) {
 		"< Header: Response 2",
 		"```",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "First request",
@@ -95,7 +93,7 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, specs, errors)
+	}, specs)
 
 	assertTest(t, parsers.Spec{
 		Name: "Second request",
@@ -106,7 +104,7 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response 2",
 		},
 		LineNumber: 11,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestMarkdownTaggedCodeBlock(t *testing.T) {
@@ -120,9 +118,8 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 		"< Header: Response",
 		"```",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "Markdown",
@@ -133,7 +130,7 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestMarkdownBlockQuote(t *testing.T) {
@@ -148,9 +145,8 @@ func TestMarkdownBlockQuote(t *testing.T) {
 		"< Header: Response",
 		"```",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "Markdown",
@@ -161,5 +157,5 @@ func TestMarkdownBlockQuote(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, specs, errors)
+	}, specs)
 }

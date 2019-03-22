@@ -21,10 +21,8 @@ func streamBody(body []string) chan string {
 	return lines
 }
 
-func assertTest(t *testing.T, expected parsers.Spec, specs chan parsers.Spec, errors chan error) {
+func assertTest(t *testing.T, expected parsers.Spec, specs chan parsers.Spec) {
 	select {
-	case err := <-errors:
-		assert.FailNow(t, "Error should not exist.", err)
 	case spec := <-specs:
 		assert.Equal(t, expected, spec)
 	}

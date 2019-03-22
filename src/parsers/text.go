@@ -5,8 +5,7 @@ type PlainTextParser struct{}
 
 // Parse parses all the lines received over the provided channel, parsing
 // them into Specs it sends over the returned channel.
-// It sends any errors encountered over the errors channel.
-func (m *PlainTextParser) Parse(lines chan string, errors chan error) chan Spec {
+func (m *PlainTextParser) Parse(lines chan string) chan Spec {
 	c := make(chan Spec)
 
 	go func() {

@@ -15,9 +15,8 @@ func TestLoadText(t *testing.T) {
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -28,15 +27,14 @@ func TestLoadText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestLoadEmpty(t *testing.T) {
 	subject := parsers.PlainTextParser{}
 	body := streamBody([]string{})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	_, more := <-specs
 	assert.False(t, more)
@@ -84,9 +82,8 @@ func TestSingleLineBody(t *testing.T) {
 		"<",
 		"Some response body",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -99,7 +96,7 @@ func TestSingleLineBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestMultiLineBodyWithIndentation(t *testing.T) {
@@ -113,9 +110,8 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 		"This is the first line",
 		"  This is the second line",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -129,7 +125,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 			"  This is the second line",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestMissingBracket(t *testing.T) {
@@ -141,9 +137,8 @@ func TestMissingBracket(t *testing.T) {
 		"< Header: Response",
 		"Some response body",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -155,7 +150,7 @@ func TestMissingBracket(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestCommentsAboveSpec(t *testing.T) {
@@ -168,9 +163,8 @@ func TestCommentsAboveSpec(t *testing.T) {
 		"< Header: Response",
 		"Some response body",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -183,7 +177,7 @@ func TestCommentsAboveSpec(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 func TestRequestBody(t *testing.T) {
@@ -197,9 +191,8 @@ func TestRequestBody(t *testing.T) {
 		"<",
 		"Some response body",
 	})
-	errors := make(chan error)
 
-	specs := subject.Parse(body, errors)
+	specs := subject.Parse(body)
 
 	assertTest(t, parsers.Spec{
 		Name: "",
@@ -213,7 +206,7 @@ func TestRequestBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs, errors)
+	}, specs)
 }
 
 // TODO: Is this test valid?

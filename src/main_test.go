@@ -29,7 +29,7 @@ func TestEngineStart(t *testing.T) {
 	resultChannel := make(chan runners.TestResult)
 
 	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
-	parser.On("Parse", bodyChannel, errorChannel).Return(specChannel)
+	parser.On("Parse", bodyChannel).Return(specChannel)
 	builder.On("BuildAll", specChannel, errorChannel).Return(testChannel)
 	firstTransformer.On("TransformAll", testChannel, errorChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel, errorChannel).Return(secondTransformerChannel)

@@ -25,7 +25,12 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				continue
 			}
 
-			fmt.Printf("✓ %s\n%s", result.Name, result.Diff)
+			symbol := "✓"
+			if len(result.Diff) != 0 {
+				symbol = "✗"
+			}
+
+			fmt.Printf("%s %s\n%s", symbol, result.Name, result.Diff)
 		}
 	}()
 }

@@ -26,7 +26,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 0 ]
-  [ "$output" = "✓ GET /status/422 -> 400
+  [ "$output" = "✗ GET /status/422 -> 400
 Status:
 	- 400 BAD REQUEST
 	+ 422 UNPROCESSABLE ENTITY" ]

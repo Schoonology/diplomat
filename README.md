@@ -87,7 +87,7 @@ We don't expect this specification to pass, because the status code and text don
 
 ```
 $ bin/diplomat examples/simple/fail.txt https://httpbin.org
-✓ GET /status/200 -> 422
+✗ GET /status/200 -> 422
 Status:
         - 422 UNPROCESSABLE ENTITY
         + 200 OK

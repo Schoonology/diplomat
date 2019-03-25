@@ -49,8 +49,8 @@ type Engine struct {
 }
 
 // Start runs the Engine.
-func (r *Engine) Start(filename string, errorChannel chan error) {
-	lineChannel := r.Loader.Load(filename, errorChannel)
+func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
+	lineChannel := r.Loader.LoadAll(filenameChannel, errorChannel)
 	paragraphChannel := r.Parser.Parse(lineChannel)
 	testChannel := r.Builder.BuildAll(paragraphChannel)
 
@@ -108,9 +108,18 @@ func main() {
 		Printer: printer,
 	}
 
+	filenameStream := make(chan string)
 	errorStream := make(chan error)
 
-	engine.Start(filename, errorStream)
+	// send all the filenames to the channel
+	go func() {
+		for _, f := range *filenames {
+			filenameStream <- f
+		}
+		close(filenameStream)
+	}()
+
+	engine.Start(filenameStream, errorStream)
 
 	errorCount := 0
 	for range errorStream {

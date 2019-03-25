@@ -158,7 +158,7 @@ Status:
   run bin/diplomat \
     $FIXTURES_ROOT/match-get-422.txt \
     $FIXTURES_ROOT/fail-get-422.txt \
-    https://httpbin.org
+    --address https://httpbin.org
 
   log_on_failure
 

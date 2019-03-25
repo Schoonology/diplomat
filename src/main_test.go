@@ -20,6 +20,7 @@ func TestEngineStart(t *testing.T) {
 	firstTransformer := &mocks.Transformer{}
 	secondTransformer := &mocks.Transformer{}
 
+	filenameChannel := make(chan string)
 	errorChannel := make(chan error)
 	bodyChannel := make(chan string)
 	paragraphChannel := make(chan parsers.Paragraph)
@@ -28,7 +29,7 @@ func TestEngineStart(t *testing.T) {
 	secondTransformerChannel := make(chan builders.Test)
 	resultChannel := make(chan runners.TestResult)
 
-	loader.On("Load", "test-file", errorChannel).Return(bodyChannel)
+	loader.On("LoadAll", filenameChannel, errorChannel).Return(bodyChannel)
 	parser.On("Parse", bodyChannel).Return(paragraphChannel)
 	builder.On("BuildAll", paragraphChannel).Return(testChannel)
 	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
@@ -48,7 +49,7 @@ func TestEngineStart(t *testing.T) {
 		Printer: printer,
 	}
 
-	subject.Start("test-file", errorChannel)
+	subject.Start(filenameChannel, errorChannel)
 
 	loader.AssertExpectations(t)
 	parser.AssertExpectations(t)

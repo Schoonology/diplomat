@@ -4,5 +4,6 @@ package loaders
 // to the returned channel. If any error is received on the provided channel,
 // the Loader will halt and close the output channel.
 type Loader interface {
-	Load(string, chan error) chan string
+	Load(string) ([]byte, error)
+	LoadAll(chan string, chan error) chan string
 }

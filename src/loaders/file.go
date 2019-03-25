@@ -8,24 +8,35 @@ import (
 // FileLoader loads all lines in a file.
 type FileLoader struct{}
 
-// Load sends all lines from the provided `filename` along the returned
-// channel, closing the channel once all lines have been sent.
-// Load sends any errors to the provided error channel.
-func (l *FileLoader) Load(filename string, errors chan error) chan string {
+// Load retrieves all bytes from a specified file.
+func (l *FileLoader) Load(filename string) ([]byte, error) {
+	bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	return bytes, nil
+}
+
+// LoadAll loads all files from a stream, and sends the bytes through the output channel.
+// If an error is encountered, it stops the process and sends an error into the error stream.
+func (l *FileLoader) LoadAll(filenames chan string, errors chan error) chan string {
 	lines := make(chan string)
 
 	go func() {
 		defer close(lines)
 
-		bytes, err := ioutil.ReadFile(filename)
-		if err != nil {
-			errors <- err
-			close(errors)
-			return
-		}
+		for filename := range filenames {
+			bytes, err := l.Load(filename)
+			if err != nil {
+				errors <- err
+				close(errors)
+				return
+			}
 
-		for _, line := range strings.Split(string(bytes), "\n") {
-			lines <- line
+			for _, line := range strings.Split(string(bytes), "\n") {
+				lines <- line
+			}
 		}
 	}()
 

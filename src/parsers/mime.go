@@ -11,7 +11,7 @@ func init() {
 }
 
 // GetParserFromFileName : Does what it says on the tin.
-func GetParserFromFileName(filename string) SpecParser {
+func GetParserFromFileName(filename string) ParagraphParser {
 	mimeType := mime.TypeByExtension(path.Ext(filename))
 	mimeMediaType, _, _ := mime.ParseMediaType(mimeType)
 

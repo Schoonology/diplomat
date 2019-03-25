@@ -13,12 +13,12 @@ const (
 )
 
 // Parse parses all the lines received over the provided channel, parsing
-// them into Tests it sends over the returned channel.
-func (m *Markdown) Parse(lines chan string) chan Spec {
-	c := make(chan Spec)
+// them into Paragraphs it sends over the returned channel.
+func (m *Markdown) Parse(lines chan string) chan Paragraph {
+	c := make(chan Paragraph)
 
 	go func() {
-		spec := Spec{
+		paragraph := Paragraph{
 			LineNumber: 1,
 		}
 		mode := inRichText
@@ -31,25 +31,25 @@ func (m *Markdown) Parse(lines chan string) chan Spec {
 			case strings.HasPrefix(trimmedLine, "```"):
 				if mode == inRichText {
 					mode = inCodeFence
-					spec.LineNumber = lineNumber + 1
+					paragraph.LineNumber = lineNumber + 1
 				} else if mode == inCodeFence {
-					c <- spec
-					spec = Spec{}
+					c <- paragraph
+					paragraph = Paragraph{}
 					mode = inRichText
 				} else {
 					mode = inRichText
 				}
 			case mode == inCodeFence:
-				spec.Body = append(spec.Body, line)
+				paragraph.Body = append(paragraph.Body, line)
 			case strings.HasPrefix(trimmedLine, "#"):
-				spec.Name = strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
+				paragraph.Name = strings.TrimSpace(strings.SplitN(trimmedLine, " ", 2)[1])
 			}
 
 			lineNumber++
 		}
 
-		if len(spec.Body) != 0 {
-			c <- spec
+		if len(paragraph.Body) != 0 {
+			c <- paragraph
 		}
 
 		close(c)

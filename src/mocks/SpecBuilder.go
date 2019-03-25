@@ -12,18 +12,18 @@ type SpecBuilder struct {
 }
 
 // Build provides a mock function with given fields: _a0
-func (_m *SpecBuilder) Build(_a0 parsers.Spec) (builders.Test, error) {
+func (_m *SpecBuilder) Build(_a0 parsers.Paragraph) (builders.Test, error) {
 	ret := _m.Called(_a0)
 
 	var r0 builders.Test
-	if rf, ok := ret.Get(0).(func(parsers.Spec) builders.Test); ok {
+	if rf, ok := ret.Get(0).(func(parsers.Paragraph) builders.Test); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(builders.Test)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(parsers.Spec) error); ok {
+	if rf, ok := ret.Get(1).(func(parsers.Paragraph) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -33,11 +33,11 @@ func (_m *SpecBuilder) Build(_a0 parsers.Spec) (builders.Test, error) {
 }
 
 // BuildAll provides a mock function with given fields: _a0
-func (_m *SpecBuilder) BuildAll(_a0 chan parsers.Spec) chan builders.Test {
+func (_m *SpecBuilder) BuildAll(_a0 chan parsers.Paragraph) chan builders.Test {
 	ret := _m.Called(_a0)
 
 	var r0 chan builders.Test
-	if rf, ok := ret.Get(0).(func(chan parsers.Spec) chan builders.Test); ok {
+	if rf, ok := ret.Get(0).(func(chan parsers.Paragraph) chan builders.Test); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {

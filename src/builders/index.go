@@ -5,10 +5,10 @@ import (
 	"github.com/testdouble/diplomat/parsers"
 )
 
-// A SpecBuilder constructs a test from an array of lines.
+// A SpecBuilder constructs a test from a Paragraph.
 type SpecBuilder interface {
-	Build(parsers.Spec) (Test, error)
-	BuildAll(chan parsers.Spec) chan Test
+	Build(parsers.Paragraph) (Test, error)
+	BuildAll(chan parsers.Paragraph) chan Test
 }
 
 // Test contains a name, request, and expected response.

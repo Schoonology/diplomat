@@ -11,7 +11,7 @@ import (
 
 func TestNoBody(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -36,7 +36,7 @@ func TestNoBody(t *testing.T) {
 
 func TestSingleLineBody(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -63,7 +63,7 @@ func TestSingleLineBody(t *testing.T) {
 
 func TestMultiLineBodyWithIndentation(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -91,7 +91,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 
 func TestMissingBracket(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -117,7 +117,7 @@ func TestMissingBracket(t *testing.T) {
 
 func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -141,7 +141,7 @@ func TestMultiLineBodyWithAngleBracket(t *testing.T) {
 
 func TestRequestBody(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -169,7 +169,7 @@ func TestRequestBody(t *testing.T) {
 
 func TestRequestOnly(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -188,7 +188,7 @@ func TestRequestOnly(t *testing.T) {
 
 func TestResponseOnly(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"< HTTP/1.1 200 OK",
@@ -208,7 +208,7 @@ func TestResponseOnly(t *testing.T) {
 
 func TestNoVersion(t *testing.T) {
 	subject := builders.State{}
-	body := parsers.Spec{
+	body := parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",

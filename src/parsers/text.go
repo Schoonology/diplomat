@@ -4,20 +4,20 @@ package parsers
 type PlainTextParser struct{}
 
 // Parse parses all the lines received over the provided channel, parsing
-// them into Specs it sends over the returned channel.
-func (m *PlainTextParser) Parse(lines chan string) chan Spec {
-	c := make(chan Spec)
+// them into Paragraphs it sends over the returned channel.
+func (m *PlainTextParser) Parse(lines chan string) chan Paragraph {
+	c := make(chan Paragraph)
 
 	go func() {
-		spec := Spec{}
+		paragraph := Paragraph{}
 
 		for line := range lines {
-			spec.Body = append(spec.Body, line)
+			paragraph.Body = append(paragraph.Body, line)
 		}
 
-		if len(spec.Body) > 0 {
-			spec.LineNumber = 1
-			c <- spec
+		if len(paragraph.Body) > 0 {
+			paragraph.LineNumber = 1
+			c <- paragraph
 		}
 
 		close(c)

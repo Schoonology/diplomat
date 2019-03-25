@@ -21,9 +21,9 @@ func streamBody(body []string) chan string {
 	return lines
 }
 
-func assertTest(t *testing.T, expected parsers.Spec, specs chan parsers.Spec) {
+func assertTest(t *testing.T, expected parsers.Paragraph, paragraphs chan parsers.Paragraph) {
 	select {
-	case spec := <-specs:
-		assert.Equal(t, expected, spec)
+	case paragraph := <-paragraphs:
+		assert.Equal(t, expected, paragraph)
 	}
 }

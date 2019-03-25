@@ -16,9 +16,9 @@ func TestLoadText(t *testing.T) {
 		"< Header: Response",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -27,16 +27,16 @@ func TestLoadText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestLoadEmpty(t *testing.T) {
 	subject := parsers.PlainTextParser{}
 	body := streamBody([]string{})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	_, more := <-specs
+	_, more := <-paragraphs
 	assert.False(t, more)
 }
 
@@ -55,21 +55,21 @@ func TestLoadEmpty(t *testing.T) {
 // 	})
 // 	errors := make(chan error)
 
-// 	specs := subject.Parse(body, errors)
+// 	paragraphs := subject.Parse(body, errors)
 
 // 	assertTest(t, []string{
 // 		"> METHOD path",
 // 		"> Header: Request",
 // 		"< PROTO 1337 STATUS TEXT",
 // 		"< Header: Response",
-// 	}, specs, errors)
+// 	}, paragraphs, errors)
 
 // 	assertTest(t, []string{
 // 		"> SECOND path",
 // 		"> Header: Request 2",
 // 		"< PROTO 1234 AGAIN",
 // 		"< Header: Response 2",
-// 	}, specs, errors)
+// 	}, paragraphs, errors)
 // }
 
 func TestSingleLineBody(t *testing.T) {
@@ -83,9 +83,9 @@ func TestSingleLineBody(t *testing.T) {
 		"Some response body",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -96,7 +96,7 @@ func TestSingleLineBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestMultiLineBodyWithIndentation(t *testing.T) {
@@ -111,9 +111,9 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 		"  This is the second line",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -125,7 +125,7 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 			"  This is the second line",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestMissingBracket(t *testing.T) {
@@ -138,9 +138,9 @@ func TestMissingBracket(t *testing.T) {
 		"Some response body",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -150,10 +150,10 @@ func TestMissingBracket(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
-func TestCommentsAboveSpec(t *testing.T) {
+func TestCommentsAboveparagraph(t *testing.T) {
 	subject := parsers.PlainTextParser{}
 	body := streamBody([]string{
 		"comments!!",
@@ -164,9 +164,9 @@ func TestCommentsAboveSpec(t *testing.T) {
 		"Some response body",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"comments!!",
@@ -177,7 +177,7 @@ func TestCommentsAboveSpec(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestRequestBody(t *testing.T) {
@@ -192,9 +192,9 @@ func TestRequestBody(t *testing.T) {
 		"Some response body",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -206,7 +206,7 @@ func TestRequestBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, specs)
+	}, paragraphs)
 }
 
 // TODO: Is this test valid?
@@ -230,7 +230,7 @@ func TestRequestBody(t *testing.T) {
 // 	})
 // 	errors := make(chan error)
 
-// 	specs := subject.Parse(body, errors)
+// 	paragraphs := subject.Parse(body, errors)
 
 // 	assertTest(t, []string{
 // 		"> FIRST path",
@@ -240,7 +240,7 @@ func TestRequestBody(t *testing.T) {
 // 		"< Header: Response",
 // 		"<",
 // 		"First response body",
-// 	}, specs, errors)
+// 	}, paragraphs, errors)
 
 // 	assertTest(t, []string{
 // 		"> SECOND path",
@@ -250,5 +250,5 @@ func TestRequestBody(t *testing.T) {
 // 		"< Header: Response",
 // 		"<",
 // 		"Second response body",
-// 	}, specs, errors)
+// 	}, paragraphs, errors)
 // }

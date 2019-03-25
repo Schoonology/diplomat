@@ -143,7 +143,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Usage: diplomat --address=ADDRESS [<flags>] <filename>" ]
+  [ "${lines[0]}" = "Usage: diplomat --address=ADDRESS [<flags>] <filenames> ..." ]
   [[ "$output" =~ "Flags:" ]]
   [[ "$output" =~ "--debug" ]]
   [[ "$output" =~ "--help" ]]

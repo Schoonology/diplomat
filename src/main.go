@@ -24,7 +24,7 @@ var (
 	tap     = app.Flag("tap", "Display results in TAP format.").Bool()
 	address = app.Flag("address", "Default base URL to use.").Required().String()
 
-	filename = app.Arg("filename", "Treaty file to load.").Required().ExistingFile()
+	filenames = app.Arg("filenames", "Treaty file to load.").Required().ExistingFiles()
 )
 
 func init() {
@@ -88,9 +88,15 @@ func main() {
 		}
 	}
 
+	var filename string
+	for _, f := range *filenames {
+		filename = f
+		break
+	}
+
 	engine := Engine{
 		Loader:  &loaders.FileLoader{},
-		Parser:  parsers.GetParserFromFileName(*filename),
+		Parser:  parsers.GetParserFromFileName(filename),
 		Builder: &builders.State{},
 		Transforms: []transforms.Transformer{
 			&transforms.TemplateRenderer{},
@@ -104,7 +110,7 @@ func main() {
 
 	errorStream := make(chan error)
 
-	engine.Start(*filename, errorStream)
+	engine.Start(filename, errorStream)
 
 	errorCount := 0
 	for range errorStream {

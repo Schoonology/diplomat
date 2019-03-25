@@ -3,7 +3,7 @@
 load helpers/helpers
 
 @test "Text: Fallback title" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -12,7 +12,7 @@ load helpers/helpers
 }
 
 @test "Text: Empty diff on success" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -21,7 +21,7 @@ load helpers/helpers
 }
 
 @test "Text: Status diff on incorrect status" {
-  run bin/diplomat $FIXTURES_ROOT/fail-get-422.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/fail-get-422.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -33,7 +33,7 @@ Status:
 }
 
 @test "Text: GET 200 OK" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -42,7 +42,7 @@ Status:
 }
 
 @test "Text: GET 200 OK with Body" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-200-with-body.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-200-with-body.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -51,7 +51,7 @@ Status:
 }
 
 @test "Text: POST" {
-  run bin/diplomat $FIXTURES_ROOT/match-post-200.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-post-200.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -62,7 +62,7 @@ Status:
 # TODO: this test should pass, despite having brackets in the body
 @test "Text: POST with HTTP response" {
   skip
-  run bin/diplomat $FIXTURES_ROOT/match-post-200-http.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-post-200-http.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -71,7 +71,7 @@ Status:
 }
 
 @test "Markdown: .markdown: Title from header" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-422.markdown $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.markdown --address $TEST_HOST
 
   log_on_failure
 
@@ -80,7 +80,7 @@ Status:
 }
 
 @test "Markdown: .md: Title from header" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-422.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/match-get-422.md --address $TEST_HOST
 
   log_on_failure
 
@@ -89,7 +89,7 @@ Status:
 }
 
 @test "Markdown: Multiple specs" {
-  run bin/diplomat $FIXTURES_ROOT/multiple.markdown $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/multiple.markdown --address $TEST_HOST
 
   log_on_failure
 
@@ -100,7 +100,7 @@ Status:
 }
 
 @test "--tap Option" {
-  run bin/diplomat --tap $FIXTURES_ROOT/match-get-422.txt $TEST_HOST
+  run bin/diplomat --tap $FIXTURES_ROOT/match-get-422.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -111,7 +111,7 @@ Status:
 }
 
 @test "JSON Schema" {
-  run bin/diplomat $FIXTURES_ROOT/json-schema.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/json-schema.md --address $TEST_HOST
 
   log_on_failure
 
@@ -120,7 +120,7 @@ Status:
 }
 
 @test "Custom Script" {
-  run bin/diplomat --script $FIXTURES_ROOT/custom.lua $FIXTURES_ROOT/custom-script.md $TEST_HOST
+  run bin/diplomat --script $FIXTURES_ROOT/custom.lua $FIXTURES_ROOT/custom-script.md --address $TEST_HOST
 
   log_on_failure
 
@@ -129,7 +129,7 @@ Status:
 }
 
 @test "Multiple Custom Scripts" {
-  run bin/diplomat --script $FIXTURES_ROOT/custom-header.lua $FIXTURES_ROOT/custom-script-multiple.md $TEST_HOST
+  run bin/diplomat --script $FIXTURES_ROOT/custom-header.lua $FIXTURES_ROOT/custom-script-multiple.md --address $TEST_HOST
 
   log_on_failure
 
@@ -143,12 +143,29 @@ Status:
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Usage: diplomat [<flags>] <filename> <address>" ]
+  [ "${lines[0]}" = "Usage: diplomat --address=ADDRESS [<flags>] <filename>" ]
   [[ "$output" =~ "Flags:" ]]
   [[ "$output" =~ "--debug" ]]
   [[ "$output" =~ "--help" ]]
   [[ "$output" =~ "--script" ]]
   [[ "$output" =~ "--tap" ]]
+  [[ "$output" =~ "--address" ]]
   [[ "$output" =~ "--version" ]]
   [[ "$output" =~ "Args:" ]]
+}
+
+@test "Multiple files" {
+  run bin/diplomat \
+    $FIXTURES_ROOT/match-get-422.txt \
+    $FIXTURES_ROOT/fail-get-422.txt \
+    https://httpbin.org
+
+  log_on_failure
+
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "✓ GET /status/422 -> 422" ]
+  [ "${lines[1]}" = "✗ GET /status/422 -> 400" ]
+  [ "${lines[2]}" = "Status:" ]
+  [[ "${lines[3]}" =~ "- 400 BAD REQUEST" ]]
+  [[ "${lines[4]}" =~ "+ 422 UNPROCESSABLE ENTITY" ]]
 }

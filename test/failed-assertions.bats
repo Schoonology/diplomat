@@ -3,7 +3,7 @@
 load helpers/helpers
 
 @test "Invalid JSON Schema" {
-  run bin/diplomat $FIXTURES_ROOT/failing/invalid-json-schema.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/failing/invalid-json-schema.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -13,7 +13,7 @@ load helpers/helpers
 }
 
 @test "Fail to match JSON Schema" {
-  run bin/diplomat $FIXTURES_ROOT/failing/fail-to-match-schema.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/failing/fail-to-match-schema.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -23,7 +23,7 @@ load helpers/helpers
 }
 
 @test "Multiple JSON errors in a Markdown file" {
-  run bin/diplomat $FIXTURES_ROOT/failing/multiple-json-failures.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/failing/multiple-json-failures.md --address $TEST_HOST
 
   log_on_failure
 
@@ -36,7 +36,8 @@ load helpers/helpers
 
 @test "Error from template function" {
   run bin/diplomat --script $FIXTURES_ROOT/failing/error-from-template.lua \
-    $FIXTURES_ROOT/failing/error-from-template.txt $TEST_HOST
+    $FIXTURES_ROOT/failing/error-from-template.txt \
+    --address $TEST_HOST
 
   log_on_failure
 
@@ -47,7 +48,8 @@ load helpers/helpers
 
 @test "Error from validator function" {
   run bin/diplomat --script $FIXTURES_ROOT/failing/error-from-validator.lua \
-    $FIXTURES_ROOT/failing/error-from-validator.txt $TEST_HOST
+    $FIXTURES_ROOT/failing/error-from-validator.txt \
+    --address $TEST_HOST
 
   log_on_failure
 

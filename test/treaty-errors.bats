@@ -3,7 +3,7 @@
 load helpers/helpers
 
 @test "Bad request header" {
-  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-header.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-header.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -13,7 +13,7 @@ load helpers/helpers
 }
 
 @test "Bad request line" {
-  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-line.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-line.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -23,7 +23,7 @@ load helpers/helpers
 }
 
 @test "Multiple bad requests in a markdown file" {
-  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-multiple.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/bad-request-multiple.md --address $TEST_HOST
 
   log_on_failure
 
@@ -37,7 +37,7 @@ load helpers/helpers
 }
 
 @test "Bad response header" {
-  run bin/diplomat $FIXTURES_ROOT/broken/bad-response-header.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/bad-response-header.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -47,7 +47,7 @@ load helpers/helpers
 }
 
 @test "Bad response status" {
-  run bin/diplomat $FIXTURES_ROOT/broken/bad-response-status.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/bad-response-status.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -57,7 +57,7 @@ load helpers/helpers
 }
 
 @test "Markdown: No header" {
-  run bin/diplomat $FIXTURES_ROOT/broken/no-header.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/no-header.md --address $TEST_HOST
 
   log_on_failure
 
@@ -66,7 +66,7 @@ load helpers/helpers
 }
 
 @test "Markdown: Unclosed code fence" {
-  run bin/diplomat $FIXTURES_ROOT/broken/unclosed-code-fence.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/unclosed-code-fence.md --address $TEST_HOST
 
   log_on_failure
 
@@ -75,7 +75,7 @@ load helpers/helpers
 }
 
 @test "Request only" {
-  run bin/diplomat $FIXTURES_ROOT/broken/request-only.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/request-only.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -85,7 +85,7 @@ load helpers/helpers
 }
 
 @test "Response only" {
-  run bin/diplomat $FIXTURES_ROOT/broken/response-only.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/response-only.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -95,7 +95,7 @@ load helpers/helpers
 }
 
 @test "Request only (second assertion)" {
-  run bin/diplomat $FIXTURES_ROOT/broken/request-only-second.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/request-only-second.md --address $TEST_HOST
 
   log_on_failure
 
@@ -107,7 +107,7 @@ load helpers/helpers
 }
 
 @test "Response only (second assertion)" {
-  run bin/diplomat $FIXTURES_ROOT/broken/response-only-second.md $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/response-only-second.md --address $TEST_HOST
 
   log_on_failure
 
@@ -119,7 +119,7 @@ load helpers/helpers
 }
 
 @test "Missing template function" {
-  run bin/diplomat $FIXTURES_ROOT/broken/missing-template-function.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/missing-template-function.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -129,7 +129,7 @@ load helpers/helpers
 }
 
 @test "Missing validator function" {
-  run bin/diplomat $FIXTURES_ROOT/broken/missing-validator-function.txt $TEST_HOST
+  run bin/diplomat $FIXTURES_ROOT/broken/missing-validator-function.txt --address $TEST_HOST
 
   log_on_failure
 
@@ -140,7 +140,8 @@ load helpers/helpers
 
 @test "Invalid script syntax" {
   run bin/diplomat --script $FIXTURES_ROOT/broken/invalid-script-syntax.lua \
-    $FIXTURES_ROOT/match-get-200.txt $TEST_HOST
+    $FIXTURES_ROOT/match-get-200.txt \
+    --address $TEST_HOST
 
   log_on_failure
 

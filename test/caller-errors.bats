@@ -8,11 +8,11 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "${lines[0]}" =~ "error: required argument" ]]
+  [[ "${lines[0]}" =~ "error: required flag --address not provided" ]]
 }
 
 @test "File does not exist" {
-  run bin/diplomat missing $TEST_HOST
+  run bin/diplomat missing --address $TEST_HOST
 
   log_on_failure
 
@@ -21,7 +21,7 @@ load helpers/helpers
 }
 
 @test "Host does not exist" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt http://wrong
+  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt --address http://wrong
 
   log_on_failure
 
@@ -30,7 +30,7 @@ load helpers/helpers
 }
 
 @test "Host is unreachable" {
-  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt http://localhost:7538
+  run bin/diplomat $FIXTURES_ROOT/match-get-200.txt --address http://localhost:7538
 
   log_on_failure
 

@@ -22,9 +22,9 @@ var (
 	debug   = app.Flag("debug", "Enable debug mode.").Bool()
 	scripts = app.Flag("script", "Custom Lua script(s) to import.").PlaceHolder("FILE").Strings()
 	tap     = app.Flag("tap", "Display results in TAP format.").Bool()
+	address = app.Flag("address", "Default base URL to use.").Required().String()
 
 	filename = app.Arg("filename", "Treaty file to load.").Required().ExistingFile()
-	address  = app.Arg("address", "Default base URL to use.").Required().String()
 )
 
 func init() {

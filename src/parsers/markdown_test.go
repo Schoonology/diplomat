@@ -18,9 +18,9 @@ func TestMarkdownText(t *testing.T) {
 		"```",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -29,7 +29,7 @@ func TestMarkdownText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, specs)
+	}, paragraphs)
 	// TODO(schoon) - Assert that the channel is closed here.
 }
 
@@ -49,7 +49,7 @@ func TestMarkdownText(t *testing.T) {
 // 	})
 // 	errors := make(chan error)
 
-// 	specs := subject.Parse(body, errors)
+// 	paragraphs := subject.Parse(body, errors)
 
 // 	assertTest(t, builders.Test{
 // 		Name: "Markdown",
@@ -59,7 +59,7 @@ func TestMarkdownText(t *testing.T) {
 // 		Response: fillResponse(1337, "STATUS TEXT", map[string]string{
 // 			"Header": "Response",
 // 		}, ""),
-// 	}, specs, errors)
+// 	}, paragraphs, errors)
 // }
 
 func TestMarkdownDouble(t *testing.T) {
@@ -82,9 +82,9 @@ func TestMarkdownDouble(t *testing.T) {
 		"```",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "First request",
 		Body: []string{
 			"> METHOD path",
@@ -93,9 +93,9 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, specs)
+	}, paragraphs)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "Second request",
 		Body: []string{
 			"> SECOND path",
@@ -104,7 +104,7 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response 2",
 		},
 		LineNumber: 11,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestMarkdownTaggedCodeBlock(t *testing.T) {
@@ -119,9 +119,9 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 		"```",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -130,14 +130,14 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, specs)
+	}, paragraphs)
 }
 
 func TestMarkdownBlockQuote(t *testing.T) {
 	subject := parsers.Markdown{}
 	body := streamBody([]string{
 		"# Markdown",
-		"> Quoting some spec or something",
+		"> Quoting some paragraph or something",
 		"```",
 		"> METHOD path",
 		"> Header: Request",
@@ -146,9 +146,9 @@ func TestMarkdownBlockQuote(t *testing.T) {
 		"```",
 	})
 
-	specs := subject.Parse(body)
+	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Spec{
+	assertTest(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -157,5 +157,5 @@ func TestMarkdownBlockQuote(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, specs)
+	}, paragraphs)
 }

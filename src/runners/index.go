@@ -2,7 +2,7 @@ package runners
 
 import "github.com/testdouble/diplomat/builders"
 
-// A SpecRunner runs the entirety of a Spec in a given order, emitting test
+// A SpecRunner runs the entirety of a Test in a given order, emitting test
 // results to the returned channel.
 type SpecRunner interface {
 	Run(builders.Test) (TestResult, error)

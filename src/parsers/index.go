@@ -1,12 +1,12 @@
 package parsers
 
-// A SpecParser is capable of parsing all lines in `body`.
-type SpecParser interface {
-	Parse(chan string) chan Spec
+// A ParagraphParser is capable of parsing a stream of lines into chunks.
+type ParagraphParser interface {
+	Parse(chan string) chan Paragraph
 }
 
-// Spec contains a name and a body (array of lines) representing a test specification.
-type Spec struct {
+// Paragraph contains a name and a body (array of lines) representing a test specification.
+type Paragraph struct {
 	Name       string
 	Body       []string
 	LineNumber int

@@ -7,9 +7,9 @@ import (
 )
 
 // NewBuildError wraps an error with a BuildError containing a LineNumber.
-func NewBuildError(spec parsers.Spec, err error) *BuildError {
+func NewBuildError(paragraph parsers.Paragraph, err error) *BuildError {
 	return &BuildError{
-		LineNumber: spec.LineNumber,
+		LineNumber: paragraph.LineNumber,
 		Err:        err,
 	}
 }

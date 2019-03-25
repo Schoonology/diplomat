@@ -12,7 +12,7 @@ type Serial struct {
 	Client http.Client
 }
 
-// Run returns the results of running all tests in `spec`.
+// Run returns the results of running all tests in `test`.
 func (s *Serial) Run(test builders.Test) (TestResult, error) {
 	response, err := s.Client.Do(test.Request)
 	if err != nil {

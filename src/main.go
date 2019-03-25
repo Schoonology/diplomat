@@ -41,7 +41,7 @@ Args:
 // attached components.
 type Engine struct {
 	Loader     loaders.Loader
-	Parser     parsers.SpecParser
+	Parser     parsers.ParagraphParser
 	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
@@ -51,8 +51,8 @@ type Engine struct {
 // Start runs the Engine.
 func (r *Engine) Start(filename string, errorChannel chan error) {
 	lineChannel := r.Loader.Load(filename, errorChannel)
-	specChannel := r.Parser.Parse(lineChannel)
-	testChannel := r.Builder.BuildAll(specChannel)
+	paragraphChannel := r.Parser.Parse(lineChannel)
+	testChannel := r.Builder.BuildAll(paragraphChannel)
 
 	for _, transformer := range r.Transforms {
 		testChannel = transformer.TransformAll(testChannel)

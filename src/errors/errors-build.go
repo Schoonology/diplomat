@@ -9,6 +9,7 @@ import (
 // NewBuildError wraps an error with a BuildError containing a LineNumber.
 func NewBuildError(paragraph parsers.Paragraph, err error) *BuildError {
 	return &BuildError{
+		FileName:   paragraph.FileName,
 		LineNumber: paragraph.LineNumber,
 		Err:        err,
 	}
@@ -16,12 +17,13 @@ func NewBuildError(paragraph parsers.Paragraph, err error) *BuildError {
 
 // BuildError is the error type for any error found during the build step.
 type BuildError struct {
+	FileName   string
 	LineNumber int
 	Err        error
 }
 
 func (err *BuildError) Error() string {
-	return fmt.Sprintf("Error building spec: line %v\n	%s\n", err.LineNumber, err.Err.Error())
+	return fmt.Sprintf("Error building spec: %v: line %v\n	%s\n", err.FileName, err.LineNumber, err.Err.Error())
 }
 
 // BadHeader is the error type for a badly formatted header.

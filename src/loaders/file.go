@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 )
 
@@ -35,7 +36,7 @@ func (l *FileLoader) LoadAll(filenames chan string, errors chan error) chan File
 			}
 
 			files <- File{
-				Name: filename,
+				Name: filepath.Base(filename),
 				Body: strings.Split(string(bytes), "\n"),
 			}
 		}

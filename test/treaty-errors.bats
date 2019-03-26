@@ -8,7 +8,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: bad-request-header.txt: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
@@ -18,7 +18,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: bad-request-line.txt: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
@@ -29,10 +29,10 @@ load helpers/helpers
 
   [ "$status" -eq 2 ]
   [ "${lines[0]}" = "✗ Bad Request Header" ]
-  [ "${lines[1]}" = "Error building spec: line 6" ]
+  [ "${lines[1]}" = "Error building spec: bad-request-multiple.md: line 6" ]
   [[ "${lines[2]}" =~ "Failed to parse header: Content-Type" ]]
   [ "${lines[3]}" = "✗ Bad Request Line" ]
-  [ "${lines[4]}" = "Error building spec: line 17" ]
+  [ "${lines[4]}" = "Error building spec: bad-request-multiple.md: line 17" ]
   [[ "${lines[5]}" =~ "Failed to parse request line: INVALID" ]]
 }
 
@@ -42,7 +42,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: bad-response-header.txt: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse header: Content-Type" ]]
 }
 
@@ -52,7 +52,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: bad-response-status.txt: line 1" ]
   [[ "${lines[1]}" =~ "Failed to parse response line: OOPS" ]]
 }
 
@@ -80,7 +80,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: request-only.txt: line 1" ]
   [[ "${lines[1]}" =~ "Found a request without a corresponding response." ]]
 }
 
@@ -90,7 +90,7 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "Error building spec: line 1" ]
+  [ "${lines[0]}" = "Error building spec: response-only.txt: line 1" ]
   [[ "${lines[1]}" =~ "Found a response without a corresponding request." ]]
 }
 
@@ -102,7 +102,7 @@ load helpers/helpers
   [ "$status" -eq 1 ]
   [ "${lines[0]}" = "✓ First: Correct" ]
   [ "${lines[1]}" = "✗ Second: Wrong" ]
-  [ "${lines[2]}" = "Error building spec: line 14" ]
+  [ "${lines[2]}" = "Error building spec: request-only-second.md: line 14" ]
   [[ "${lines[3]}" =~ "Found a request without a corresponding response." ]]
 }
 
@@ -114,7 +114,7 @@ load helpers/helpers
   [ "$status" -eq 1 ]
   [ "${lines[0]}" = "✓ First: Correct" ]
   [ "${lines[1]}" = "✗ Second: Wrong" ]
-  [ "${lines[2]}" = "Error building spec: line 14" ]
+  [ "${lines[2]}" = "Error building spec: response-only-second.md: line 14" ]
   [[ "${lines[3]}" =~ "Found a response without a corresponding request." ]]
 }
 

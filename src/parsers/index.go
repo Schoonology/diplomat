@@ -14,6 +14,7 @@ type ParseDelegator interface {
 
 // Paragraph contains a name and a body (array of lines) representing a test specification.
 type Paragraph struct {
+	FileName   string
 	Name       string
 	Body       []string
 	LineNumber int

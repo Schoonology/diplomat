@@ -17,6 +17,7 @@ func (d *Delegator) ParseAll(files chan loaders.File) chan Paragraph {
 			paragraphs := parser.Parse(file.Body)
 
 			for _, paragraph := range paragraphs {
+				paragraph.FileName = file.Name
 				c <- paragraph
 			}
 		}

@@ -25,7 +25,7 @@ load helpers/helpers
 
   log_on_failure
 
-  [ "$status" -eq 0 ]
+  [ "$status" -eq 1 ]
   [ "$output" = "✗ GET /status/422 -> 400
 Status:
 	- 400 BAD REQUEST

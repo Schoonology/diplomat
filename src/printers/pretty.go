@@ -28,6 +28,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 			symbol := "✓"
 			if len(result.Diff) != 0 {
 				symbol = "✗"
+				errorChannel <- errors.NewAssertionError(result.Diff)
 			}
 
 			fmt.Printf("%s %s\n%s", symbol, result.Name, result.Diff)

@@ -1,7 +1,5 @@
 package parsers
 
-import "github.com/testdouble/diplomat/loaders"
-
 // PlainTextParser parses all provided text as-is.
 type PlainTextParser struct{}
 
@@ -20,24 +18,4 @@ func (m *PlainTextParser) Parse(file []string) []Paragraph {
 	}
 
 	return paragraphs
-}
-
-// ParseAll parses all the lines received over the provided channel, parsing
-// them into Paragraphs it sends over the returned channel.
-func (m *PlainTextParser) ParseAll(files chan loaders.File) chan Paragraph {
-	c := make(chan Paragraph)
-
-	go func() {
-		for file := range files {
-			paragraphs := m.Parse(file.Body)
-
-			for _, paragraph := range paragraphs {
-				c <- paragraph
-			}
-		}
-
-		close(c)
-	}()
-
-	return c
 }

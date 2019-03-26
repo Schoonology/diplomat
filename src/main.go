@@ -41,7 +41,7 @@ Args:
 // attached components.
 type Engine struct {
 	Loader     loaders.Loader
-	Parser     parsers.ParagraphParser
+	Parser     parsers.ParseDelegator
 	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
@@ -88,15 +88,9 @@ func main() {
 		}
 	}
 
-	var filename string
-	for _, f := range *filenames {
-		filename = f
-		break
-	}
-
 	engine := Engine{
 		Loader:  &loaders.FileLoader{},
-		Parser:  parsers.GetParserFromFileName(filename),
+		Parser:  &parsers.Delegator{},
 		Builder: &builders.State{},
 		Transforms: []transforms.Transformer{
 			&transforms.TemplateRenderer{},

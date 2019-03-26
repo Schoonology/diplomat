@@ -179,7 +179,7 @@ Status:
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [ "${lines[0]}" = "✓ GET /status/422 -> 422" ]
+  [ "${lines[0]}" = "✓ Markdown: GET /status/422" ]
   [ "${lines[1]}" = "✗ GET /status/422 -> 400" ]
   [ "${lines[2]}" = "Status:" ]
   [[ "${lines[3]}" =~ "- 400 BAD REQUEST" ]]

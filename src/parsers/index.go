@@ -5,6 +5,10 @@ import "github.com/testdouble/diplomat/loaders"
 // A ParagraphParser is capable of parsing a stream of lines into chunks.
 type ParagraphParser interface {
 	Parse([]string) []Paragraph
+}
+
+// A ParseDelegator chooses the correct parser to handle an input
+type ParseDelegator interface {
 	ParseAll(chan loaders.File) chan Paragraph
 }
 

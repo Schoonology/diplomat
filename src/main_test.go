@@ -14,7 +14,7 @@ import (
 
 func TestEngineStart(t *testing.T) {
 	loader := &mocks.Loader{}
-	parser := &mocks.ParagraphParser{}
+	parser := &mocks.ParseDelegator{}
 	builder := &mocks.SpecBuilder{}
 	runner := &mocks.SpecRunner{}
 	printer := &mocks.ResultsPrinter{}

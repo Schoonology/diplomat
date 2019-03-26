@@ -169,3 +169,19 @@ Status:
   [[ "${lines[3]}" =~ "- 400 BAD REQUEST" ]]
   [[ "${lines[4]}" =~ "+ 422 UNPROCESSABLE ENTITY" ]]
 }
+
+@test "Multiple files with different parsers" {
+  run bin/diplomat \
+    $FIXTURES_ROOT/match-get-422.md \
+    $FIXTURES_ROOT/fail-get-422.txt \
+    --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 1 ]
+  [ "${lines[0]}" = "✓ GET /status/422 -> 422" ]
+  [ "${lines[1]}" = "✗ GET /status/422 -> 400" ]
+  [ "${lines[2]}" = "Status:" ]
+  [[ "${lines[3]}" =~ "- 400 BAD REQUEST" ]]
+  [[ "${lines[4]}" =~ "+ 422 UNPROCESSABLE ENTITY" ]]
+}

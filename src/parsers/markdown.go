@@ -2,6 +2,8 @@ package parsers
 
 import (
 	"strings"
+
+	"github.com/testdouble/diplomat/loaders"
 )
 
 // The Markdown parser parses all lines inside of code fences (```).
@@ -55,12 +57,12 @@ func (m *Markdown) Parse(file []string) []Paragraph {
 
 // ParseAll parses all the lines received over the provided channel, parsing
 // them into Paragraphs it sends over the returned channel.
-func (m *Markdown) ParseAll(files chan []string) chan Paragraph {
+func (m *Markdown) ParseAll(files chan loaders.File) chan Paragraph {
 	c := make(chan Paragraph)
 
 	go func() {
 		for file := range files {
-			paragraphs := m.Parse(file)
+			paragraphs := m.Parse(file.Body)
 
 			for _, paragraph := range paragraphs {
 				c <- paragraph

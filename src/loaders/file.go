@@ -20,8 +20,8 @@ func (l *FileLoader) Load(filename string) ([]byte, error) {
 
 // LoadAll loads all files from a stream, and sends the bytes through the output channel.
 // If an error is encountered, it stops the process and sends an error into the error stream.
-func (l *FileLoader) LoadAll(filenames chan string, errors chan error) chan []string {
-	files := make(chan []string)
+func (l *FileLoader) LoadAll(filenames chan string, errors chan error) chan File {
+	files := make(chan File)
 
 	go func() {
 		defer close(files)
@@ -34,7 +34,10 @@ func (l *FileLoader) LoadAll(filenames chan string, errors chan error) chan []st
 				return
 			}
 
-			files <- strings.Split(string(bytes), "\n")
+			files <- File{
+				Name: filename,
+				Body: strings.Split(string(bytes), "\n"),
+			}
 		}
 	}()
 

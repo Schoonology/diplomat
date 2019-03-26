@@ -5,6 +5,7 @@ import (
 
 	main "github.com/testdouble/diplomat"
 	"github.com/testdouble/diplomat/builders"
+	"github.com/testdouble/diplomat/loaders"
 	"github.com/testdouble/diplomat/mocks"
 	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/runners"
@@ -22,15 +23,15 @@ func TestEngineStart(t *testing.T) {
 
 	filenameChannel := make(chan string)
 	errorChannel := make(chan error)
-	bodyChannel := make(chan []string)
+	fileChannel := make(chan loaders.File)
 	paragraphChannel := make(chan parsers.Paragraph)
 	testChannel := make(chan builders.Test)
 	firstTransformerChannel := make(chan builders.Test)
 	secondTransformerChannel := make(chan builders.Test)
 	resultChannel := make(chan runners.TestResult)
 
-	loader.On("LoadAll", filenameChannel, errorChannel).Return(bodyChannel)
-	parser.On("ParseAll", bodyChannel).Return(paragraphChannel)
+	loader.On("LoadAll", filenameChannel, errorChannel).Return(fileChannel)
+	parser.On("ParseAll", fileChannel).Return(paragraphChannel)
 	builder.On("BuildAll", paragraphChannel).Return(testChannel)
 	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)

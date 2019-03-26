@@ -9,16 +9,16 @@ import (
 
 func TestLoadText(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"> METHOD path",
 		"> Header: Request",
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -27,17 +27,7 @@ func TestLoadText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 1,
-	}, paragraphs)
-}
-
-func TestLoadEmpty(t *testing.T) {
-	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{})
-
-	paragraphs := subject.Parse(body)
-
-	_, more := <-paragraphs
-	assert.False(t, more)
+	}, paragraphs[0])
 }
 
 // TODO: Is this test valid?
@@ -74,18 +64,18 @@ func TestLoadEmpty(t *testing.T) {
 
 func TestSingleLineBody(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"> METHOD path",
 		"> Header: Request",
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"<",
 		"Some response body",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -96,12 +86,12 @@ func TestSingleLineBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 func TestMultiLineBodyWithIndentation(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"> METHOD path",
 		"> Header: Request",
 		"< PROTO 1337 STATUS TEXT",
@@ -109,11 +99,11 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 		"<",
 		"This is the first line",
 		"  This is the second line",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -125,22 +115,22 @@ func TestMultiLineBodyWithIndentation(t *testing.T) {
 			"  This is the second line",
 		},
 		LineNumber: 1,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 func TestMissingBracket(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"> METHOD path",
 		"> Header: Request",
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"Some response body",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -150,23 +140,23 @@ func TestMissingBracket(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 func TestCommentsAboveparagraph(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"comments!!",
 		"> METHOD path",
 		"> Header: Request",
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"Some response body",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"comments!!",
@@ -177,12 +167,12 @@ func TestCommentsAboveparagraph(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 func TestRequestBody(t *testing.T) {
 	subject := parsers.PlainTextParser{}
-	body := streamBody([]string{
+	body := []string{
 		"> METHOD path",
 		"> Header: Request",
 		"Some request body",
@@ -190,11 +180,11 @@ func TestRequestBody(t *testing.T) {
 		"< Header: Response",
 		"<",
 		"Some response body",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "",
 		Body: []string{
 			"> METHOD path",
@@ -206,7 +196,7 @@ func TestRequestBody(t *testing.T) {
 			"Some response body",
 		},
 		LineNumber: 1,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 // TODO: Is this test valid?

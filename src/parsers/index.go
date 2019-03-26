@@ -2,7 +2,8 @@ package parsers
 
 // A ParagraphParser is capable of parsing a stream of lines into chunks.
 type ParagraphParser interface {
-	Parse(chan string) chan Paragraph
+	Parse([]string) []Paragraph
+	ParseAll(chan []string) chan Paragraph
 }
 
 // Paragraph contains a name and a body (array of lines) representing a test specification.

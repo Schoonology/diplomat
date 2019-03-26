@@ -3,12 +3,13 @@ package parsers_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/testdouble/diplomat/parsers"
 )
 
 func TestMarkdownText(t *testing.T) {
 	subject := parsers.Markdown{}
-	body := streamBody([]string{
+	body := []string{
 		"# Markdown",
 		"```",
 		"> METHOD path",
@@ -16,11 +17,11 @@ func TestMarkdownText(t *testing.T) {
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"```",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -29,8 +30,7 @@ func TestMarkdownText(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, paragraphs)
-	// TODO(schoon) - Assert that the channel is closed here.
+	}, paragraphs[0])
 }
 
 // TODO: is this still valid?
@@ -64,7 +64,7 @@ func TestMarkdownText(t *testing.T) {
 
 func TestMarkdownDouble(t *testing.T) {
 	subject := parsers.Markdown{}
-	body := streamBody([]string{
+	body := []string{
 		"# Markdown",
 		"## First request",
 		"```",
@@ -80,11 +80,11 @@ func TestMarkdownDouble(t *testing.T) {
 		"< PROTO 1234 AGAIN",
 		"< Header: Response 2",
 		"```",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "First request",
 		Body: []string{
 			"> METHOD path",
@@ -93,9 +93,9 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, paragraphs)
+	}, paragraphs[0])
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "Second request",
 		Body: []string{
 			"> SECOND path",
@@ -104,12 +104,12 @@ func TestMarkdownDouble(t *testing.T) {
 			"< Header: Response 2",
 		},
 		LineNumber: 11,
-	}, paragraphs)
+	}, paragraphs[1])
 }
 
 func TestMarkdownTaggedCodeBlock(t *testing.T) {
 	subject := parsers.Markdown{}
-	body := streamBody([]string{
+	body := []string{
 		"# Markdown",
 		"```tag",
 		"> METHOD path",
@@ -117,11 +117,11 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"```",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -130,12 +130,12 @@ func TestMarkdownTaggedCodeBlock(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 3,
-	}, paragraphs)
+	}, paragraphs[0])
 }
 
 func TestMarkdownBlockQuote(t *testing.T) {
 	subject := parsers.Markdown{}
-	body := streamBody([]string{
+	body := []string{
 		"# Markdown",
 		"> Quoting some paragraph or something",
 		"```",
@@ -144,11 +144,11 @@ func TestMarkdownBlockQuote(t *testing.T) {
 		"< PROTO 1337 STATUS TEXT",
 		"< Header: Response",
 		"```",
-	})
+	}
 
 	paragraphs := subject.Parse(body)
 
-	assertTest(t, parsers.Paragraph{
+	assert.Equal(t, parsers.Paragraph{
 		Name: "Markdown",
 		Body: []string{
 			"> METHOD path",
@@ -157,5 +157,5 @@ func TestMarkdownBlockQuote(t *testing.T) {
 			"< Header: Response",
 		},
 		LineNumber: 4,
-	}, paragraphs)
+	}, paragraphs[0])
 }

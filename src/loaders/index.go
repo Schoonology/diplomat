@@ -5,5 +5,5 @@ package loaders
 // the Loader will halt and close the output channel.
 type Loader interface {
 	Load(string) ([]byte, error)
-	LoadAll(chan string, chan error) chan string
+	LoadAll(chan string, chan error) chan []string
 }

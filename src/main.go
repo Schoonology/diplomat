@@ -50,8 +50,8 @@ type Engine struct {
 
 // Start runs the Engine.
 func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
-	lineChannel := r.Loader.LoadAll(filenameChannel, errorChannel)
-	paragraphChannel := r.Parser.Parse(lineChannel)
+	fileChannel := r.Loader.LoadAll(filenameChannel, errorChannel)
+	paragraphChannel := r.Parser.ParseAll(fileChannel)
 	testChannel := r.Builder.BuildAll(paragraphChannel)
 
 	for _, transformer := range r.Transforms {

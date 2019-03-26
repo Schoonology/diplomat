@@ -33,15 +33,15 @@ func (_m *Loader) Load(_a0 string) ([]byte, error) {
 }
 
 // LoadAll provides a mock function with given fields: _a0, _a1
-func (_m *Loader) LoadAll(_a0 chan string, _a1 chan error) chan string {
+func (_m *Loader) LoadAll(_a0 chan string, _a1 chan error) chan []string {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 chan string
-	if rf, ok := ret.Get(0).(func(chan string, chan error) chan string); ok {
+	var r0 chan []string
+	if rf, ok := ret.Get(0).(func(chan string, chan error) chan []string); ok {
 		r0 = rf(_a0, _a1)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(chan string)
+			r0 = ret.Get(0).(chan []string)
 		}
 	}
 

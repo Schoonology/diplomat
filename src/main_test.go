@@ -22,7 +22,7 @@ func TestEngineStart(t *testing.T) {
 
 	filenameChannel := make(chan string)
 	errorChannel := make(chan error)
-	bodyChannel := make(chan string)
+	bodyChannel := make(chan []string)
 	paragraphChannel := make(chan parsers.Paragraph)
 	testChannel := make(chan builders.Test)
 	firstTransformerChannel := make(chan builders.Test)
@@ -30,7 +30,7 @@ func TestEngineStart(t *testing.T) {
 	resultChannel := make(chan runners.TestResult)
 
 	loader.On("LoadAll", filenameChannel, errorChannel).Return(bodyChannel)
-	parser.On("Parse", bodyChannel).Return(paragraphChannel)
+	parser.On("ParseAll", bodyChannel).Return(paragraphChannel)
 	builder.On("BuildAll", paragraphChannel).Return(testChannel)
 	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)

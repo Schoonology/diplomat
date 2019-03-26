@@ -49,6 +49,12 @@ To see the usage information for diplomat, pass the `--help` flag:
 bin/diplomat --help
 ```
 
+Diplomat accepts one or more files or globs, and a required `--address` argument containing the host URL.
+
+```sh
+bin/diplomat examples/simple/pass.txt --address https://httpbin.org
+```
+
 ### Writing Specifications
 
 In order to define a test in Diplomat, you'll need to provide what we call a _specification_. A specification is a file containing a request and its expected response.
@@ -69,7 +75,7 @@ Like comments, it will be ignored by the parser.
 To run this specification as a test using Diplomat:
 
 ```
-$ bin/diplomat examples/simple/pass.txt https://httpbin.org
+$ bin/diplomat examples/simple/pass.txt --address https://httpbin.org
 ✓ GET /status/200 -> 200
 ```
 
@@ -86,7 +92,7 @@ We don't expect this specification to pass, because the status code and text don
 ```
 
 ```
-$ bin/diplomat examples/simple/fail.txt https://httpbin.org
+$ bin/diplomat examples/simple/fail.txt --address https://httpbin.org
 ✗ GET /status/200 -> 422
 Status:
         - 422 UNPROCESSABLE ENTITY
@@ -161,7 +167,7 @@ Notice that the sections in this `curl` output, particularly those prefixed by `
 Diplomat supports tap output, by passing the `tap` flag:
 
 ```
-$ bin/diplomat --tap examples/simple/pass.txt https://httpbin.org
+$ bin/diplomat --tap examples/simple/pass.txt --address https://httpbin.org
 TAP version 13
 ok 0 GET /status/200 -> 200
 ```
@@ -171,7 +177,7 @@ ok 0 GET /status/200 -> 200
 The `debug` flag provides additional information about the differences between the specification's request and response. This flag should not be used in production.
 
 ```
-$ bin/diplomat --debug examples/simple/pass.txt https://httpbin.org
+$ bin/diplomat --debug examples/simple/pass.txt --address https://httpbin.org
 GET /status/200 -> 200
 {*http.Response}.Headers["Access-Control-Allow-Credentials"]:
         -: <non-existent>
@@ -217,7 +223,7 @@ The request body
 ```
 
 ```
-$ bin/diplomat examples/json-schema/spec.txt https://httpbin.org
+$ bin/diplomat examples/json-schema/spec.txt --address https://httpbin.org
 ✓ POST /post -> 200
 ```
 
@@ -307,7 +313,7 @@ end
 Finally, we need to pass our Lua script to Diplomat when running the tests, which can be accomplished with the `--script` CLI argument.
 
 ```sh
-bin/diplomat examples/lua-script/spec.txt https://httpbin.org \
+bin/diplomat examples/lua-script/spec.txt --address https://httpbin.org \
   --script examples/lua-script/script.lua
 ```
 

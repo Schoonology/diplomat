@@ -16,12 +16,12 @@ type Serial struct {
 func (s *Serial) Run(test builders.Test) (TestResult, error) {
 	response, err := s.Client.Do(test.Request)
 	if err != nil {
-		return TestResult{}, err
+		return TestResult{Name: test.Name}, err
 	}
 
 	diff, err := s.Differ.Diff(test.Response, response)
 	if err != nil {
-		return TestResult{}, err
+		return TestResult{Name: test.Name}, err
 	}
 
 	return TestResult{

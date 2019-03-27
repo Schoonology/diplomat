@@ -17,13 +17,15 @@ func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) {
 	go func() {
 		defer close(errorChannel)
 
-		idx := 0
+		idx := 1
 		for result := range results {
 			if result.Err != nil {
 				// TODO:(bam) - replace these defers with a string builder
 				// the output is appearing in reverse order.
 				defer errors.Display(result.Err)
+				defer fmt.Printf("%s:\n", result.Name)
 				fmt.Printf("not ok %d %s\n", idx, result.Name)
+				idx++
 				errorChannel <- result.Err
 				continue
 			}

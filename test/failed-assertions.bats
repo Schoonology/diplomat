@@ -18,7 +18,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" = "Error while running Lua script:
+  [[ "$output" = "✗ GET /json -> 200
+Error while running Lua script:
 	(root): Additional property slideshow is not allowed" ]]
 }
 
@@ -28,10 +29,12 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 2 ]
-  [ "${lines[0]}" = "Error while running Lua script:" ]
-  [[ "${lines[1]}" =~ "has a primitive type that is NOT VALID" ]]
-  [ "${lines[2]}" = "Error while running Lua script:" ]
-  [[ "${lines[3]}" =~ "Additional property slideshow is not allowed" ]]
+  [ "${lines[0]}" = "✗ Invalid JSON Schema" ]
+  [ "${lines[1]}" = "Error while running Lua script:" ]
+  [[ "${lines[2]}" =~ "has a primitive type that is NOT VALID" ]]
+  [ "${lines[3]}" = "✗ Fail to Match JSON Schema" ]
+  [ "${lines[4]}" = "Error while running Lua script:" ]
+  [[ "${lines[5]}" =~ "Additional property slideshow is not allowed" ]]
 }
 
 @test "Error from template function" {

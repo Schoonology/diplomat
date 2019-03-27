@@ -26,7 +26,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "${lines[0]}" =~ "Could not resolve host" ]]
+  [[ "${lines[0]}" =~ "GET /status/200 -> 200" ]]
+  [[ "${lines[1]}" =~ "Could not resolve host: wrong" ]]
 }
 
 @test "Host is unreachable" {
@@ -35,5 +36,6 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "${lines[0]}" =~ "Failed to connect" ]]
+  [[ "${lines[0]}" =~ "GET /status/200 -> 200" ]]
+  [[ "${lines[1]}" =~ "Failed to connect" ]]
 }

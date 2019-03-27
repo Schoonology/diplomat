@@ -106,7 +106,7 @@ Status:
 
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "TAP version 13" ]
-  [ "${lines[1]}" = "ok 0 GET /status/422 -> 422" ]
+  [ "${lines[1]}" = "ok 1 GET /status/422 -> 422" ]
   [ "${lines[2]}" = "" ]
 }
 

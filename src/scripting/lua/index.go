@@ -1,5 +1,6 @@
 // Package lua contains all pre-packaged scripts: templates, validators, etc.
 //
+//go:generate ../../../bin/templify -p lua context.lua
 //go:generate ../../../bin/templify -p lua generate.lua
 //go:generate ../../../bin/templify -p lua util.lua
 //go:generate ../../../bin/templify -p lua validate.lua
@@ -20,6 +21,7 @@ var templates []func() string
 
 func init() {
 	templates = []func() string{
+		contextTemplate,
 		generateTemplate,
 		utilTemplate,
 		validateTemplate,

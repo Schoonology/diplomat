@@ -203,3 +203,11 @@ Status:
 
   [ "$status" -eq 0 ]
 }
+
+@test "Scripting: Context" {
+  run bin/diplomat $FIXTURES_ROOT/scripting/context.md --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 0 ]
+}

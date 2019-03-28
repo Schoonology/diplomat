@@ -66,5 +66,5 @@ func RunValidator(src string, value string) (bool, error) {
 	ret := state.Get(-1)
 	state.Pop(1)
 
-	return ret.(lua.LBool) == lua.LTrue, nil
+	return lua.LVAsBool(ret), nil
 }

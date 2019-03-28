@@ -32,9 +32,21 @@ func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, er
 	}
 
 	for key, value := range expected.Headers {
+		validatorMatch := matcherRegex.FindStringSubmatch(value)
 		actualValue, present := actual.Headers[key]
+
 		if !present {
 			output.WriteString(fmt.Sprintf("Missing Header: %s\n", key))
+		} else if len(validatorMatch) > 0 {
+			validator := validatorMatch[1]
+			valid, err := scripting.RunValidator(validator, string(actualValue))
+			if err != nil {
+				return "", err
+			}
+
+			if !valid {
+				output.WriteString(fmt.Sprintf("Header `%s` did not match validator: %s\n", key, validator))
+			}
 		} else if actual.Headers[key] != value {
 			output.WriteString(fmt.Sprintf("Invalid Header: %s\n", key))
 			output.WriteString(fmt.Sprintf("	- %s\n", value))

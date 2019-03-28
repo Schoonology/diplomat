@@ -195,3 +195,11 @@ Status:
   [[ "${lines[3]}" =~ "- 400 BAD REQUEST" ]]
   [[ "${lines[4]}" =~ "+ 422 UNPROCESSABLE ENTITY" ]]
 }
+
+@test "Custom validators in headers" {
+  run bin/diplomat $FIXTURES_ROOT/validators-in-headers.md --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 0 ]
+}

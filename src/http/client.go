@@ -22,6 +22,9 @@ func NewClient(address string) *NativeClient {
 			Transport: &http.Transport{
 				DisableCompression: true,
 			},
+			CheckRedirect: func(req *http.Request, via []*http.Request) error {
+				return http.ErrUseLastResponse
+			},
 		},
 	}
 }

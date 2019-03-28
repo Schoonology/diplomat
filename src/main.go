@@ -99,15 +99,16 @@ func main() {
 	}
 
 	engine := Engine{
-		Loader:  &loaders.FileLoader{},
-		Parser:  &parsers.Delegator{},
-		Builder: &builders.State{},
-		Transforms: []transforms.Transformer{
-			&transforms.TemplateRenderer{},
-		},
+		Loader:     &loaders.FileLoader{},
+		Parser:     &parsers.Delegator{},
+		Builder:    &builders.State{},
+		Transforms: []transforms.Transformer{},
 		Runner: &runners.Serial{
 			Client: http.NewClient(*address),
 			Differ: differ,
+			Transforms: []transforms.Transformer{
+				&transforms.TemplateRenderer{},
+			},
 		},
 		Formatter: formatter,
 		Logger:    &loggers.StandardOutput{},

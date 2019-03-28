@@ -15,6 +15,9 @@ func utilTemplate() string {
 		"  handle:close()\n" +
 		"  return contents\n" +
 		"end\n" +
-		""
+		"\n" +
+		"function env(key)\n" +
+		"  return os.getenv(key)\n" +
+		"end"
 	return tmpl
 }

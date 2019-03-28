@@ -137,6 +137,16 @@ Status:
   [ "$output" = "✓ Multiple Custom Script Test" ]
 }
 
+@test "Spec containing environment variables" {
+  export VAR=value
+  run bin/diplomat $FIXTURES_ROOT/env-variable.txt --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 0 ]
+  [ "$output" = "✓ POST /post -> 200" ]
+}
+
 @test "Help" {
   run bin/diplomat --help
 

@@ -4,3 +4,7 @@ function file(filename)
   handle:close()
   return contents
 end
+
+function env(key)
+  return os.getenv(key)
+end

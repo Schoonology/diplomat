@@ -17,6 +17,7 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.1.0
+	github.com/yuin/gluare v0.0.0-20170607022532-d7c94f1a80ed
 	github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583
 	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c
 	gopkg.in/yaml.v2 v2.2.2 // indirect

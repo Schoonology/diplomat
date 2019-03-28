@@ -12,6 +12,7 @@ import (
 	json "github.com/layeh/gopher-json"
 	"github.com/testdouble/diplomat/errors"
 	jsonschema "github.com/xeipuuv/gojsonschema"
+	"github.com/yuin/gluare"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -47,6 +48,12 @@ func LoadAll(state *lua.LState) error {
 		},
 	).Loader)
 	err = state.DoString("http = require('http')")
+	if err != nil {
+		return err
+	}
+
+	state.PreloadModule("re", gluare.Loader)
+	err = state.DoString("re = require('re')")
 	if err != nil {
 		return err
 	}

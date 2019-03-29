@@ -167,3 +167,17 @@ func TestSmartMultipleCustomValidators(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "", diff)
 }
+
+func TestSmartMultipleCustomValidatorsWhitespace(t *testing.T) {
+	subject := differs.Smart{}
+	actual := http.NewResponse(200, "OK")
+	expected := http.NewResponse(200, "OK")
+
+	expected.Body = []byte(`  {? regexp("^te") ?}	{? regexp("st$") ?}  `)
+	actual.Body = []byte(`tempest`)
+
+	diff, err := subject.Diff(expected, actual)
+
+	assert.Nil(t, err)
+	assert.Equal(t, "", diff)
+}

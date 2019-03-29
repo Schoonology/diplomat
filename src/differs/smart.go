@@ -15,7 +15,7 @@ var expressionRegex *regexp.Regexp
 
 func init() {
 	// The syntax {? func ?} is used to embed Diplomat validators.
-	isValidatorRegex = regexp.MustCompile("^\\s*(({\\?[^\\?]+\\?})+)\\s*$")
+	isValidatorRegex = regexp.MustCompile("^(\\s*{\\?[^\\?]+\\?}\\s*)+$")
 	expressionRegex = regexp.MustCompile("{\\?([^\\?]+)\\?}")
 }
 
@@ -24,13 +24,11 @@ func init() {
 type Smart struct{}
 
 func forAllValidators(source string, iterator func(expression string) (bool, error)) ([]bool, error) {
-	validatorMatch := isValidatorRegex.FindStringSubmatch(source)
-	if len(validatorMatch) == 0 {
+	if !isValidatorRegex.MatchString(source) {
 		return []bool{}, nil
 	}
 
-	validators := validatorMatch[1]
-	matches := expressionRegex.FindAllStringSubmatch(validators, -1)
+	matches := expressionRegex.FindAllStringSubmatch(source, -1)
 	results := make([]bool, len(matches))
 	for idx, match := range matches {
 		expression := string(match[1])

@@ -39,7 +39,7 @@ func formatLuaError(err *lua.ApiError) string {
 	case lua.ApiErrorPanic:
 		builder.WriteString(fmt.Sprintf("Panic while running Lua script:\n"))
 	default:
-		builder.WriteString(fmt.Sprintf("Unknown error %v: %v", err.Type, err.Error()))
+		builder.WriteString(fmt.Sprintf("Unknown error %v: %v\n", err.Type, err.Error()))
 	}
 
 	switch err.Object.Type() {
@@ -47,16 +47,16 @@ func formatLuaError(err *lua.ApiError) string {
 		builder.WriteString(fmt.Sprintf("	%s\n", err.Object))
 	case lua.LTTable:
 		err.Object.(*lua.LTable).ForEach(func(_ lua.LValue, value lua.LValue) {
-			builder.WriteString(fmt.Sprintf("	%v", value))
+			builder.WriteString(fmt.Sprintf("	%v\n", value))
 		})
 	}
 
 	switch e := err.Cause.(type) {
 	case *luaParse.Error:
-		builder.WriteString(fmt.Sprintf("%s:%d:%d: %s", e.Pos.Source, e.Pos.Line, e.Pos.Column, e.Token))
+		builder.WriteString(fmt.Sprintf("%s:%d:%d: %s\n", e.Pos.Source, e.Pos.Line, e.Pos.Column, e.Token))
 	case nil:
 	default:
-		builder.WriteString(fmt.Sprintf("Unknown cause %T: %v", e, e))
+		builder.WriteString(fmt.Sprintf("Unknown cause %T: %v\n", e, e))
 	}
 
 	return builder.String()
@@ -68,7 +68,7 @@ func Format(err error) string {
 	case *lua.ApiError:
 		return formatLuaError(e)
 	case *lua.CompileError:
-		return fmt.Sprintf("Compile error: %v -- %s", e.Line, e.Message)
+		return fmt.Sprintf("Compile error: %v -- %s\n", e.Line, e.Message)
 	case *os.SyscallError:
 		return fmt.Sprintf("Syscall error: %s\n%v", e.Syscall, Format(e.Err))
 	case *url.Error:

@@ -19,6 +19,7 @@ import (
 var (
 	app = kingpin.New("diplomat", "")
 
+	color   = app.Flag("color", "Enable colored output.").Bool()
 	debug   = app.Flag("debug", "Enable debug mode.").Bool()
 	scripts = app.Flag("script", "Custom Lua script(s) to import.").PlaceHolder("FILE").Strings()
 	tap     = app.Flag("tap", "Display results in TAP format.").Bool()
@@ -67,7 +68,11 @@ func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	var printer printers.ResultsPrinter
-	printer = &printers.Pretty{}
+	printer = &printers.Pretty{
+		Options: printers.PrinterOptions{
+			Color: *color,
+		},
+	}
 	if *tap {
 		printer = &printers.Tap{}
 	} else if *debug {

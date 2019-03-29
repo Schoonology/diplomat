@@ -10,18 +10,40 @@ import (
 	"github.com/testdouble/diplomat/http"
 )
 
-var matcherRegex *regexp.Regexp
-var submatcherRegex *regexp.Regexp
+var isValidatorRegex *regexp.Regexp
+var expressionRegex *regexp.Regexp
 
 func init() {
 	// The syntax {? func ?} is used to embed Diplomat validators.
-	matcherRegex = regexp.MustCompile("^\\s*(({\\? [^\\?]+ \\?})+)\\s*$")
-	submatcherRegex = regexp.MustCompile("{\\? ([^\\?]+) \\?}")
+	isValidatorRegex = regexp.MustCompile("^\\s*(({\\? [^\\?]+ \\?})+)\\s*$")
+	expressionRegex = regexp.MustCompile("{\\? ([^\\?]+) \\?}")
 }
 
 // The Smart differ provides looser restrictions on diffing, only printing
 // diff output if an expected value is provided.
 type Smart struct{}
+
+func forAllValidators(source string, iterator func(expression string) (bool, error)) ([]bool, error) {
+	validatorMatch := isValidatorRegex.FindStringSubmatch(source)
+	if len(validatorMatch) == 0 {
+		return []bool{}, nil
+	}
+
+	validators := validatorMatch[1]
+	matches := expressionRegex.FindAllStringSubmatch(validators, -1)
+	results := make([]bool, len(matches))
+	for idx, match := range matches {
+		expression := string(match[1])
+		valid, err := iterator(expression)
+		if err != nil {
+			return nil, err
+		}
+
+		results[idx] = valid
+	}
+
+	return results, nil
+}
 
 // Diff returns the difference between `expected` and `actual`.
 func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, error) {
@@ -34,42 +56,43 @@ func (s *Smart) Diff(expected *http.Response, actual *http.Response) (string, er
 	}
 
 	for key, value := range expected.Headers {
-		validatorMatch := matcherRegex.FindStringSubmatch(value)
 		actualValue, present := actual.Headers[key]
 
 		if !present {
 			output.WriteString(fmt.Sprintf("Missing Header: %s\n", key))
-		} else if len(validatorMatch) > 0 {
-			validator := validatorMatch[1]
-			valid, err := scripting.RunValidator(validator, string(actualValue))
-			if err != nil {
-				return "", err
-			}
+			continue
+		}
 
-			if !valid {
-				output.WriteString(fmt.Sprintf("Header `%s` did not match validator: %s\n", key, validator))
+		results, err := forAllValidators(value, func(expr string) (bool, error) {
+			valid, err := scripting.RunValidator(expr, actualValue)
+			if err == nil && !valid {
+				output.WriteString(fmt.Sprintf("Header `%s` did not match validator: %s\n", key, expr))
 			}
-		} else if actual.Headers[key] != value {
+			return valid, err
+		})
+		if err != nil {
+			return "", err
+		}
+
+		if len(results) == 0 && actual.Headers[key] != value {
 			output.WriteString(fmt.Sprintf("Invalid Header: %s\n", key))
 			output.WriteString(fmt.Sprintf("	- %s\n", value))
 			output.WriteString(fmt.Sprintf("	+ %s\n", actualValue))
 		}
 	}
 
-	validatorMatch := matcherRegex.FindSubmatch(expected.Body)
-	if len(validatorMatch) > 0 {
-		for _, match := range submatcherRegex.FindAllSubmatch(validatorMatch[1], -1) {
-			validator := string(match[1])
-			valid, err := scripting.RunValidator(validator, string(actual.Body))
-			if err != nil {
-				return "", err
-			}
-
-			if !valid {
-				output.WriteString(fmt.Sprintf("Body did not match validator: %s", validator))
-			}
+	results, err := forAllValidators(string(expected.Body), func(expr string) (bool, error) {
+		valid, err := scripting.RunValidator(expr, string(actual.Body))
+		if err == nil && !valid {
+			output.WriteString(fmt.Sprintf("Body did not match validator: %s", expr))
 		}
-	} else if len(expected.Body) > 0 {
+		return valid, err
+	})
+	if err != nil {
+		return "", err
+	}
+
+	if len(results) == 0 && len(expected.Body) > 0 {
 		contentType, present := expected.Headers["Content-Type"]
 		if !present {
 			contentType, present = actual.Headers["Content-Type"]

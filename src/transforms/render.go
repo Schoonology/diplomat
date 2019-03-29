@@ -15,7 +15,7 @@ type TemplateRenderer struct{}
 
 func init() {
 	// The syntax {{ func }} is used to embed external custom scripting.
-	templateChunk = regexp.MustCompilePOSIX("{{ ?([^} ]+) ?}}")
+	templateChunk = regexp.MustCompile("{{[\\s]*([^}]+?)[\\s]*}}")
 }
 
 func renderTemplateBytes(src []byte) (dst []byte, err error) {

@@ -80,3 +80,23 @@ func TestRenderPath(t *testing.T) {
 		Response: &http.Response{},
 	}, output)
 }
+
+func TestRenderWhitespace(t *testing.T) {
+	input := builders.Test{
+		Request: &http.Request{},
+		Response: &http.Response{
+			Body: []byte("{{ __test() .. __test() }}"),
+		},
+	}
+	subject := new(transforms.TemplateRenderer)
+
+	output, err := subject.Transform(input)
+
+	assert.Nil(t, err)
+	assert.Equal(t, builders.Test{
+		Request: &http.Request{},
+		Response: &http.Response{
+			Body: []byte("this is a testthis is a test"),
+		},
+	}, output)
+}

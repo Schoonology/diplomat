@@ -15,8 +15,8 @@ var expressionRegex *regexp.Regexp
 
 func init() {
 	// The syntax {? func ?} is used to embed Diplomat validators.
-	isValidatorRegex = regexp.MustCompile("^\\s*(({\\? [^\\?]+ \\?})+)\\s*$")
-	expressionRegex = regexp.MustCompile("{\\? ([^\\?]+) \\?}")
+	isValidatorRegex = regexp.MustCompile("^\\s*(({\\?[^\\?]+\\?})+)\\s*$")
+	expressionRegex = regexp.MustCompile("{\\?([^\\?]+)\\?}")
 }
 
 // The Smart differ provides looser restrictions on diffing, only printing

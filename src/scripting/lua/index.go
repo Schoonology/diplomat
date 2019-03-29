@@ -8,6 +8,7 @@ package lua
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/cjoudrey/gluahttp"
 	json "github.com/layeh/gopher-json"
@@ -17,21 +18,28 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
-var templates []func() string
+var templates map[string]func() string
 
 func init() {
-	templates = []func() string{
-		contextTemplate,
-		generateTemplate,
-		utilTemplate,
-		validateTemplate,
+	templates = map[string]func() string{
+		"context.lua":  contextTemplate,
+		"generate.lua": generateTemplate,
+		"util.lua":     utilTemplate,
+		"validate.lua": validateTemplate,
 	}
 }
 
 // LoadAll loads all generated/packagd lua scripts into the provided `state`.
 func LoadAll(state *lua.LState) error {
-	for _, template := range templates {
-		if err := state.DoString(template()); err != nil {
+	for name, template := range templates {
+		fn, err := state.Load(strings.NewReader(template()), name)
+		if err != nil {
+			return err
+		}
+
+		state.Push(fn)
+		err = state.PCall(0, 1, nil)
+		if err != nil {
 			return err
 		}
 	}

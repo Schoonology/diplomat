@@ -134,8 +134,8 @@ load helpers/helpers
   log_on_failure
 
   [ "$status" -eq 1 ]
-  [[ "$output" =~ "Error while running Lua script" ]]
-  [[ "$output" =~ "attempt to call a non-function object" ]]
+  [ "${lines[0]}" = "✗ GET /status/200 -> 200" ]
+  [ "${lines[1]}" = 'Template `missing` could not be found.' ]
 }
 
 @test "Invalid script syntax" {

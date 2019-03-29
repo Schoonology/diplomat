@@ -2,6 +2,7 @@ package scripting
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/testdouble/diplomat/errors"
 	scripts "github.com/testdouble/diplomat/scripting/lua"
@@ -27,9 +28,15 @@ func LoadFile(filename string) error {
 // RunPipeline returns the result of the function at `src`, which should
 // return a string.
 func RunPipeline(src string) (string, error) {
-	err := state.DoString(fmt.Sprintf("return %s", src))
+	fn, err := state.Load(strings.NewReader(fmt.Sprintf("return %s", src)), src)
 	if err != nil {
 		return "", err
+	}
+
+	state.Push(fn)
+	err = state.PCall(0, 1, nil)
+	if err != nil {
+		return "", nil
 	}
 
 	value := state.Get(-1)
@@ -58,7 +65,25 @@ func RunPipeline(src string) (string, error) {
 // RunValidator returns the result of the function at `src`, given `value`,
 // which should return a boolean.
 func RunValidator(src string, value string) (bool, error) {
-	err := state.DoString(fmt.Sprintf("return %s([===[%s]===])", src, value))
+	fn, err := state.Load(strings.NewReader(fmt.Sprintf("return %s", src)), src)
+	if err != nil {
+		return false, err
+	}
+
+	state.Push(fn)
+	err = state.PCall(0, 1, nil)
+	if err != nil {
+		return false, err
+	}
+
+	validator := state.Get(-1)
+	if validator.Type() == lua.LTNil {
+		return false, &errors.MissingTemplate{Template: src}
+	}
+
+	state.Push(lua.LString(value))
+
+	err = state.PCall(1, 1, nil)
 	if err != nil {
 		return false, err
 	}

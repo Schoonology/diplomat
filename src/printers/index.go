@@ -7,8 +7,3 @@ import "github.com/testdouble/diplomat/runners"
 type ResultsPrinter interface {
 	Print(chan runners.TestResult, chan error)
 }
-
-// A PrinterOptions object contains additional configuration options for a printer
-type PrinterOptions struct {
-	Color bool
-}

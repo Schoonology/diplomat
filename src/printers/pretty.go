@@ -10,20 +10,18 @@ import (
 
 // Pretty defines a formatted printer.
 type Pretty struct {
-	Options PrinterOptions
+	Colorizer colors.Colorizer
 }
 
 // Print prints all output, unfiltered.
 func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error) {
-	colorizer := colors.DefaultColorizer(t.Options.Color)
-
 	go func() {
 		defer close(errorChannel)
 
 		for result := range results {
 			if result.Err != nil {
 				if result.Name != "" {
-					fmt.Print(colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
+					fmt.Print(t.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
 				}
 				errors.Display(result.Err)
 				errorChannel <- result.Err
@@ -38,7 +36,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				errorChannel <- errors.NewAssertionError(result.Diff)
 			}
 
-			fmt.Print(colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
+			fmt.Print(t.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
 			fmt.Println(result.Diff)
 		}
 	}()

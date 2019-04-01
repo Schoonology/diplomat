@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/testdouble/diplomat/builders"
+	"github.com/testdouble/diplomat/colors"
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
@@ -67,11 +68,11 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
+	colorizer := colors.DefaultColorizer(*color)
+
 	var printer printers.ResultsPrinter
 	printer = &printers.Pretty{
-		Options: printers.PrinterOptions{
-			Color: *color,
-		},
+		Colorizer: colorizer,
 	}
 	if *tap {
 		printer = &printers.Tap{}

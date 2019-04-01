@@ -2,7 +2,7 @@ package colors
 
 // A Colorizer prints strings in colors, by delegating to an Engine.
 type Colorizer interface {
-	Print(str string, color Color)
+	Paint(str string, color Color) string
 }
 
 // DefaultColorizer returns the standard color printer using the Aurora engine.

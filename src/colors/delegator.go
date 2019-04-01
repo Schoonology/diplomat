@@ -1,16 +1,12 @@
 package colors
 
-import (
-	"fmt"
-)
-
 // Delegator prints strings with colors using an Engine.
 type Delegator struct {
 	Engine Engine
 }
 
-// Print outputs a string with a specified color.
-func (d *Delegator) Print(str string, color Color) {
+// Paint changes the print color of a string.
+func (d *Delegator) Paint(str string, color Color) string {
 	var coloredString string
 
 	switch color {
@@ -18,7 +14,9 @@ func (d *Delegator) Print(str string, color Color) {
 		coloredString = d.Engine.Red(str)
 	case Green:
 		coloredString = d.Engine.Green(str)
+	default:
+		coloredString = str
 	}
 
-	fmt.Print(coloredString)
+	return coloredString
 }

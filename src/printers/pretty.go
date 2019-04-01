@@ -23,7 +23,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 		for result := range results {
 			if result.Err != nil {
 				if result.Name != "" {
-					colorizer.Print(fmt.Sprintf("✗ %s\n", result.Name), colors.Red)
+					fmt.Print(colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
 				}
 				errors.Display(result.Err)
 				errorChannel <- result.Err
@@ -38,7 +38,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				errorChannel <- errors.NewAssertionError(result.Diff)
 			}
 
-			colorizer.Print(fmt.Sprintf("%s %s\n", symbol, result.Name), color)
+			fmt.Print(colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
 			fmt.Println(result.Diff)
 		}
 	}()

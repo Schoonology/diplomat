@@ -3,14 +3,10 @@ package printers
 import (
 	"fmt"
 
-	"github.com/logrusorgru/aurora"
 	"github.com/testdouble/diplomat/colors"
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/runners"
 )
-
-type engine aurora.Aurora
-type engineFunc func(interface{}) aurora.Value
 
 // Pretty defines a formatted printer.
 type Pretty struct {
@@ -19,7 +15,7 @@ type Pretty struct {
 
 // Print prints all output, unfiltered.
 func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error) {
-	colorizer := colors.DefaultPrinter(t.Options.Color)
+	colorizer := colors.DefaultColorizer(t.Options.Color)
 
 	go func() {
 		defer close(errorChannel)

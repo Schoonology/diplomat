@@ -1,13 +1,13 @@
 package colors
 
-// A ColorPrinter prints strings in colors, by delegating to an Engine.
-type ColorPrinter interface {
+// A Colorizer prints strings in colors, by delegating to an Engine.
+type Colorizer interface {
 	Print(str string, color Color)
 }
 
-// DefaultPrinter returns the standard color printer using the Aurora engine.
-func DefaultPrinter(enabled bool) ColorPrinter {
-	return &Printer{
+// DefaultColorizer returns the standard color printer using the Aurora engine.
+func DefaultColorizer(enabled bool) Colorizer {
+	return &Delegator{
 		Engine: NewAuroraEngine(enabled),
 	}
 }

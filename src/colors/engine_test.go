@@ -1,1 +1,0 @@
-package colors_test

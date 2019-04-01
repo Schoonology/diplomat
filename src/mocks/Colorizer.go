@@ -10,7 +10,16 @@ type Colorizer struct {
 	mock.Mock
 }
 
-// Print provides a mock function with given fields: str, color
-func (_m *Colorizer) Print(str string, color colors.Color) {
-	_m.Called(str, color)
+// Paint provides a mock function with given fields: str, color
+func (_m *Colorizer) Paint(str string, color colors.Color) string {
+	ret := _m.Called(str, color)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, colors.Color) string); ok {
+		r0 = rf(str, color)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
 }

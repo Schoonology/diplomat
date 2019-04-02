@@ -13,3 +13,8 @@ type Logger struct {
 func (_m *Logger) Print(str string) {
 	_m.Called(str)
 }
+
+// PrintAll provides a mock function with given fields: _a0
+func (_m *Logger) PrintAll(_a0 chan string) {
+	_m.Called(_a0)
+}

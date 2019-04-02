@@ -9,3 +9,12 @@ type StandardOutput struct{}
 func (s *StandardOutput) Print(str string) {
 	fmt.Print(str)
 }
+
+// PrintAll prints all strings in a channel.
+func (s *StandardOutput) PrintAll(output chan string) {
+	go func() {
+		for str := range output {
+			s.Print(str)
+		}
+	}()
+}

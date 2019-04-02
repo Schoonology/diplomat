@@ -11,10 +11,13 @@ import (
 type Tap struct{}
 
 // Print sends TAP-conforming test results to STDOUT.
-func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) {
+func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+	c := make(chan string)
+
 	fmt.Println("TAP version 13")
 
 	go func() {
+		defer close(c)
 		defer close(errorChannel)
 
 		idx := 1
@@ -47,4 +50,6 @@ func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) {
 
 		fmt.Println()
 	}()
+
+	return c
 }

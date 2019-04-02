@@ -11,8 +11,11 @@ import (
 type Debug struct{}
 
 // Print prints all output, unfiltered.
-func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) {
+func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+	c := make(chan string)
+
 	go func() {
+		defer close(c)
 		defer close(errorChannel)
 
 		for result := range results {
@@ -25,4 +28,6 @@ func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) 
 			fmt.Printf("%v\n%v\n", result.Name, result.Diff)
 		}
 	}()
+
+	return c
 }

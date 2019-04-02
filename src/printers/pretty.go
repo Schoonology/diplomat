@@ -14,8 +14,11 @@ type Pretty struct {
 }
 
 // Print prints all output, unfiltered.
-func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error) {
+func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+	c := make(chan string)
+
 	go func() {
+		defer close(c)
 		defer close(errorChannel)
 
 		for result := range results {
@@ -40,4 +43,6 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 			fmt.Println(result.Diff)
 		}
 	}()
+
+	return c
 }

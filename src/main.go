@@ -9,6 +9,7 @@ import (
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/http"
 	"github.com/testdouble/diplomat/loaders"
+	"github.com/testdouble/diplomat/loggers"
 	"github.com/testdouble/diplomat/parsers"
 	"github.com/testdouble/diplomat/printers"
 	"github.com/testdouble/diplomat/runners"
@@ -48,6 +49,7 @@ type Engine struct {
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
 	Printer    printers.ResultsPrinter
+	Logger     loggers.Logger
 }
 
 // Start runs the Engine.
@@ -62,7 +64,8 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 
 	resultChannel := r.Runner.RunAll(testChannel)
 
-	r.Printer.Print(resultChannel, errorChannel)
+	outputChannel := r.Printer.Print(resultChannel, errorChannel)
+	r.Logger.PrintAll(outputChannel)
 }
 
 func main() {
@@ -106,6 +109,7 @@ func main() {
 			Differ: differ,
 		},
 		Printer: printer,
+		Logger:  &loggers.StandardOutput{},
 	}
 
 	filenameStream := make(chan string)

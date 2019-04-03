@@ -1,16 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/testdouble/diplomat/builders"
 	"github.com/testdouble/diplomat/colors"
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/errors"
+	"github.com/testdouble/diplomat/formatters"
 	"github.com/testdouble/diplomat/http"
 	"github.com/testdouble/diplomat/loaders"
+	"github.com/testdouble/diplomat/loggers"
 	"github.com/testdouble/diplomat/parsers"
-	"github.com/testdouble/diplomat/printers"
 	"github.com/testdouble/diplomat/runners"
 	"github.com/testdouble/diplomat/scripting"
 	"github.com/testdouble/diplomat/transforms"
@@ -47,7 +49,8 @@ type Engine struct {
 	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
-	Printer    printers.ResultsPrinter
+	Formatter  formatters.ResultsFormatter
+	Logger     loggers.Logger
 }
 
 // Start runs the Engine.
@@ -62,7 +65,8 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 
 	resultChannel := r.Runner.RunAll(testChannel)
 
-	r.Printer.Print(resultChannel, errorChannel)
+	outputChannel := r.Formatter.FormatAll(resultChannel, errorChannel)
+	r.Logger.PrintAll(outputChannel, errorChannel)
 }
 
 func main() {
@@ -70,14 +74,14 @@ func main() {
 
 	colorizer := colors.DefaultColorizer(*color)
 
-	var printer printers.ResultsPrinter
-	printer = &printers.Pretty{
+	var formatter formatters.ResultsFormatter
+	formatter = &formatters.Pretty{
 		Colorizer: colorizer,
 	}
 	if *tap {
-		printer = &printers.Tap{}
+		formatter = &formatters.Tap{}
 	} else if *debug {
-		printer = &printers.Debug{}
+		formatter = &formatters.Debug{}
 	}
 
 	var differ differs.Differ
@@ -89,7 +93,7 @@ func main() {
 	for _, filename := range *scripts {
 		err := scripting.LoadFile(filename)
 		if err != nil {
-			errors.Display(err)
+			fmt.Print(errors.Format(err))
 			os.Exit(1)
 		}
 	}
@@ -105,7 +109,8 @@ func main() {
 			Client: http.NewClient(*address),
 			Differ: differ,
 		},
-		Printer: printer,
+		Formatter: formatter,
+		Logger:    &loggers.StandardOutput{},
 	}
 
 	filenameStream := make(chan string)

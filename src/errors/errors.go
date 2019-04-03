@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/url"
 	"os"
+	"strings"
 	"syscall"
 
 	jsonschema "github.com/xeipuuv/gojsonschema"
@@ -12,68 +13,70 @@ import (
 	luaParse "github.com/yuin/gopher-lua/parse"
 )
 
-func displayURLError(err *url.Error) {
+func formatURLError(err *url.Error) string {
 	if opErr, ok := err.Err.(*net.OpError); ok {
 		switch e := opErr.Err.(type) {
 		case *net.DNSError:
-			fmt.Printf("Could not resolve host: %s\n", e.Name)
+			return fmt.Sprintf("Could not resolve host: %s\n", e.Name)
 		case *os.SyscallError:
-			fmt.Printf("Failed to connect: %s\n", err.URL)
+			return fmt.Sprintf("Failed to connect: %s\n", err.URL)
 		default:
-			Display(err.Err)
+			return Format(err.Err)
 		}
-		return
 	}
 
-	Display(err.Err)
+	return Format(err.Err)
 }
 
-func displayLuaError(err *lua.ApiError) {
+func formatLuaError(err *lua.ApiError) string {
+	builder := strings.Builder{}
+
 	switch err.Type {
 	case lua.ApiErrorSyntax:
-		fmt.Printf("Syntax error while parsing custom script:\n")
+		builder.WriteString(fmt.Sprintf("Syntax error while parsing custom script:\n"))
 	case lua.ApiErrorRun, lua.ApiErrorError:
-		fmt.Printf("Error while running Lua script:\n")
+		builder.WriteString(fmt.Sprintf("Error while running Lua script:\n"))
 	case lua.ApiErrorPanic:
-		fmt.Printf("Panic while running Lua script:\n")
+		builder.WriteString(fmt.Sprintf("Panic while running Lua script:\n"))
 	default:
-		fmt.Printf("Unknown error %v: %v", err.Type, err.Error())
+		builder.WriteString(fmt.Sprintf("Unknown error %v: %v", err.Type, err.Error()))
 	}
 
 	switch err.Object.Type() {
 	case lua.LTString:
-		fmt.Printf("	%s\n", err.Object)
+		builder.WriteString(fmt.Sprintf("	%s\n", err.Object))
 	case lua.LTTable:
 		err.Object.(*lua.LTable).ForEach(func(_ lua.LValue, value lua.LValue) {
-			fmt.Printf("	%v", value)
+			builder.WriteString(fmt.Sprintf("	%v", value))
 		})
 	}
 
 	switch e := err.Cause.(type) {
 	case *luaParse.Error:
-		fmt.Printf("%s:%d:%d: %s", e.Pos.Source, e.Pos.Line, e.Pos.Column, e.Token)
+		builder.WriteString(fmt.Sprintf("%s:%d:%d: %s", e.Pos.Source, e.Pos.Line, e.Pos.Column, e.Token))
 	case nil:
 	default:
-		fmt.Printf("Unknown cause %T: %v", e, e)
+		builder.WriteString(fmt.Sprintf("Unknown cause %T: %v", e, e))
 	}
+
+	return builder.String()
 }
 
-// Display emits a human-readable version of the error to STDOUT.
-func Display(err error) {
+// Format returns a human-readable version of the error.
+func Format(err error) string {
 	switch e := err.(type) {
 	case *lua.ApiError:
-		displayLuaError(e)
+		return formatLuaError(e)
 	case *lua.CompileError:
-		fmt.Printf("Compile error: %v -- %s", e.Line, e.Message)
+		return fmt.Sprintf("Compile error: %v -- %s", e.Line, e.Message)
 	case *os.SyscallError:
-		fmt.Printf("Syscall error: %s\n", e.Syscall)
-		Display(e.Err)
+		return fmt.Sprintf("Syscall error: %s\n%v", e.Syscall, Format(e.Err))
 	case *url.Error:
-		displayURLError(e)
+		return formatURLError(e)
 	case syscall.Errno:
-		fmt.Printf("Errno: %s\n", e)
+		return fmt.Sprintf("Errno: %s\n", e)
 	default:
-		fmt.Println(err.Error())
+		return fmt.Sprintf("%v\n", err.Error())
 	}
 }
 

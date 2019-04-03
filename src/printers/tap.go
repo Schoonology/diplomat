@@ -2,6 +2,7 @@ package printers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/testdouble/diplomat/errors"
 	"github.com/testdouble/diplomat/runners"
@@ -14,20 +15,24 @@ type Tap struct{}
 func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) chan string {
 	c := make(chan string)
 
-	fmt.Println("TAP version 13")
-
 	go func() {
 		defer close(c)
 
+		errorBuilder := strings.Builder{}
+		errorBuilder.WriteString("\n")
+
+		c <- "TAP version 13\n"
+
 		idx := 1
 		for result := range results {
+			builder := strings.Builder{}
+
 			if result.Err != nil {
-				// TODO:(bam) - replace these defers with a string builder
-				// the output is appearing in reverse order.
-				defer fmt.Print(errors.Format(result.Err))
-				defer fmt.Printf("%s:\n", result.Name)
-				fmt.Printf("not ok %d %s\n", idx, result.Name)
+				builder.WriteString(fmt.Sprintf("not ok %d %s\n", idx, result.Name))
+				errorBuilder.WriteString(fmt.Sprintf("%s:\n", result.Name))
+				errorBuilder.WriteString(errors.Format(result.Err))
 				idx++
+				c <- builder.String()
 				errorChannel <- result.Err
 				continue
 			}
@@ -38,16 +43,17 @@ func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) ch
 				status = "not ok"
 			}
 
-			fmt.Printf("%s %d %s\n", status, idx, result.Name)
+			builder.WriteString(fmt.Sprintf("%s %d %s\n", status, idx, result.Name))
 			idx++
 
 			if failed {
-				defer fmt.Printf("%s:\n%s\n", result.Name, result.Diff)
-				// fmt.Print(result.Diff)
+				errorBuilder.WriteString(fmt.Sprintf("%s:\n%s\n", result.Name, result.Diff))
 			}
+
+			c <- builder.String()
 		}
 
-		fmt.Println()
+		c <- errorBuilder.String()
 	}()
 
 	return c

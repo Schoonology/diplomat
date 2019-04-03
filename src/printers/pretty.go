@@ -2,6 +2,7 @@ package printers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/testdouble/diplomat/colors"
 	"github.com/testdouble/diplomat/errors"
@@ -21,12 +22,15 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 		defer close(c)
 
 		for result := range results {
+			builder := strings.Builder{}
+
 			if result.Err != nil {
 				if result.Name != "" {
-					fmt.Print(t.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
+					builder.WriteString(t.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
 				}
-				fmt.Print(errors.Format(result.Err))
+				builder.WriteString(errors.Format(result.Err))
 				errorChannel <- result.Err
+				c <- builder.String()
 				continue
 			}
 
@@ -38,8 +42,9 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				errorChannel <- errors.NewAssertionError(result.Diff)
 			}
 
-			fmt.Print(t.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
-			fmt.Println(result.Diff)
+			builder.WriteString(t.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
+			builder.WriteString(result.Diff)
+			c <- builder.String()
 		}
 	}()
 

@@ -19,12 +19,12 @@ func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) 
 
 		for result := range results {
 			if result.Err != nil {
-				fmt.Print(errors.Format(result.Err))
+				c <- errors.Format(result.Err)
 				errorChannel <- result.Err
 				continue
 			}
 
-			fmt.Printf("%v\n%v\n", result.Name, result.Diff)
+			c <- fmt.Sprintf("%v\n%v\n", result.Name, result.Diff)
 		}
 	}()
 

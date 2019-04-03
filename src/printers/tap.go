@@ -18,7 +18,6 @@ func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) ch
 
 	go func() {
 		defer close(c)
-		defer close(errorChannel)
 
 		idx := 1
 		for result := range results {

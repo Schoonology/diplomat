@@ -66,7 +66,7 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 	resultChannel := r.Runner.RunAll(testChannel)
 
 	outputChannel := r.Printer.Print(resultChannel, errorChannel)
-	r.Logger.PrintAll(outputChannel)
+	r.Logger.PrintAll(outputChannel, errorChannel)
 }
 
 func main() {

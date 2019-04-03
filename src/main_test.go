@@ -39,7 +39,7 @@ func TestEngineStart(t *testing.T) {
 	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)
 	runner.On("RunAll", secondTransformerChannel).Return(resultChannel)
 	printer.On("Print", resultChannel, errorChannel).Return(outputChannel)
-	logger.On("PrintAll", outputChannel).Return()
+	logger.On("PrintAll", outputChannel, errorChannel).Return()
 
 	subject := main.Engine{
 		Loader:  loader,

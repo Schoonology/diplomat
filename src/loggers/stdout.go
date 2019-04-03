@@ -11,8 +11,10 @@ func (s *StandardOutput) Print(str string) {
 }
 
 // PrintAll prints all strings in a channel.
-func (s *StandardOutput) PrintAll(output chan string) {
+func (s *StandardOutput) PrintAll(output chan string, errors chan error) {
 	go func() {
+		defer close(errors)
+
 		for str := range output {
 			s.Print(str)
 		}

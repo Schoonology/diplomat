@@ -16,7 +16,6 @@ func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) 
 
 	go func() {
 		defer close(c)
-		defer close(errorChannel)
 
 		for result := range results {
 			if result.Err != nil {

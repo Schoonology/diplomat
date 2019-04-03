@@ -1,4 +1,4 @@
-package printers
+package formatters
 
 import (
 	"fmt"
@@ -10,8 +10,8 @@ import (
 // Debug defines an unfiltered Printer.
 type Debug struct{}
 
-// Print prints all output, unfiltered.
-func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+// Format passes through all output, unfiltered.
+func (d *Debug) Format(results chan runners.TestResult, errorChannel chan error) chan string {
 	c := make(chan string)
 
 	go func() {

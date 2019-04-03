@@ -1,4 +1,4 @@
-package printers
+package formatters
 
 import (
 	"fmt"
@@ -8,11 +8,11 @@ import (
 	"github.com/testdouble/diplomat/runners"
 )
 
-// Tap provides a TAP-conforming Printer.
+// Tap structures test results to be TAP-compliant.
 type Tap struct{}
 
-// Print sends TAP-conforming test results to STDOUT.
-func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+// Format passes through TAP-compliant strings.
+func (t *Tap) Format(results chan runners.TestResult, errorChannel chan error) chan string {
 	c := make(chan string)
 
 	go func() {

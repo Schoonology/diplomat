@@ -17,7 +17,7 @@ func TestEngineStart(t *testing.T) {
 	parser := &mocks.ParseDelegator{}
 	builder := &mocks.SpecBuilder{}
 	runner := &mocks.SpecRunner{}
-	printer := &mocks.ResultsPrinter{}
+	formatter := &mocks.ResultsFormatter{}
 	logger := &mocks.Logger{}
 	firstTransformer := &mocks.Transformer{}
 	secondTransformer := &mocks.Transformer{}
@@ -38,7 +38,7 @@ func TestEngineStart(t *testing.T) {
 	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)
 	runner.On("RunAll", secondTransformerChannel).Return(resultChannel)
-	printer.On("Print", resultChannel, errorChannel).Return(outputChannel)
+	formatter.On("Format", resultChannel, errorChannel).Return(outputChannel)
 	logger.On("PrintAll", outputChannel, errorChannel).Return()
 
 	subject := main.Engine{
@@ -49,15 +49,19 @@ func TestEngineStart(t *testing.T) {
 			firstTransformer,
 			secondTransformer,
 		},
-		Runner:  runner,
-		Printer: printer,
-		Logger:  logger,
+		Runner:    runner,
+		Formatter: formatter,
+		Logger:    logger,
 	}
 
 	subject.Start(filenameChannel, errorChannel)
 
 	loader.AssertExpectations(t)
 	parser.AssertExpectations(t)
+	builder.AssertExpectations(t)
+	firstTransformer.AssertExpectations(t)
+	secondTransformer.AssertExpectations(t)
 	runner.AssertExpectations(t)
-	printer.AssertExpectations(t)
+	formatter.AssertExpectations(t)
+	logger.AssertExpectations(t)
 }

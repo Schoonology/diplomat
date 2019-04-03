@@ -1,4 +1,4 @@
-package printers
+package formatters
 
 import (
 	"fmt"
@@ -9,13 +9,14 @@ import (
 	"github.com/testdouble/diplomat/runners"
 )
 
-// Pretty defines a formatted printer.
+// Pretty structures test results into a human-readable format.
 type Pretty struct {
 	Colorizer colors.Colorizer
 }
 
-// Print prints all output, unfiltered.
-func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error) chan string {
+// Format prints each test's name and a symbol indicating pass or fail.
+// Failing tests will include an error or diff below the test name.
+func (p *Pretty) Format(results chan runners.TestResult, errorChannel chan error) chan string {
 	c := make(chan string)
 
 	go func() {
@@ -26,7 +27,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 
 			if result.Err != nil {
 				if result.Name != "" {
-					builder.WriteString(t.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
+					builder.WriteString(p.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
 				}
 				builder.WriteString(errors.Format(result.Err))
 				errorChannel <- result.Err
@@ -42,7 +43,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				errorChannel <- errors.NewAssertionError(result.Diff)
 			}
 
-			builder.WriteString(t.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
+			builder.WriteString(p.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
 			builder.WriteString(result.Diff)
 			c <- builder.String()
 		}

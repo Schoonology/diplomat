@@ -8,11 +8,11 @@ import (
 	"github.com/testdouble/diplomat/colors"
 	"github.com/testdouble/diplomat/differs"
 	"github.com/testdouble/diplomat/errors"
+	"github.com/testdouble/diplomat/formatters"
 	"github.com/testdouble/diplomat/http"
 	"github.com/testdouble/diplomat/loaders"
 	"github.com/testdouble/diplomat/loggers"
 	"github.com/testdouble/diplomat/parsers"
-	"github.com/testdouble/diplomat/printers"
 	"github.com/testdouble/diplomat/runners"
 	"github.com/testdouble/diplomat/scripting"
 	"github.com/testdouble/diplomat/transforms"
@@ -49,7 +49,7 @@ type Engine struct {
 	Builder    builders.SpecBuilder
 	Transforms []transforms.Transformer
 	Runner     runners.SpecRunner
-	Printer    printers.ResultsPrinter
+	Formatter  formatters.ResultsFormatter
 	Logger     loggers.Logger
 }
 
@@ -65,7 +65,7 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 
 	resultChannel := r.Runner.RunAll(testChannel)
 
-	outputChannel := r.Printer.Print(resultChannel, errorChannel)
+	outputChannel := r.Formatter.Format(resultChannel, errorChannel)
 	r.Logger.PrintAll(outputChannel, errorChannel)
 }
 
@@ -74,14 +74,14 @@ func main() {
 
 	colorizer := colors.DefaultColorizer(*color)
 
-	var printer printers.ResultsPrinter
-	printer = &printers.Pretty{
+	var formatter formatters.ResultsFormatter
+	formatter = &formatters.Pretty{
 		Colorizer: colorizer,
 	}
 	if *tap {
-		printer = &printers.Tap{}
+		formatter = &formatters.Tap{}
 	} else if *debug {
-		printer = &printers.Debug{}
+		formatter = &formatters.Debug{}
 	}
 
 	var differ differs.Differ
@@ -109,8 +109,8 @@ func main() {
 			Client: http.NewClient(*address),
 			Differ: differ,
 		},
-		Printer: printer,
-		Logger:  &loggers.StandardOutput{},
+		Formatter: formatter,
+		Logger:    &loggers.StandardOutput{},
 	}
 
 	filenameStream := make(chan string)

@@ -118,6 +118,16 @@ load helpers/helpers
   [[ "${lines[3]}" =~ "Found a response without a corresponding request." ]]
 }
 
+@test "Missing status" {
+  run bin/diplomat $FIXTURES_ROOT/broken/missing-status.txt --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 1 ]
+  [ "$output" = "Error building spec: missing-status.txt: line 1
+	Failed to parse response line: Content-Length: 0" ]
+}
+
 @test "Missing template function" {
   run bin/diplomat $FIXTURES_ROOT/broken/missing-template-function.txt --address $TEST_HOST
 

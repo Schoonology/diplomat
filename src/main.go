@@ -65,7 +65,7 @@ func (r *Engine) Start(filenameChannel chan string, errorChannel chan error) {
 
 	resultChannel := r.Runner.RunAll(testChannel)
 
-	outputChannel := r.Formatter.Format(resultChannel, errorChannel)
+	outputChannel := r.Formatter.FormatAll(resultChannel, errorChannel)
 	r.Logger.PrintAll(outputChannel, errorChannel)
 }
 

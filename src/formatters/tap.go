@@ -11,8 +11,33 @@ import (
 // Tap structures test results to be TAP-compliant.
 type Tap struct{}
 
-// Format passes through TAP-compliant strings.
-func (t *Tap) Format(results chan runners.TestResult, errorChannel chan error) chan string {
+// Format converts a test result into a TAP-compliant strings.
+func (t *Tap) Format(result runners.TestResult, idx int) (string, error) {
+	if result.Err != nil {
+		output := fmt.Sprintf("not ok %d %s\n", idx, result.Name)
+		err := fmt.Errorf("%s:\n%v", result.Name, errors.Format(result.Err))
+
+		return output, err
+	}
+
+	failed := len(result.Diff) > 0
+	status := "ok"
+	if failed {
+		status = "not ok"
+	}
+
+	var err error
+	output := fmt.Sprintf("%s %d %s\n", status, idx, result.Name)
+
+	if failed {
+		err = fmt.Errorf("%s:\n%s", result.Name, result.Diff)
+	}
+
+	return output, err
+}
+
+// FormatAll formats all test results in a channel.
+func (t *Tap) FormatAll(results chan runners.TestResult, errorChannel chan error) chan string {
 	c := make(chan string)
 
 	go func() {
@@ -24,33 +49,17 @@ func (t *Tap) Format(results chan runners.TestResult, errorChannel chan error) c
 		c <- "TAP version 13\n"
 
 		idx := 1
+
 		for result := range results {
-			builder := strings.Builder{}
-
-			if result.Err != nil {
-				builder.WriteString(fmt.Sprintf("not ok %d %s\n", idx, result.Name))
-				errorBuilder.WriteString(fmt.Sprintf("%s:\n", result.Name))
-				errorBuilder.WriteString(errors.Format(result.Err))
-				idx++
-				c <- builder.String()
-				errorChannel <- result.Err
-				continue
+			formattedResult, err := t.Format(result, idx)
+			if err != nil {
+				errorChannel <- err
+				errorBuilder.WriteString(fmt.Sprintf("%v\n", err.Error()))
 			}
 
-			failed := len(result.Diff) > 0
-			status := "ok"
-			if failed {
-				status = "not ok"
-			}
-
-			builder.WriteString(fmt.Sprintf("%s %d %s\n", status, idx, result.Name))
 			idx++
 
-			if failed {
-				errorBuilder.WriteString(fmt.Sprintf("%s:\n%s\n", result.Name, result.Diff))
-			}
-
-			c <- builder.String()
+			c <- formattedResult
 		}
 
 		c <- errorBuilder.String()

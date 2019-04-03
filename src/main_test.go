@@ -38,7 +38,7 @@ func TestEngineStart(t *testing.T) {
 	firstTransformer.On("TransformAll", testChannel).Return(firstTransformerChannel)
 	secondTransformer.On("TransformAll", firstTransformerChannel).Return(secondTransformerChannel)
 	runner.On("RunAll", secondTransformerChannel).Return(resultChannel)
-	formatter.On("Format", resultChannel, errorChannel).Return(outputChannel)
+	formatter.On("FormatAll", resultChannel, errorChannel).Return(outputChannel)
 	logger.On("PrintAll", outputChannel, errorChannel).Return()
 
 	subject := main.Engine{

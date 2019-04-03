@@ -10,8 +10,8 @@ type ResultsFormatter struct {
 	mock.Mock
 }
 
-// Format provides a mock function with given fields: _a0, _a1
-func (_m *ResultsFormatter) Format(_a0 chan runners.TestResult, _a1 chan error) chan string {
+// FormatAll provides a mock function with given fields: _a0, _a1
+func (_m *ResultsFormatter) FormatAll(_a0 chan runners.TestResult, _a1 chan error) chan string {
 	ret := _m.Called(_a0, _a1)
 
 	var r0 chan string

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/testdouble/diplomat/builders"
@@ -92,7 +93,7 @@ func main() {
 	for _, filename := range *scripts {
 		err := scripting.LoadFile(filename)
 		if err != nil {
-			errors.Display(err)
+			fmt.Print(errors.Format(err))
 			os.Exit(1)
 		}
 	}

@@ -20,7 +20,7 @@ func (t *Debug) Print(results chan runners.TestResult, errorChannel chan error) 
 
 		for result := range results {
 			if result.Err != nil {
-				errors.Display(result.Err)
+				fmt.Print(errors.Format(result.Err))
 				errorChannel <- result.Err
 				continue
 			}

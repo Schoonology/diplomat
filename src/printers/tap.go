@@ -25,7 +25,7 @@ func (t *Tap) Print(results chan runners.TestResult, errorChannel chan error) ch
 			if result.Err != nil {
 				// TODO:(bam) - replace these defers with a string builder
 				// the output is appearing in reverse order.
-				defer errors.Display(result.Err)
+				defer fmt.Print(errors.Format(result.Err))
 				defer fmt.Printf("%s:\n", result.Name)
 				fmt.Printf("not ok %d %s\n", idx, result.Name)
 				idx++

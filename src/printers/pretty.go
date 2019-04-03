@@ -26,7 +26,7 @@ func (t *Pretty) Print(results chan runners.TestResult, errorChannel chan error)
 				if result.Name != "" {
 					fmt.Print(t.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
 				}
-				errors.Display(result.Err)
+				fmt.Print(errors.Format(result.Err))
 				errorChannel <- result.Err
 				continue
 			}

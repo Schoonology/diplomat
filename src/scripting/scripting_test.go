@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/schoonology/diplomat/scripting"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/scripting"
 )
 
 func Test__Test(t *testing.T) {

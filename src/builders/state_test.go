@@ -3,10 +3,10 @@ package builders_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/errors"
+	"github.com/schoonology/diplomat/parsers"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/errors"
-	"github.com/testdouble/diplomat/parsers"
 )
 
 func TestNoBody(t *testing.T) {

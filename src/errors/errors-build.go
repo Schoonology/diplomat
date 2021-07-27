@@ -3,7 +3,7 @@ package errors
 import (
 	"fmt"
 
-	"github.com/testdouble/diplomat/parsers"
+	"github.com/schoonology/diplomat/parsers"
 )
 
 // NewBuildError wraps an error with a BuildError containing a LineNumber.

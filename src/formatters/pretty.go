@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/testdouble/diplomat/colors"
-	"github.com/testdouble/diplomat/errors"
-	"github.com/testdouble/diplomat/runners"
+	"github.com/schoonology/diplomat/colors"
+	"github.com/schoonology/diplomat/errors"
+	"github.com/schoonology/diplomat/runners"
 )
 
 // Pretty structures test results into a human-readable format.

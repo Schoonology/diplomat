@@ -1,4 +1,4 @@
-module github.com/testdouble/diplomat
+module github.com/schoonology/diplomat
 
 go 1.12
 

@@ -3,8 +3,8 @@ package formatters
 import (
 	"fmt"
 
-	"github.com/testdouble/diplomat/errors"
-	"github.com/testdouble/diplomat/runners"
+	"github.com/schoonology/diplomat/errors"
+	"github.com/schoonology/diplomat/runners"
 )
 
 // Debug defines an unfiltered Printer.

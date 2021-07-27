@@ -3,8 +3,8 @@ package transforms
 import (
 	"regexp"
 
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/scripting"
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/scripting"
 )
 
 var templateChunk *regexp.Regexp

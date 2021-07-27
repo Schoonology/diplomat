@@ -1,6 +1,6 @@
 package parsers
 
-import "github.com/testdouble/diplomat/loaders"
+import "github.com/schoonology/diplomat/loaders"
 
 // A Delegator is responsible for communicating between a stream of files and the appropriate parser.
 type Delegator struct{}

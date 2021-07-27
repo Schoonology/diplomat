@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/testdouble/diplomat/errors"
-	scripts "github.com/testdouble/diplomat/scripting/lua"
+	"github.com/schoonology/diplomat/errors"
+	scripts "github.com/schoonology/diplomat/scripting/lua"
 	lua "github.com/yuin/gopher-lua"
 )
 

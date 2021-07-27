@@ -3,11 +3,11 @@ package runners_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/http"
+	"github.com/schoonology/diplomat/mocks"
+	"github.com/schoonology/diplomat/runners"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/mocks"
-	"github.com/testdouble/diplomat/runners"
 )
 
 func TestRunSerial(t *testing.T) {

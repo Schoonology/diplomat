@@ -1,6 +1,6 @@
 package runners
 
-import "github.com/testdouble/diplomat/builders"
+import "github.com/schoonology/diplomat/builders"
 
 // A SpecRunner runs the entirety of a Test in a given order, emitting test
 // results to the returned channel.

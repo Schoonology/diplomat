@@ -3,9 +3,9 @@ package differs_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/differs"
+	"github.com/schoonology/diplomat/http"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/differs"
-	"github.com/testdouble/diplomat/http"
 )
 
 func TestSmartSameNoHeaders(t *testing.T) {

@@ -3,9 +3,9 @@ package colors_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/colors"
+	"github.com/schoonology/diplomat/mocks"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/colors"
-	"github.com/testdouble/diplomat/mocks"
 )
 
 func TestUnitPaintRed(t *testing.T) {

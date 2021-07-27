@@ -5,9 +5,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/testdouble/diplomat/scripting"
+	"github.com/schoonology/diplomat/scripting"
 
-	"github.com/testdouble/diplomat/http"
+	"github.com/schoonology/diplomat/http"
 )
 
 var isValidatorRegex *regexp.Regexp

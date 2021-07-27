@@ -3,8 +3,8 @@ package colors_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/colors"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/colors"
 )
 
 func TestIntegrationPaintRed(t *testing.T) {

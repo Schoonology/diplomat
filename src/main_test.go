@@ -3,13 +3,13 @@ package main_test
 import (
 	"testing"
 
-	main "github.com/testdouble/diplomat"
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/loaders"
-	"github.com/testdouble/diplomat/mocks"
-	"github.com/testdouble/diplomat/parsers"
-	"github.com/testdouble/diplomat/runners"
-	"github.com/testdouble/diplomat/transforms"
+	main "github.com/schoonology/diplomat"
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/loaders"
+	"github.com/schoonology/diplomat/mocks"
+	"github.com/schoonology/diplomat/parsers"
+	"github.com/schoonology/diplomat/runners"
+	"github.com/schoonology/diplomat/transforms"
 )
 
 func TestEngineStart(t *testing.T) {

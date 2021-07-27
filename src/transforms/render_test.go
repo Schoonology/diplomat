@@ -3,10 +3,10 @@ package transforms_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/http"
+	"github.com/schoonology/diplomat/transforms"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/transforms"
 )
 
 func TestRenderHeaders(t *testing.T) {

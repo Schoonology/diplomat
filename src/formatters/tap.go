@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/testdouble/diplomat/errors"
-	"github.com/testdouble/diplomat/runners"
+	"github.com/schoonology/diplomat/errors"
+	"github.com/schoonology/diplomat/runners"
 )
 
 // Tap structures test results to be TAP-compliant.

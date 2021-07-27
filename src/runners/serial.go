@@ -1,10 +1,10 @@
 package runners
 
 import (
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/differs"
-	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/transforms"
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/differs"
+	"github.com/schoonology/diplomat/http"
+	"github.com/schoonology/diplomat/transforms"
 )
 
 // Serial runs all tests one at a time.

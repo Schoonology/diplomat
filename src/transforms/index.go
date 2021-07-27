@@ -1,6 +1,6 @@
 package transforms
 
-import "github.com/testdouble/diplomat/builders"
+import "github.com/schoonology/diplomat/builders"
 
 // Transformer is capable of mutating Tests.
 type Transformer interface {

@@ -3,9 +3,9 @@ package builders_test
 import (
 	"testing"
 
+	"github.com/schoonology/diplomat/builders"
+	"github.com/schoonology/diplomat/http"
 	"github.com/stretchr/testify/assert"
-	"github.com/testdouble/diplomat/builders"
-	"github.com/testdouble/diplomat/http"
 )
 
 func assertTest(t *testing.T, expected builders.Test, actual builders.Test, err error) {

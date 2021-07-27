@@ -1,6 +1,6 @@
 # Diplomat
 
-For usage and documentation, see [the wiki](https://github.com/testdouble/diplomat/wiki).
+For usage and documentation, see [the wiki](https://github.com/schoonology/diplomat/wiki).
 
 ## Development
 
@@ -9,7 +9,7 @@ For usage and documentation, see [the wiki](https://github.com/testdouble/diplom
 This project uses a version of Go supporting [modules](https://blog.golang.org/modules2019), which means you can clone the repository anywhere you want. It also handles dependencies without need of secondary tooling such as Glide.
 
 ```sh
-git clone git@github.com:testdouble/diplomat.git
+git clone git@github.com:schoonology/diplomat.git
 cd diplomat
 ```
 
@@ -55,4 +55,4 @@ make generate
 
 ## Code of Conduct
 
-This project follows Test Double's [code of conduct](https://testdouble.com/code-of-conduct) for all community interactions, including (but not limited to) one-on-one communications, public posts/comments, code reviews, pull requests, and GitHub issues. If violations occur, Test Double will take any action they deem appropriate for the infraction, up to and including blocking a user from the organization's repositories.
+This project follows the [Contributor Covenant](https://www.contributor-covenant.org/) for all community interactions, including (but not limited to) one-on-one communications, public posts/comments, code reviews, pull requests, and GitHub issues. If violations occur, the maintainers and will take any action they deem appropriate for the infraction, up to and including blocking a user from repository access.

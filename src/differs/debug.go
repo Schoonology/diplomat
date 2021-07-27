@@ -2,7 +2,7 @@ package differs
 
 import (
 	"github.com/google/go-cmp/cmp"
-	"github.com/testdouble/diplomat/http"
+	"github.com/schoonology/diplomat/http"
 )
 
 // The Debug differ returns any and all differences.

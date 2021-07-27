@@ -1,6 +1,6 @@
 package parsers
 
-import "github.com/testdouble/diplomat/loaders"
+import "github.com/schoonology/diplomat/loaders"
 
 // A ParagraphParser is capable of parsing a stream of lines into chunks.
 type ParagraphParser interface {

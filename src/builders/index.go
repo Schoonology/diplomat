@@ -1,8 +1,8 @@
 package builders
 
 import (
-	"github.com/testdouble/diplomat/http"
-	"github.com/testdouble/diplomat/parsers"
+	"github.com/schoonology/diplomat/http"
+	"github.com/schoonology/diplomat/parsers"
 )
 
 // A SpecBuilder constructs a test from a Paragraph.

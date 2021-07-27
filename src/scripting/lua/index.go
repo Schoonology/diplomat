@@ -12,7 +12,7 @@ import (
 
 	"github.com/cjoudrey/gluahttp"
 	json "github.com/layeh/gopher-json"
-	"github.com/testdouble/diplomat/errors"
+	"github.com/schoonology/diplomat/errors"
 	jsonschema "github.com/xeipuuv/gojsonschema"
 	"github.com/yuin/gluare"
 	lua "github.com/yuin/gopher-lua"

@@ -39,6 +39,14 @@ function file(filename)
   return contents
 end
 
+function tee_file(filename)
+  local handle = assert(io.open(filename, "wb"))
+  return function (value)
+    assert(handle:write(value))
+    return value
+  end
+end
+
 function get(key, validator)
   return function (value)
     return value[key]

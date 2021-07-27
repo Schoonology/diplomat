@@ -211,3 +211,13 @@ Status:
 
   [ "$status" -eq 0 ]
 }
+
+@test "Scripting: Utilities" {
+  run bin/diplomat $FIXTURES_ROOT/scripting/util.md --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 0 ]
+
+  rm json.json
+}

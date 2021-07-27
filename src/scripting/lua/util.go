@@ -50,6 +50,14 @@ func utilTemplate() string {
 		"  return contents\n" +
 		"end\n" +
 		"\n" +
+		"function tee_file(filename)\n" +
+		"  local handle = assert(io.open(filename, \"wb\"))\n" +
+		"  return function (value)\n" +
+		"    assert(handle:write(value))\n" +
+		"    return value\n" +
+		"  end\n" +
+		"end\n" +
+		"\n" +
 		"function get(key, validator)\n" +
 		"  return function (value)\n" +
 		"    return value[key]\n" +

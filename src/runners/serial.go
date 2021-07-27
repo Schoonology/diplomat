@@ -41,7 +41,7 @@ func (s *Serial) Run(test builders.Test) (TestResult, error) {
 
 	diff, err := s.Differ.Diff(test.Response, response)
 	if err != nil {
-		return TestResult{Name: test.Name}, err
+		return TestResult{Diff: diff, Name: test.Name}, err
 	}
 
 	return TestResult{

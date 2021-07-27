@@ -77,3 +77,18 @@ Error while running Lua script:
   [[ "$output" =~ "Error while running Lua script:" ]]
   [[ "$output" =~ "test/fixtures/failing/error-from-validator.lua:2: Validator failed!" ]]
 }
+
+@test "Status incorrect AND error from validator function" {
+  run bin/diplomat --script $FIXTURES_ROOT/failing/error-from-validator.lua \
+    $FIXTURES_ROOT/failing/error-from-status-and-validator.txt \
+    --address $TEST_HOST
+
+  log_on_failure
+
+  [ "$status" -eq 1 ]
+  [[ "$output" =~ "Status:" ]]
+  [[ "$output" =~ "- 200 OK" ]]
+  [[ "$output" =~ "+ 400 BAD REQUEST" ]]
+  [[ "$output" =~ "Error while running Lua script:" ]]
+  [[ "$output" =~ "test/fixtures/failing/error-from-validator.lua:2: Validator failed!" ]]
+}

@@ -19,10 +19,9 @@ type Pretty struct {
 func (p *Pretty) Format(result runners.TestResult) (string, error) {
 	builder := strings.Builder{}
 
-	if result.Err != nil {
-		if result.Name != "" {
-			builder.WriteString(p.Colorizer.Paint(fmt.Sprintf("✗ %s\n", result.Name), colors.Red))
-		}
+	// If the name is empty (zero value), we never parsed the spec.
+	// Format the error from parsing, and move on.
+	if len(result.Name) == 0 {
 		builder.WriteString(errors.Format(result.Err))
 		return builder.String(), result.Err
 	}
@@ -30,14 +29,23 @@ func (p *Pretty) Format(result runners.TestResult) (string, error) {
 	var err error
 	color := colors.Green
 	symbol := "✓"
-	if len(result.Diff) != 0 {
+
+	// We failed the test if the diff is non-empty OR we encountered an error.
+	if len(result.Diff) != 0 || result.Err != nil {
 		err = errors.NewAssertionError(result.Diff)
 		color = colors.Red
 		symbol = "✗"
 	}
 
+	// We need to ensure we print both the failure (if any)...
 	builder.WriteString(p.Colorizer.Paint(fmt.Sprintf("%s %s\n", symbol, result.Name), color))
 	builder.WriteString(result.Diff)
+
+	// ...AND any errors.
+	if result.Err != nil {
+		err = result.Err
+		builder.WriteString(errors.Format(result.Err))
+	}
 
 	return builder.String(), err
 }

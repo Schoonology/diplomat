@@ -29,7 +29,7 @@ watch:
 	rg --files | entr -rc sh -c "make format && make bin/diplomat && make test && make e2e && make lint"
 
 clean:
-	rm -f *.go.* */*.go.*
+	rm -f $(shell find . -type f -name "*.go.*")
 	rm -f bin/diplomat
 
 e2e:

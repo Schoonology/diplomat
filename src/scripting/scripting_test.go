@@ -23,6 +23,13 @@ func TestIsTrue(t *testing.T) {
 	assert.True(t, result)
 }
 
+func TestFailure(t *testing.T) {
+	result, err := scripting.RunValidator(`equal(1)`, `2`)
+
+	assert.Nil(t, err)
+	assert.False(t, result)
+}
+
 func TestJsonSchema(t *testing.T) {
 	result, err := scripting.RunValidator(`json_schema([[{
 		"type": "object",

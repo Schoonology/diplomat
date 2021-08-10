@@ -52,3 +52,10 @@ function get(key, validator)
     return value[key]
   end
 end
+
+function inspect(label)
+  return function (value)
+    io.stderr:write((label or 'inspect') .. ': ' .. value .. '\n')
+    return true
+  end
+end

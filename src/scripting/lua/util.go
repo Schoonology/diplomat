@@ -63,6 +63,13 @@ func utilTemplate() string {
 		"    return value[key]\n" +
 		"  end\n" +
 		"end\n" +
+		"\n" +
+		"function inspect(label)\n" +
+		"  return function (value)\n" +
+		"    io.stderr:write((label or 'inspect') .. ': ' .. value .. '\\n')\n" +
+		"    return true\n" +
+		"  end\n" +
+		"end\n" +
 		""
 	return tmpl
 }

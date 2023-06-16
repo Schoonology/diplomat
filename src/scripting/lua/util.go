@@ -66,7 +66,7 @@ func utilTemplate() string {
 		"\n" +
 		"function inspect(label)\n" +
 		"  return function (value)\n" +
-		"    io.stderr:write((label or 'inspect') .. ': ' .. value .. '\\n')\n" +
+		"    io.stderr:write((label or 'inspect') .. ': ' .. tostring(value) .. '\\n')\n" +
 		"    return true\n" +
 		"  end\n" +
 		"end\n" +

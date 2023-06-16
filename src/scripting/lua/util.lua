@@ -55,7 +55,7 @@ end
 
 function inspect(label)
   return function (value)
-    io.stderr:write((label or 'inspect') .. ': ' .. value .. '\n')
+    io.stderr:write((label or 'inspect') .. ': ' .. (value or '<nil>') .. '\n')
     return true
   end
 end
